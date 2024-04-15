@@ -19,7 +19,7 @@ public class KeyBinding {
             KeyConflictContext.IN_GAME,
             KeyModifier.SHIFT,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_R,
+            GLFW.GLFW_KEY_T,
             MOD_KEY_CATEGORY);
 
     public static final KeyMapping DISABLE_AUTO_PICKUP_KEY = new KeyMapping(
@@ -27,7 +27,7 @@ public class KeyBinding {
             KeyConflictContext.IN_GAME,
             KeyModifier.CONTROL,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_R,
+            GLFW.GLFW_KEY_T,
             MOD_KEY_CATEGORY);
 
     public static final KeyMapping TOGGLE_AUTO_PICKUP_KEY = new KeyMapping(

@@ -34,7 +34,13 @@ public class ToggleAutoPickupKeyPressed_P2SPacket {
 
             player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(c->{
                 c.setAutoPickupEnabled(!c.isAutoPickupEnabled());
-                player.sendSystemMessage(Component.translatable("Toggled " + String.valueOf(c.isAutoPickupEnabled())).withStyle(ChatFormatting.DARK_AQUA));
+
+                if(c.isAutoPickupEnabled()){
+                    player.sendSystemMessage(Component.translatable("Auto pickup: On"));
+
+                }else{
+                    player.sendSystemMessage(Component.translatable("Auto pickup: Off"));
+                }
 
             });
 

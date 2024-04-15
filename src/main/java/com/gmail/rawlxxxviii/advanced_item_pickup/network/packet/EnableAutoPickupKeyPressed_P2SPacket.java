@@ -31,7 +31,7 @@ public class EnableAutoPickupKeyPressed_P2SPacket {
                 return;
             }
 
-            player.sendSystemMessage(Component.translatable("Auto pickup Enabled").withStyle(ChatFormatting.DARK_AQUA));
+            player.sendSystemMessage(Component.translatable("Auto pickup: On").withStyle(ChatFormatting.DARK_AQUA));
 
             player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(c->{
                 c.setAutoPickupEnabled(true);

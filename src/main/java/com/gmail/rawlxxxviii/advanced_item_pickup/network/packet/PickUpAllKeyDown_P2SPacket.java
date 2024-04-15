@@ -35,8 +35,6 @@ public class PickUpAllKeyDown_P2SPacket {
             if(player == null)
                 return;
 
-            player.sendSystemMessage(Component.translatable("Picking up all").withStyle(ChatFormatting.DARK_AQUA));
-
             player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(AdvancedPickupCapability::addPickupTick);
             player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(c->{
                 player.sendSystemMessage(Component.translatable(String.valueOf(c.getPickupTicks())).withStyle(ChatFormatting.DARK_AQUA));

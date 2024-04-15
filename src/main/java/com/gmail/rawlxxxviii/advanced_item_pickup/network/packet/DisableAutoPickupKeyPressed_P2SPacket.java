@@ -32,7 +32,7 @@ public class DisableAutoPickupKeyPressed_P2SPacket {
             }
             var level = player.getLevel();
 
-            player.sendSystemMessage(Component.translatable("Auto pickup Disabled" ).withStyle(ChatFormatting.DARK_AQUA));
+            player.sendSystemMessage(Component.translatable("Auto pickup: Off" ).withStyle(ChatFormatting.DARK_AQUA));
 
             player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(c->{
                 c.setAutoPickupEnabled(false);
