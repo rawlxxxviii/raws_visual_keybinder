@@ -36,10 +36,6 @@ public class PickUpAllKeyDown_P2SPacket {
                 return;
 
             player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(AdvancedPickupCapability::addPickupTick);
-            player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(c->{
-                player.sendSystemMessage(Component.translatable(String.valueOf(c.getPickupTicks())).withStyle(ChatFormatting.DARK_AQUA));
-
-            });
 
         });
     }
