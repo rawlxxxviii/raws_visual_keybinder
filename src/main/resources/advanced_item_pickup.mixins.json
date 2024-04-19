@@ -11,6 +11,8 @@
   "mixins": [
     "ItemEntityMixin"
   ],
-  "client": [],
+  "client": [
+    "InventoryFilterButtonMixin"
+  ],
   "minVersion": "0.8"
 }

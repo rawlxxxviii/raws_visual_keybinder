@@ -5,7 +5,6 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.DisableAutoPick
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.EnableAutoPickupKeyPressed_P2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.PickUpAllKeyDown_P2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.ToggleAutoPickupKeyPressed_P2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.server.ItemPickupControl;
 import com.gmail.rawlxxxviii.advanced_item_pickup.util.KeyBinding;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,16 +29,13 @@ public class ClientEvents {
 
 
             if(KeyBinding.ENABLE_AUTO_PICKUP_KEY.consumeClick()) {
-                ItemPickupControl.setAutoPickupEnabled(true);
 
                 PacketHandler.sendToServer(new EnableAutoPickupKeyPressed_P2SPacket());
             }
             if(KeyBinding.DISABLE_AUTO_PICKUP_KEY.consumeClick()) {
-                ItemPickupControl.setAutoPickupEnabled(false);
                 PacketHandler.sendToServer(new DisableAutoPickupKeyPressed_P2SPacket());
             }
             if(KeyBinding.TOGGLE_AUTO_PICKUP_KEY.consumeClick()) {
-                ItemPickupControl.setAutoPickupEnabled(!ItemPickupControl.isAutoPickupEnabled());
                 PacketHandler.sendToServer(new ToggleAutoPickupKeyPressed_P2SPacket());
             }
         }
