@@ -1,10 +1,7 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.network;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.DisableAutoPickupKeyPressed_P2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.EnableAutoPickupKeyPressed_P2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.PickUpAllKeyDown_P2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.ToggleAutoPickupKeyPressed_P2SPacket;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -26,6 +23,27 @@ public class PacketHandler {
             .simpleChannel();
 
     public static void register(){
+
+        INSTANCE.messageBuilder(
+                    RemoveNameFilter_P2SPacket.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(RemoveNameFilter_P2SPacket::new)
+                .encoder(RemoveNameFilter_P2SPacket::encodeToBytes)
+                .consumerMainThread(RemoveNameFilter_P2SPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(
+                    UpdateNameFilter_P2SPacket.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(UpdateNameFilter_P2SPacket::new)
+                .encoder(UpdateNameFilter_P2SPacket::encodeToBytes)
+                .consumerMainThread(UpdateNameFilter_P2SPacket::handle)
+                .add();
+
 
         INSTANCE.messageBuilder(
                     DisableAutoPickupKeyPressed_P2SPacket.class,

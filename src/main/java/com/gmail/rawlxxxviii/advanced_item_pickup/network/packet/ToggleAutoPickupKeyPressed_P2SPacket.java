@@ -1,12 +1,9 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupCapability;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupProvider;
-import net.minecraft.ChatFormatting;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -32,7 +29,7 @@ public class ToggleAutoPickupKeyPressed_P2SPacket {
             if(player == null)
                 return;
 
-            player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(c->{
+            player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
                 c.setAutoPickupEnabled(!c.isAutoPickupEnabled());
 
                 if(c.isAutoPickupEnabled()){

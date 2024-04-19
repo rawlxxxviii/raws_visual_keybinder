@@ -1,23 +1,31 @@
-package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet;
+ package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
-import net.minecraft.ChatFormatting;
+import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class DisableAutoPickupKeyPressed_P2SPacket {
+public class UpdateNameFilter_P2SPacket {
 
-    public DisableAutoPickupKeyPressed_P2SPacket() {
+    private String name;
+    private ItemFilterType itemFilterType;
+
+    public UpdateNameFilter_P2SPacket(String name, ItemFilterType itemFilterType) {
+        this.name = name;
+        this.itemFilterType = itemFilterType;
     }
 
-    public DisableAutoPickupKeyPressed_P2SPacket(FriendlyByteBuf buffer) {
+    public UpdateNameFilter_P2SPacket(FriendlyByteBuf buffer) {
+        this.name = buffer.readUtf();
+        this.itemFilterType = buffer.readEnum(ItemFilterType.class);
     }
 
     public void encodeToBytes(FriendlyByteBuf buffer) {
+        buffer.writeUtf(this.name);
+        buffer.writeEnum(this.itemFilterType);
     }
 
     public void handle(Supplier<NetworkEvent.Context> supplier) {
@@ -29,12 +37,9 @@ public class DisableAutoPickupKeyPressed_P2SPacket {
             if(player == null){
                 return;
             }
-            var level = player.getLevel();
-
-            player.sendSystemMessage(Component.translatable("Auto pickup: Off" ).withStyle(ChatFormatting.DARK_AQUA));
 
             player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
-                c.setAutoPickupEnabled(false);
+                c.updateNameFilter(name,itemFilterType);
             });
         });
     }

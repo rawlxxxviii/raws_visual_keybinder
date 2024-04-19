@@ -1,11 +1,10 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupProvider;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -33,7 +32,7 @@ public class EnableAutoPickupKeyPressed_P2SPacket {
 
             player.sendSystemMessage(Component.translatable("Auto pickup: On").withStyle(ChatFormatting.DARK_AQUA));
 
-            player.getCapability(AdvancedPickupProvider.ADVANCED_PICKUP_CAPABILITY).ifPresent(c->{
+            player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
                 c.setAutoPickupEnabled(true);
             });
         });
