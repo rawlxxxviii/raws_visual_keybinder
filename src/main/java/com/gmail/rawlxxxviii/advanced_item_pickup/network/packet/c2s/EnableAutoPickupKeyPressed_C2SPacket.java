@@ -1,7 +1,7 @@
-package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet;
+package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -9,12 +9,12 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class EnableAutoPickupKeyPressed_P2SPacket {
+public class EnableAutoPickupKeyPressed_C2SPacket {
 
-    public EnableAutoPickupKeyPressed_P2SPacket() {
+    public EnableAutoPickupKeyPressed_C2SPacket() {
     }
 
-    public EnableAutoPickupKeyPressed_P2SPacket(FriendlyByteBuf buffer) {
+    public EnableAutoPickupKeyPressed_C2SPacket(FriendlyByteBuf buffer) {
     }
 
     public void encodeToBytes(FriendlyByteBuf buffer) {
@@ -29,8 +29,17 @@ public class EnableAutoPickupKeyPressed_P2SPacket {
             if(player == null){
                 return;
             }
+            var level = player.getLevel();
+            if(level.isClientSide){
+                return;
+            }
 
             player.sendSystemMessage(Component.translatable("Auto pickup: On").withStyle(ChatFormatting.DARK_AQUA));
+
+            PacketHandler.sendToPlayer(
+                    new EnableAutoPickupKeyPressed_C2SPacket(),
+                    player
+            );
 
             player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
                 c.setAutoPickupEnabled(true);

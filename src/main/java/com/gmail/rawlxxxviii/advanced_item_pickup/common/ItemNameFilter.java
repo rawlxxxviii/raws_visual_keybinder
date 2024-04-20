@@ -46,4 +46,5 @@ public class ItemNameFilter {
         this.setItemName(nbt.getString("name"));
         this.setType( ItemFilterType.fromInteger(nbt.getInt("type")));
     }
+
 }

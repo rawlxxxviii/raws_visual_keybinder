@@ -26,4 +26,5 @@ public interface IAdvancedPickup extends INBTSerializable<CompoundTag>{
     void copyFrom(IAdvancedPickup source);
 
 
+
 }

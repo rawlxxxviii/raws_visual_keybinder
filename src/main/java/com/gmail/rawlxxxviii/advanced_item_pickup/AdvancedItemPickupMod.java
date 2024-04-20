@@ -1,8 +1,12 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup;
 
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -12,6 +16,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -45,4 +50,5 @@ public class AdvancedItemPickupMod
 
         event.enqueueWork(PacketHandler::register);
     }
+
 }

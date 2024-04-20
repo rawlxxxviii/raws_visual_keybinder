@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -16,8 +17,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class AdvancedPickupAttacher  {
 
-    public static class AdvancedPickupProvider implements ICapabilityProvider, INBTSerializable<CompoundTag>{
+    public static class AdvancedPickupProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
 
+//        public static final ResourceLocation IDENTIFIER = new ResourceLocation(AdvancedItemPickupMod.MODID, "advanced_pickup");
         public static final ResourceLocation IDENTIFIER = new ResourceLocation(AdvancedItemPickupMod.MODID, "advanced_pickup");
 
 

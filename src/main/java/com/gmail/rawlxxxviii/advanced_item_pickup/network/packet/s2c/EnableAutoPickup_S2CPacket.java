@@ -1,20 +1,19 @@
-package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet;
+package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
-import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class DisableAutoPickupKeyPressed_P2SPacket {
+public class EnableAutoPickup_S2CPacket {
 
-    public DisableAutoPickupKeyPressed_P2SPacket() {
+    public EnableAutoPickup_S2CPacket() {
     }
 
-    public DisableAutoPickupKeyPressed_P2SPacket(FriendlyByteBuf buffer) {
+    public EnableAutoPickup_S2CPacket(FriendlyByteBuf buffer) {
     }
 
     public void encodeToBytes(FriendlyByteBuf buffer) {
@@ -25,16 +24,18 @@ public class DisableAutoPickupKeyPressed_P2SPacket {
         var context = supplier.get();
 
         context.enqueueWork(()->{
-            var player = context.getSender();
+
+            var player = Minecraft.getInstance().player;
             if(player == null){
                 return;
             }
             var level = player.getLevel();
-
-            player.sendSystemMessage(Component.translatable("Auto pickup: Off" ).withStyle(ChatFormatting.DARK_AQUA));
-
+            if(!level.isClientSide){
+                return;
+            }
             player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
-                c.setAutoPickupEnabled(false);
+                c.setAutoPickupEnabled(true);
+
             });
         });
     }

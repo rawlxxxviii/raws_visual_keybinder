@@ -33,25 +33,25 @@ public abstract class ItemEntityMixin extends Entity {
         player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c-> {
 
 
-                    if(c.isPickingUpItems()) {
-                        return;
-                    }
+                if(c.isPickingUpItems()) {
+                    return;
+                }
 
-                    var filterResult = c.getFilterResult( this.getItem());
+                var filterResult = c.getFilterResult( this.getItem());
 
-                    if (c.isAutoPickupEnabled()){
+                if (c.isAutoPickupEnabled()){
 
-                        if(filterResult == ItemFilterType.NEVER){
-                            info.cancel();
-                        }
-
-                    }else{
-                        if(filterResult == ItemFilterType.ALWAYS){
-                            return;
-                        }
+                    if(filterResult == ItemFilterType.NEVER){
                         info.cancel();
                     }
+
+                }else{
+                    if(filterResult == ItemFilterType.ALWAYS){
+                        return;
+                    }
+                    info.cancel();
                 }
+            }
 
         );
 
