@@ -1,11 +1,13 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.client;
 
+import com.gmail.rawlxxxviii.advanced_item_pickup.client.gui.AdvancedPickupSettingsScreen;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.DisableAutoPickupKeyPressed_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.EnableAutoPickupKeyPressed_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.PickUpAllKeyDown_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.ToggleAutoPickupKeyPressed_C2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.util.KeyBinding;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -36,6 +38,14 @@ public class ClientEvents {
             if(KeyBinding.TOGGLE_AUTO_PICKUP_KEY.consumeClick()) {
                 PacketHandler.sendToServer(new ToggleAutoPickupKeyPressed_C2SPacket());
             }
+            if(KeyBinding.OPEN_VICINITY_PICKUP_KEY.consumeClick()) {
+
+//                Minecraft.getInstance().setScreen(new AdvancedPickupSettingsScreen(Component.literal("")));
+            }
+            if(KeyBinding.OPEN_SETTINGS_MENU_KEY.consumeClick()) {
+
+                Minecraft.getInstance().setScreen(new AdvancedPickupSettingsScreen(Component.literal("")));
+            }
         }
 
         @SubscribeEvent
@@ -52,7 +62,6 @@ public class ClientEvents {
 
         }
 
-
     }
 
     @Mod.EventBusSubscriber(modid = MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -63,6 +72,7 @@ public class ClientEvents {
             event.register(KeyBinding.ENABLE_AUTO_PICKUP_KEY);
             event.register(KeyBinding.DISABLE_AUTO_PICKUP_KEY);
             event.register(KeyBinding.TOGGLE_AUTO_PICKUP_KEY);
+            event.register(KeyBinding.OPEN_VICINITY_PICKUP_KEY);
         }
     }
 

@@ -35,7 +35,7 @@ public class DisableAutoPickupKeyPressed_C2SPacket {
                 return;
             }
 
-            player.sendSystemMessage(Component.translatable("Auto pickup: Off" ).withStyle(ChatFormatting.DARK_AQUA));
+            player.sendSystemMessage(Component.translatable("Auto pickup: Off" ).withStyle(ChatFormatting.GRAY));
 
             PacketHandler.sendToPlayer(
                     new DisableAutoPickup_S2CPacket(),

@@ -12,7 +12,7 @@
     "ItemEntityMixin"
   ],
   "client": [
-    "InventoryFilterButtonMixin"
+    "InventoryScreenMixin"
   ],
   "minVersion": "0.8"
 }

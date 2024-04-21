@@ -2,6 +2,7 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.EnableAutoPickup_S2CPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -34,10 +35,10 @@ public class EnableAutoPickupKeyPressed_C2SPacket {
                 return;
             }
 
-            player.sendSystemMessage(Component.translatable("Auto pickup: On").withStyle(ChatFormatting.DARK_AQUA));
+            player.sendSystemMessage(Component.translatable("Auto pickup: On").withStyle(ChatFormatting.GREEN));
 
             PacketHandler.sendToPlayer(
-                    new EnableAutoPickupKeyPressed_C2SPacket(),
+                    new EnableAutoPickup_S2CPacket(),
                     player
             );
 

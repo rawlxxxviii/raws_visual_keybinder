@@ -4,6 +4,7 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.DisableAutoPickup_S2CPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.EnableAutoPickup_S2CPacket;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.network.NetworkEvent;
@@ -39,13 +40,13 @@ public class ToggleAutoPickupKeyPressed_C2SPacket {
                 c.setAutoPickupEnabled(!c.isAutoPickupEnabled());
 
                 if(c.isAutoPickupEnabled()){
-                    player.sendSystemMessage(Component.translatable("Auto pickup: On"));
+                    player.sendSystemMessage(Component.translatable("Auto pickup: On").withStyle(ChatFormatting.GREEN));
                     PacketHandler.sendToPlayer(
                             new EnableAutoPickup_S2CPacket(),
                             player
                     );
                 }else{
-                    player.sendSystemMessage(Component.translatable("Auto pickup: Off"));
+                    player.sendSystemMessage(Component.translatable("Auto pickup: Off").withStyle(ChatFormatting.GRAY));
                     PacketHandler.sendToPlayer(
                             new DisableAutoPickup_S2CPacket(),
                             player
