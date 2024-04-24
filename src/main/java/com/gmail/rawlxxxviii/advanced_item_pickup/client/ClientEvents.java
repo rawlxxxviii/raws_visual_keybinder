@@ -1,19 +1,23 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.client;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.client.gui.AdvancedPickupSettingsScreen;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.DisableAutoPickupKeyPressed_C2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.EnableAutoPickupKeyPressed_C2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.PickUpAllKeyDown_C2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.ToggleAutoPickupKeyPressed_C2SPacket;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.*;
+import com.gmail.rawlxxxviii.advanced_item_pickup.screen.ModMenuTypes;
+import com.gmail.rawlxxxviii.advanced_item_pickup.screen.PickupSettingsMenu;
+import com.gmail.rawlxxxviii.advanced_item_pickup.screen.PickupSettingsScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod.MODID;
@@ -44,7 +48,7 @@ public class ClientEvents {
             }
             if(KeyBinding.OPEN_SETTINGS_MENU_KEY.consumeClick()) {
 
-                Minecraft.getInstance().setScreen(new AdvancedPickupSettingsScreen(Component.literal("")));
+
             }
         }
 
@@ -73,7 +77,9 @@ public class ClientEvents {
             event.register(KeyBinding.DISABLE_AUTO_PICKUP_KEY);
             event.register(KeyBinding.TOGGLE_AUTO_PICKUP_KEY);
             event.register(KeyBinding.OPEN_VICINITY_PICKUP_KEY);
+            event.register(KeyBinding.OPEN_SETTINGS_MENU_KEY);
         }
+
     }
 
 

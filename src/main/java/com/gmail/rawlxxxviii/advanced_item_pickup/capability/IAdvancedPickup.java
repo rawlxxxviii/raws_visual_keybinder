@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import java.util.ArrayList;
 
 @AutoRegisterCapability
-public interface IAdvancedPickup extends INBTSerializable<CompoundTag>{
+public interface IAdvancedPickup extends INBTSerializable<CompoundTag> {
 
     boolean isAutoPickupEnabled();
     void setAutoPickupEnabled(boolean autoPickupEnabled);
@@ -24,7 +24,6 @@ public interface IAdvancedPickup extends INBTSerializable<CompoundTag>{
 
     ItemFilterType getFilterResult(ItemStack itemStack);
     void copyFrom(IAdvancedPickup source);
-
 
 
 }

@@ -54,7 +54,7 @@ public class KeyBinding {
             MOD_KEY_CATEGORY);
 
     public static final KeyMapping OPEN_SETTINGS_MENU_KEY = new KeyMapping(
-            OPEN_VICINITY_PICKUP,
+            OPEN_SETTINGS_MENU,
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_C,

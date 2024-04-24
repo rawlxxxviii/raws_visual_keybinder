@@ -4,8 +4,13 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.capability;
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -32,6 +37,11 @@ public class AdvancedPickupAttacher  {
         @Override
         public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction direction) {
             return AdvancedPickup.INSTANCE.orEmpty(capability, this.optional);
+        }
+
+        @Override
+        public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
+            return ICapabilityProvider.super.getCapability(cap);
         }
 
         void invalidate() {

@@ -68,6 +68,20 @@ public class PacketHandler {
                 .consumerMainThread(EnableAutoPickup_S2CPacket::handle)
                 .add();
 
+
+
+
+
+        INSTANCE.messageBuilder(
+                        OpenPickupSettingsMenu_C2SPacket.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(OpenPickupSettingsMenu_C2SPacket::new)
+                .encoder(OpenPickupSettingsMenu_C2SPacket::encodeToBytes)
+                .consumerMainThread(OpenPickupSettingsMenu_C2SPacket::handle)
+                .add();
+
         INSTANCE.messageBuilder(
                     RemoveNameFilter_C2SPacket.class,
                     id(),

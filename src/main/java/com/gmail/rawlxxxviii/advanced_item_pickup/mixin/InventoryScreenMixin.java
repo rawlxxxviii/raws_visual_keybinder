@@ -124,7 +124,9 @@ public abstract class InventoryScreenMixin<T extends AbstractContainerMenu> exte
 
         System.out.println(this.width);
 
-        enableAutoPickupButton.setPosition(this.width - 50,  50);
+        enableAutoPickupButton.setPosition(this.leftPos + 104 + 25, this.height / 2 - 22);
+        disableAutoPickupButton.setPosition(this.leftPos + 104 + 25, this.height / 2 - 22);
+        openAutoPickupFilterScreenButton.setPosition(this.leftPos + 104 + 25 + 20 , this.height / 2 - 22);
     }
 
 }
