@@ -3,6 +3,7 @@ package com.gmail.rawlxxxviii.advanced_item_pickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
+import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.ModMenuTypes;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
@@ -40,6 +41,7 @@ public class AdvancedItemPickupMod
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
+        ModMenuTypes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

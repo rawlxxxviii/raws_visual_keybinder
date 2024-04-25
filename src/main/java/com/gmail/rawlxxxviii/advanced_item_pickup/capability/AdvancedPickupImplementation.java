@@ -2,14 +2,20 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.capability;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
+import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.AdvancedPickupSettingsMenu;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class AdvancedPickupImplementation implements IAdvancedPickup {
+public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvider {
 
     private static final int MAX_TICK_COUNT = 6;
 
@@ -117,5 +123,14 @@ public class AdvancedPickupImplementation implements IAdvancedPickup {
     }
 
 
+    @Override
+    public Component getDisplayName() {
+        return Component.literal("Advanced pickup");
+    }
 
+    @org.jetbrains.annotations.Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new AdvancedPickupSettingsMenu(id, inventory);
+    }
 }

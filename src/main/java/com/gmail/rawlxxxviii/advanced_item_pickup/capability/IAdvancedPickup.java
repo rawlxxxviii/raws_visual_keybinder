@@ -3,6 +3,7 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.capability;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
@@ -10,7 +11,7 @@ import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import java.util.ArrayList;
 
 @AutoRegisterCapability
-public interface IAdvancedPickup extends INBTSerializable<CompoundTag> {
+public interface IAdvancedPickup extends INBTSerializable<CompoundTag>, MenuProvider {
 
     boolean isAutoPickupEnabled();
     void setAutoPickupEnabled(boolean autoPickupEnabled);

@@ -2,10 +2,7 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.network;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.*;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.DisableAutoPickup_S2CPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.EnableAutoPickup_S2CPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.RemoveNameFilter_S2CPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.UpdateAdvancedPickupSettings_S2CPacket;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -36,6 +33,16 @@ public class PacketHandler {
                 .decoder(RemoveNameFilter_S2CPacket::new)
                 .encoder(RemoveNameFilter_S2CPacket::encodeToBytes)
                 .consumerMainThread(RemoveNameFilter_S2CPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(
+                        UpdateNameFilter_S2C_Packet.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_CLIENT
+                )
+                .decoder(UpdateNameFilter_S2C_Packet::new)
+                .encoder(UpdateNameFilter_S2C_Packet::encodeToBytes)
+                .consumerMainThread(UpdateNameFilter_S2C_Packet::handle)
                 .add();
 
         INSTANCE.messageBuilder(
@@ -70,16 +77,14 @@ public class PacketHandler {
 
 
 
-
-
         INSTANCE.messageBuilder(
-                        OpenPickupSettingsMenu_C2SPacket.class,
+                        OpenAdvancedPickupSettingsMenu_C2SPacket.class,
                     id(),
                     NetworkDirection.PLAY_TO_SERVER
                 )
-                .decoder(OpenPickupSettingsMenu_C2SPacket::new)
-                .encoder(OpenPickupSettingsMenu_C2SPacket::encodeToBytes)
-                .consumerMainThread(OpenPickupSettingsMenu_C2SPacket::handle)
+                .decoder(OpenAdvancedPickupSettingsMenu_C2SPacket::new)
+                .encoder(OpenAdvancedPickupSettingsMenu_C2SPacket::encodeToBytes)
+                .consumerMainThread(OpenAdvancedPickupSettingsMenu_C2SPacket::handle)
                 .add();
 
         INSTANCE.messageBuilder(

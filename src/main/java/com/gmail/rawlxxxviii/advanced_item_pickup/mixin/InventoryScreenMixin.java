@@ -2,7 +2,7 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.mixin;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
-import com.gmail.rawlxxxviii.advanced_item_pickup.client.gui.AdvancedPickupSettingsScreen;
+import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.AdvancedPickupSettingsScreen;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.DisableAutoPickupKeyPressed_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.EnableAutoPickupKeyPressed_C2SPacket;
@@ -103,7 +103,7 @@ public abstract class InventoryScreenMixin<T extends AbstractContainerMenu> exte
                     new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
                     64, 64,
                     (button) -> {
-                        this.minecraft.setScreen(new AdvancedPickupSettingsScreen(Component.literal("")));
+//                        this.minecraft.setScreen(new AdvancedPickupSettingsScreen(Component.literal("")));
                     },
                     Component.literal("Advanced Item pickup settings")
             );
