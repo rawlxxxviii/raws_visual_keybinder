@@ -1,17 +1,21 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu;
 
+import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.UpdateNameFilter_C2SPacket;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +25,10 @@ import java.util.Optional;
 
 public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<AdvancedPickupSettingsMenu> {
 
-    private final int imageWidth = 167, imageHeight = 166;
+    private static final ResourceLocation TEXTURE =
+            new ResourceLocation(AdvancedItemPickupMod.MODID,"textures/gui/pickup_settings_menu_gui.png");
+
+//    private final int imageWidth = 167, imageHeight = 166;
 //    private int leftPos = 0, topPos = 0;
 
 
@@ -235,11 +242,17 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     }
 
 
+
     @Override
-    protected void renderBg(PoseStack p_97787_, float p_97788_, int p_97789_, int p_97790_) {
+    protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        RenderSystem.setShaderTexture(0, TEXTURE);
 
+        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
     }
-
 
 
     @Override
