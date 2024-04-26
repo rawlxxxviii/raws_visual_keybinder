@@ -6,7 +6,9 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.UpdateAdvancedPickupSettings_S2CPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.UpdateNameFilter_S2C_Packet;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -48,6 +50,8 @@ public class UpdateNameFilter_C2SPacket {
 
             player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
                 c.updateNameFilter(name,itemFilterType);
+
+                player.sendSystemMessage(Component.translatable("autopickup: " + name + " - " + itemFilterType ));
 
                 PacketHandler.sendToPlayer(
                         new UpdateNameFilter_S2C_Packet(name,itemFilterType)

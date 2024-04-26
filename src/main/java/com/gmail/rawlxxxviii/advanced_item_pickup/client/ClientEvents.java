@@ -2,7 +2,6 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.client;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.*;
-import com.gmail.rawlxxxviii.advanced_item_pickup.client.screen.PickupSettingsScreen;
 import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.AdvancedPickupSettingsScreen;
 import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.ModMenuTypes;
 import net.minecraft.client.Minecraft;

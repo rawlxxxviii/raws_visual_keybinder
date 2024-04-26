@@ -25,24 +25,22 @@ public class AdvancedPickupSettingsMenu extends AbstractContainerMenu {
         addPlayerHotbar(inventory);
     }
 
-
-
     @Override
     public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean stillValid(Player p_38874_) {
-        return true;
+    public boolean stillValid(Player player) {
+        return player.isAlive();
     }
 
 
 
     private void addPlayerInventory(Inventory playerInventory) {
-        for (int i = 0; i < 3; ++i) {
-            for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 86 + i * 18));
+        for (int row = 0; row < 3; ++row) {
+            for (int i = 0; i < 9; ++i) {
+                this.addSlot(new Slot(playerInventory, i + row * 9 + 9, 8 + i * 18, 86 + row * 18));
             }
         }
     }

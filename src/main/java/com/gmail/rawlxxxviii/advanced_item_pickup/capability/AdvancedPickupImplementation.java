@@ -19,10 +19,11 @@ public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvid
 
     private static final int MAX_TICK_COUNT = 6;
 
+    private boolean settingsScreenUpToDate = false;
+
     private boolean autoPickupEnabled = false;
     private int pickupTicks = 0;
     private ArrayList<ItemNameFilter> autoPickupNameFilters = new ArrayList<ItemNameFilter>();
-
 
     public boolean isAutoPickupEnabled() {
         return autoPickupEnabled;
@@ -85,7 +86,16 @@ public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvid
         this.pickupTicks = source.getPickupTicks();
         this.autoPickupNameFilters = source.getAutoPickupFilters();
     }
-
+//
+//    @Override
+//    public boolean isSettingsScreenUpToDate() {
+//        return settingsScreenUpToDate;
+//    }
+//
+//    @Override
+//    public void setSettingsScreenUpToDate(boolean isUpdated) {
+//        settingsScreenUpToDate = isUpdated;
+//    }
 
 
     @Override

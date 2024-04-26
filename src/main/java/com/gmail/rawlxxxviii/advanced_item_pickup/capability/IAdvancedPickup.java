@@ -26,5 +26,7 @@ public interface IAdvancedPickup extends INBTSerializable<CompoundTag>, MenuProv
     ItemFilterType getFilterResult(ItemStack itemStack);
     void copyFrom(IAdvancedPickup source);
 
+//    boolean isSettingsScreenUpToDate();
+//    void setSettingsScreenUpToDate(boolean isUpdated);
 
 }
