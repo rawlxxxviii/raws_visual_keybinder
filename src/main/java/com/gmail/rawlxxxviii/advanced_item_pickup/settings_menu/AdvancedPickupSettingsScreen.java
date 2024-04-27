@@ -69,7 +69,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 10,
                 Component.literal("+ always (" + KeyBinding.MENU_ADD_TO_ALWAYS_KEY.getKey().getDisplayName().getString() + ")"),
                 (x)->{
-                    PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(menu.getCarried().getDescriptionId(), ItemFilterType.ALWAYS));
+                    updateNameFilter(menu.getCarried().getDescriptionId(),ItemFilterType.ALWAYS);
                 }
         );
         var btn2 = new Button(
@@ -79,7 +79,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 10,
                 Component.literal("+ never (" + KeyBinding.MENU_ADD_TO_NEVER_KEY.getKey().getDisplayName().getString() + ")"),
                 (x)->{
-                    PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(menu.getCarried().getDescriptionId(), ItemFilterType.NEVER));
+                    updateNameFilter(menu.getCarried().getDescriptionId(),ItemFilterType.NEVER);
                 }
         );
         var btn3 = new Button(
@@ -89,19 +89,29 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 10,
                 Component.literal("+ disabled (" + KeyBinding.MENU_ADD_TO_DISABLED_KEY.getKey().getDisplayName().getString() + ")"),
                 (x)->{
-                    PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(menu.getCarried().getDescriptionId(), ItemFilterType.DISABLED));
+                    updateNameFilter(menu.getCarried().getDescriptionId(),ItemFilterType.DISABLED);
+                }
+        );
+        var btn4 = new Button(
+                leftPos + 10,
+                topPos + 40,
+                100,
+                10,
+                Component.literal("Remove (" + KeyBinding.MENU_REMOVE_FROM_FILTERS_KEY.getKey().getDisplayName().getString() + ")"),
+                (x)->{
+                    removeNameFilter(menu.getCarried().getDescriptionId());
                 }
         );
 
         this.addRenderableWidget(btn);
         this.addRenderableWidget(btn2);
         this.addRenderableWidget(btn3);
+        this.addRenderableWidget(btn4);
 
     }
 
     @Override
     protected void containerTick() {
-
 
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
             if(!c.isSettingsScreenUpToDate()){
@@ -111,28 +121,17 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     }
 
-    private void onSettingsUpdated(){
-//        this.widgets.forEach(w->{
-////            this.removeWidget(w);
-//            this.widgets.remove(w);
-//        });
-//
-        this.addVariableWidgets();
-//
-//        this.widgets.forEach(this::addRenderableWidget);
-    }
-
 
     private void addVariableWidgets(){
 
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
+
 
             // list
             for (int i = 0; i < c.getAutoPickupFilters().size(); i++) {
                 addNameFilterItem(i,c.getAutoPickupFilters().get(i));
             }
 
-//
             var allwaysItems = c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList();
             for (int i = 0; i < allwaysItems.size(); i++) {
                 var item = allwaysItems.get(i);
@@ -188,8 +187,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
             }
 
         });
-
-
 
     }
 
@@ -334,7 +331,11 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     color = new Color(150,50,50,175).getRGB();
                 }
 
-                renderBlock( pPoseStack, getGuiLeft() + slot.x, getGuiTop() + slot.y,color);
+                renderBlock( pPoseStack,
+                        getGuiLeft() + slot.x + 1,
+                        getGuiTop() + slot.y +1,
+                        color
+                );
 
             });
 
