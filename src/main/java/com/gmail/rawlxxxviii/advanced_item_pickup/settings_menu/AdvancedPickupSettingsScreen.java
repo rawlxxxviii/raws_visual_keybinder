@@ -2,10 +2,13 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.client.KeyBinding;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.RemoveNameFilter_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.UpdateNameFilter_C2SPacket;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -17,6 +20,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +35,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 //    private final int imageWidth = 167, imageHeight = 166;
 //    private int leftPos = 0, topPos = 0;
 
+    private Button testBtn;
 
     public AdvancedPickupSettingsScreen(AdvancedPickupSettingsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -44,8 +49,38 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         this.addStaticButtons();
         this.addVariableWidgets();
 
+        this.addTestButtons();
 
-//        this.onSettingsUpdated();
+        Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
+            c.setSettingsScreenUpToDate(true);
+        });
+    }
+
+    private void addTestButtons(){
+
+        testBtn = new Button(
+                leftPos + 10,
+                topPos + 100,
+                100,
+                10,
+                Component.literal("test"),
+                (x)->{
+                    removeWidget(testBtn);
+                }
+        );
+        this.addRenderableWidget(testBtn);
+
+        var testBtn2 = new Button(
+                leftPos + 10,
+                topPos + 100,
+                100,
+                10,
+                Component.literal("test"),
+                (x)->{
+                }
+        );
+        this.addRenderableWidget(testBtn2);
+
     }
 
     private void addStaticButtons(){
@@ -90,10 +125,12 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     @Override
     protected void containerTick() {
 
-        var needsUpdate = true;
-//        if(needsUpdate) {
-//            this.onSettingsUpdated();
-//        }
+
+        Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
+            if(!c.isSettingsScreenUpToDate()){
+                this.rebuildWidgets();
+            }
+        });
 
     }
 
@@ -234,14 +271,39 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         );
         disabledBtn.active = item.getType() != ItemFilterType.DISABLED;
 
+        var removeBtn = new Button(
+                200 + btnWidth*3,
+                y,
+                50,
+                btnHeight,
+                Component.literal("X"),
+                (x)->{
+                    PacketHandler.sendToServer(new RemoveNameFilter_C2SPacket(item.getItemName()));
+                }
+        );
+
         this.addRenderableWidget(nameBtn);
         this.addRenderableWidget(alwaysBtn);
         this.addRenderableWidget(nevereBtn);
         this.addRenderableWidget(disabledBtn);
+        this.addRenderableWidget(removeBtn);
 
     }
 
 
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        var b = this.hoveredSlot;
+        if(b != null){
+            var c = b.getItem();
+        }
+        if (super.keyPressed(pKeyCode, pScanCode, pModifiers)) {
+            return true;
+        }
+        var d = KeyBinding.OPEN_SETTINGS_MENU_KEY;
+        var a = KeyBinding.OPEN_SETTINGS_MENU_KEY.consumeClick();
+        return false;
+    }
 
     @Override
     protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY) {

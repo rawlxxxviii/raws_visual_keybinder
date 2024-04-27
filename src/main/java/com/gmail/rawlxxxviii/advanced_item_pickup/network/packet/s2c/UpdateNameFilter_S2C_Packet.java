@@ -46,7 +46,7 @@ import java.util.function.Supplier;
 
              player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
                  c.updateNameFilter(name,itemFilterType);
-//                 c.setSettingsScreenUpToDate(false);
+                 c.setSettingsScreenUpToDate(false);
              });
 
          });

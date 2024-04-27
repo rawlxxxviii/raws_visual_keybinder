@@ -47,7 +47,7 @@ import java.util.function.Supplier;
 
              player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
                  c.deserializeNBT(this.tag);
-//                 c.setSettingsScreenUpToDate(false);
+                 c.setSettingsScreenUpToDate(false);
              });
          });
          return  true;

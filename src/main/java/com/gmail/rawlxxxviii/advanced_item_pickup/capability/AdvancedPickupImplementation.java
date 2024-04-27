@@ -86,6 +86,17 @@ public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvid
         this.pickupTicks = source.getPickupTicks();
         this.autoPickupNameFilters = source.getAutoPickupFilters();
     }
+
+    @Override
+    public boolean isSettingsScreenUpToDate() {
+        return settingsScreenUpToDate;
+    }
+
+    @Override
+    public void setSettingsScreenUpToDate(boolean isUpdated) {
+        settingsScreenUpToDate = isUpdated;
+    }
+
 //
 //    @Override
 //    public boolean isSettingsScreenUpToDate() {
