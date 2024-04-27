@@ -38,13 +38,13 @@ public class KeyBinding {
             MENU_ADD_TO_DISABLED,
             KeyConflictContext.GUI,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_A,
+            GLFW.GLFW_KEY_D,
             MOD_KEY_CATEGORY);
     public static final KeyMapping MENU_REMOVE_FROM_FILTERS_KEY = new KeyMapping(
             MENU_REMOVE_FROM_FILTERS,
             KeyConflictContext.GUI,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_D,
+            GLFW.GLFW_KEY_X,
             MOD_KEY_CATEGORY);
 
 

@@ -8,6 +8,7 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.RemoveNameFilter_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.UpdateNameFilter_C2SPacket;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -25,6 +26,7 @@ import net.minecraftforge.client.extensions.IForgeKeyMapping;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -35,8 +37,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
 //    private final int imageWidth = 167, imageHeight = 166;
 //    private int leftPos = 0, topPos = 0;
-
-    private Button testBtn;
 
     public AdvancedPickupSettingsScreen(AdvancedPickupSettingsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -50,7 +50,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         this.addStaticButtons();
         this.addVariableWidgets();
 
-        this.addTestButtons();
 
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
             c.setSettingsScreenUpToDate(true);
@@ -59,42 +58,16 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     }
 
-
-    private void addTestButtons(){
-
-        testBtn = new Button(
-                leftPos + 10,
-                topPos + 100,
-                100,
-                10,
-                Component.literal("test"),
-                (x)->{
-                    removeWidget(testBtn);
-                }
-        );
-        this.addRenderableWidget(testBtn);
-
-        var testBtn2 = new Button(
-                leftPos + 10,
-                topPos + 100,
-                100,
-                10,
-                Component.literal("test"),
-                (x)->{
-                }
-        );
-        this.addRenderableWidget(testBtn2);
-
-    }
-
     private void addStaticButtons(){
+
+
 
         var btn = new Button(
                 leftPos + 10,
                 topPos + 10,
                 100,
                 10,
-                Component.literal("+ allways"),
+                Component.literal("+ always (" + KeyBinding.MENU_ADD_TO_ALWAYS_KEY.getKey().getDisplayName().getString() + ")"),
                 (x)->{
                     PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(menu.getCarried().getDescriptionId(), ItemFilterType.ALWAYS));
                 }
@@ -104,7 +77,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 topPos + 20,
                 100,
                 10,
-                Component.literal("+ never"),
+                Component.literal("+ never (" + KeyBinding.MENU_ADD_TO_NEVER_KEY.getKey().getDisplayName().getString() + ")"),
                 (x)->{
                     PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(menu.getCarried().getDescriptionId(), ItemFilterType.NEVER));
                 }
@@ -114,7 +87,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 topPos + 30,
                 100,
                 10,
-                Component.literal("+ disabled"),
+                Component.literal("+ disabled (" + KeyBinding.MENU_ADD_TO_DISABLED_KEY.getKey().getDisplayName().getString() + ")"),
                 (x)->{
                     PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(menu.getCarried().getDescriptionId(), ItemFilterType.DISABLED));
                 }
@@ -340,7 +313,37 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     }
 
     private void renderItemStateIcons(PoseStack pPoseStack){
-        hLine(pPoseStack,2,500,400,35030900);
+
+        Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
+            var filters = c.getAutoPickupFilters();
+
+            menu.slots.forEach(slot -> {
+                if(!slot.hasItem()) {
+                    return;
+                }
+
+                var itemNameFilter = filters.stream().filter(x-> x.isMatch(slot.getItem())).findFirst().orElse(null);
+                if(itemNameFilter == null){
+                    return;
+                }
+
+                var color = new Color(76, 76, 76,175).getRGB();
+                if(itemNameFilter.getType() == ItemFilterType.ALWAYS){
+                    color = new Color(120, 202, 60,175).getRGB();
+                } else if (itemNameFilter.getType() == ItemFilterType.NEVER) {
+                    color = new Color(150,50,50,175).getRGB();
+                }
+
+                renderBlock( pPoseStack, getGuiLeft() + slot.x, getGuiTop() + slot.y,color);
+
+            });
+
+        });
+    }
+
+    private void renderBlock(PoseStack poseStack, int x, int y, int color){
+        var size = 3;
+        fill(poseStack, x, y, x + size,  y + size, color);
     }
 
     @Override
@@ -350,7 +353,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
         RenderSystem.setShaderTexture(0, TEXTURE);
-
         this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
     }
 
@@ -359,9 +361,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     public void render(@NotNull PoseStack poseStack, final int mouseX, final int mouseY, final float partialTicks) {
         this.renderBackground(poseStack);
 
-        renderItemStateIcons(poseStack);
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
+        renderItemStateIcons(poseStack);
     }
 
     @Override

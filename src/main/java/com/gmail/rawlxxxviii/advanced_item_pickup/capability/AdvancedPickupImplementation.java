@@ -42,6 +42,7 @@ public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvid
     public ArrayList<ItemNameFilter> getAutoPickupFilters() {
         return autoPickupNameFilters;
     }
+
     public void updateNameFilter(String name, ItemFilterType itemFilterType){
         var itemNameFilter = autoPickupNameFilters.stream().filter(x-> x.getItemName().equals(name)).findFirst();
         if(itemNameFilter.isEmpty()){
