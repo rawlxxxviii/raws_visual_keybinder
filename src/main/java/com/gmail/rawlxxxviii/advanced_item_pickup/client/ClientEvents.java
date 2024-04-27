@@ -54,13 +54,12 @@ public class ClientEvents {
         @SubscribeEvent
         public static void onClientTick(TickEvent.@NotNull ClientTickEvent event) {
 
-            if(
-                event.phase.equals(TickEvent.Phase.END)
-                &&
-                KeyBinding.PICKUP_ALL_KEY.isDown()
-            ){
-                PacketHandler.sendToServer(new PickUpAllKeyDown_C2SPacket());
+            if(!event.phase.equals(TickEvent.Phase.END)){
+                return;
+            }
 
+            if(KeyBinding.PICKUP_ALL_KEY.isDown()){
+                PacketHandler.sendToServer(new PickUpAllKeyDown_C2SPacket());
             }
 
         }
@@ -71,12 +70,8 @@ public class ClientEvents {
     public static class ClientModBusEvents {
         @SubscribeEvent
         public static void onKeyRegister(RegisterKeyMappingsEvent event) {
-            event.register(KeyBinding.PICKUP_ALL_KEY);
-            event.register(KeyBinding.ENABLE_AUTO_PICKUP_KEY);
-            event.register(KeyBinding.DISABLE_AUTO_PICKUP_KEY);
-            event.register(KeyBinding.TOGGLE_AUTO_PICKUP_KEY);
-            event.register(KeyBinding.OPEN_VICINITY_PICKUP_KEY);
-            event.register(KeyBinding.OPEN_SETTINGS_MENU_KEY);
+
+            KeyBinding.register(event);
         }
 
         @SubscribeEvent

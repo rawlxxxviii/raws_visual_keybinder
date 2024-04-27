@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraftforge.client.extensions.IForgeKeyMapping;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +55,10 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
             c.setSettingsScreenUpToDate(true);
         });
+
+
     }
+
 
     private void addTestButtons(){
 
@@ -242,7 +246,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 btnHeight,
                 Component.literal("Allways"),
                 (x)->{
-                    PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(item.getItemName(), ItemFilterType.ALWAYS));
+                    updateNameFilter(item.getItemName(), ItemFilterType.ALWAYS);
                 }
         );
         alwaysBtn.active = item.getType() != ItemFilterType.ALWAYS;
@@ -254,7 +258,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 btnHeight,
                 Component.literal("Never"),
                 (x)->{
-                    PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(item.getItemName(), ItemFilterType.NEVER));
+                    updateNameFilter(item.getItemName(), ItemFilterType.NEVER);
                 }
         );
         nevereBtn.active = item.getType() != ItemFilterType.NEVER;
@@ -266,7 +270,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 btnHeight,
                 Component.literal("Disabled"),
                 (x)->{
-                    PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(item.getItemName(), ItemFilterType.DISABLED));
+                    updateNameFilter(item.getItemName(), ItemFilterType.DISABLED);
                 }
         );
         disabledBtn.active = item.getType() != ItemFilterType.DISABLED;
@@ -278,7 +282,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 btnHeight,
                 Component.literal("X"),
                 (x)->{
-                    PacketHandler.sendToServer(new RemoveNameFilter_C2SPacket(item.getItemName()));
+                    removeNameFilter(item.getItemName());
                 }
         );
 
@@ -293,16 +297,50 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        var b = this.hoveredSlot;
-        if(b != null){
-            var c = b.getItem();
-        }
         if (super.keyPressed(pKeyCode, pScanCode, pModifiers)) {
             return true;
+        }else if(KeyBinding.OPEN_SETTINGS_MENU_KEY.getKey().getValue() == pKeyCode){
+            this.onClose();
+            return true;
+        } else if (KeyBinding.MENU_ADD_TO_ALWAYS_KEY.getKey().getValue() == pKeyCode) {
+            var hoveredSlot = this.hoveredSlot;
+            if(hoveredSlot != null){
+                updateNameFilter(hoveredSlot.getItem().getDescriptionId(),ItemFilterType.ALWAYS);
+                return true;
+            }
+        }else if (KeyBinding.MENU_ADD_TO_DISABLED_KEY.getKey().getValue() == pKeyCode) {
+            var hoveredSlot = this.hoveredSlot;
+            if(hoveredSlot != null){
+                updateNameFilter(hoveredSlot.getItem().getDescriptionId(),ItemFilterType.DISABLED);
+                return true;
+            }
+        }else if (KeyBinding.MENU_ADD_TO_NEVER_KEY.getKey().getValue() == pKeyCode) {
+            var hoveredSlot = this.hoveredSlot;
+            if(hoveredSlot != null){
+                updateNameFilter(hoveredSlot.getItem().getDescriptionId(),ItemFilterType.NEVER);
+                return true;
+            }
+        }else if (KeyBinding.MENU_REMOVE_FROM_FILTERS_KEY.getKey().getValue() == pKeyCode) {
+            var hoveredSlot = this.hoveredSlot;
+            if(hoveredSlot != null){
+                removeNameFilter(hoveredSlot.getItem().getDescriptionId());
+                return true;
+            }
         }
-        var d = KeyBinding.OPEN_SETTINGS_MENU_KEY;
-        var a = KeyBinding.OPEN_SETTINGS_MENU_KEY.consumeClick();
+
         return false;
+    }
+
+    private void updateNameFilter(String key, ItemFilterType type){
+        PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(key, type));
+    }
+
+    private void removeNameFilter(String key){
+        PacketHandler.sendToServer(new RemoveNameFilter_C2SPacket(key));
+    }
+
+    private void renderItemStateIcons(PoseStack pPoseStack){
+        hLine(pPoseStack,2,500,400,35030900);
     }
 
     @Override
@@ -318,9 +356,12 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
 
     @Override
-    public void render(@NotNull PoseStack matrixStack, final int mouseX, final int mouseY, final float partialTicks) {
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(@NotNull PoseStack poseStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.renderBackground(poseStack);
+
+        renderItemStateIcons(poseStack);
+
+        super.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
