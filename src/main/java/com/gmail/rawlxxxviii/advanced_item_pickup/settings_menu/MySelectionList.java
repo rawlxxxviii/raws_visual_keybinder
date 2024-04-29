@@ -140,6 +140,11 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
             }
             else if(buttonNumber == 2)//left
             {
+                this.parentList.removeNameFilter(name);
+                return true;
+            }
+            else if(buttonNumber == 3 || buttonNumber == 4) // thumb buttons
+            {
                 this.parentList.updateNameFilter(name, ItemFilterType.DISABLED);
                 return true;
             }
