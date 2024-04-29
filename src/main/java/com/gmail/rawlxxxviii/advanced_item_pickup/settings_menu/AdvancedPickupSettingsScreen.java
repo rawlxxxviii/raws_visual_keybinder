@@ -8,12 +8,9 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.RemoveNameFilter_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.UpdateNameFilter_C2SPacket;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -21,13 +18,10 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraftforge.client.extensions.IForgeKeyMapping;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<AdvancedPickupSettingsMenu> {
@@ -35,6 +29,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     private static final ResourceLocation TEXTURE =
             new ResourceLocation(AdvancedItemPickupMod.MODID,"textures/gui/pickup_settings_menu_gui.png");
 
+    private MySelectionList itemSelectionList;
+    private MySelectionList itemSelectionList2;
+    private MySelectionList itemSelectionList3;
 //    private final int imageWidth = 167, imageHeight = 166;
 //    private int leftPos = 0, topPos = 0;
 
@@ -48,7 +45,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         super.init();
 
         this.addStaticButtons();
-        this.addVariableWidgets();
+//        this.addVariableWidgets();
+        this.addList();
+
 
 
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
@@ -56,6 +55,53 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         });
 
 
+    }
+
+
+    private void addList(){
+        Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
+
+            itemSelectionList =
+                    new MySelectionList(
+                            Minecraft.getInstance(),
+                            200,
+                            80,
+                            20,
+                            20,
+                            10,
+                            c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList(),
+                            this
+                    );
+
+            itemSelectionList2 =
+                    new MySelectionList(
+                            Minecraft.getInstance(),
+                            200,
+                            80,
+                            120,
+                            20,
+                            10,
+                            c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList(),
+                            this
+                    );
+
+            itemSelectionList3 =
+                    new MySelectionList(
+                            Minecraft.getInstance(),
+                            200,
+                            80,
+                            220,
+                            20,
+                            10,
+                            c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.DISABLED).toList(),
+                            this
+                    );
+
+            addWidget(itemSelectionList);
+            addWidget(itemSelectionList2);
+            addWidget(itemSelectionList3);
+
+        });
     }
 
     private void addStaticButtons(){
@@ -301,11 +347,11 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         return false;
     }
 
-    private void updateNameFilter(String key, ItemFilterType type){
+    public void updateNameFilter(String key, ItemFilterType type){
         PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(key, type));
     }
 
-    private void removeNameFilter(String key){
+    public void removeNameFilter(String key){
         PacketHandler.sendToServer(new RemoveNameFilter_C2SPacket(key));
     }
 
@@ -364,6 +410,10 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
+
+        itemSelectionList.render(poseStack,mouseX, mouseY, partialTicks);
+        itemSelectionList2.render(poseStack,mouseX, mouseY, partialTicks);
+        itemSelectionList3.render(poseStack,mouseX, mouseY, partialTicks);
         renderItemStateIcons(poseStack);
     }
 
