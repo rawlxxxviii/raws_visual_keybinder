@@ -31,9 +31,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     private MySelectionList itemSelectionList;
     private MySelectionList itemSelectionList2;
-    private MySelectionList itemSelectionList3;
-//    private final int imageWidth = 167, imageHeight = 166;
-//    private int leftPos = 0, topPos = 0;
 
     public AdvancedPickupSettingsScreen(AdvancedPickupSettingsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -85,23 +82,37 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                             this
                     );
 
-            itemSelectionList3 =
-                    new MySelectionList(
-                            Minecraft.getInstance(),
-                            200,
-                            80,
-                            220,
-                            20,
-                            10,
-                            c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.DISABLED).toList(),
-                            this
-                    );
 
             addWidget(itemSelectionList);
             addWidget(itemSelectionList2);
-            addWidget(itemSelectionList3);
 
         });
+    }
+
+    @Override
+    public boolean mouseClicked(double p_97748_, double p_97749_, int buttonNumber) {
+
+        var hoveredSlot = this.hoveredSlot;
+        if(hoveredSlot == null){
+            return super.mouseClicked(p_97748_, p_97749_, buttonNumber);
+        }
+        if(buttonNumber == 0)//left
+        {
+            this.updateNameFilter(hoveredSlot.getItem().getDescriptionId(), ItemFilterType.ALWAYS);
+            return true;
+        }
+        else if(buttonNumber == 1)//left
+        {
+            this.updateNameFilter(hoveredSlot.getItem().getDescriptionId(), ItemFilterType.NEVER);
+            return true;
+        }
+        else if(buttonNumber == 2)//left
+        {
+            this.removeNameFilter(hoveredSlot.getItem().getDescriptionId());
+            return true;
+        }
+
+        return  false;
     }
 
     private void addStaticButtons(){
@@ -128,16 +139,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     updateNameFilter(menu.getCarried().getDescriptionId(),ItemFilterType.NEVER);
                 }
         );
-        var btn3 = new Button(
-                leftPos + 10,
-                topPos + 30,
-                100,
-                10,
-                Component.literal("+ disabled (" + KeyBinding.MENU_ADD_TO_DISABLED_KEY.getKey().getDisplayName().getString() + ")"),
-                (x)->{
-                    updateNameFilter(menu.getCarried().getDescriptionId(),ItemFilterType.DISABLED);
-                }
-        );
         var btn4 = new Button(
                 leftPos + 10,
                 topPos + 40,
@@ -151,7 +152,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
         this.addRenderableWidget(btn);
         this.addRenderableWidget(btn2);
-        this.addRenderableWidget(btn3);
         this.addRenderableWidget(btn4);
 
     }
@@ -166,7 +166,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         });
 
     }
-
 
     private void addVariableWidgets(){
 
@@ -203,24 +202,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 addNameFilterItem(i,c.getAutoPickupFilters().get(i));
                 var btn = new Button(
                         250,
-                        200 + i*18,
-                        100,
-                        10,
-                        Component.literal(item.getItemName()),
-                        (x)->{
-                        }
-                );
-
-                this.addRenderableWidget(btn);
-            }
-
-            var disabledItems = c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.DISABLED).toList();
-            for (int i = 0; i < disabledItems.size(); i++) {
-                var item = disabledItems.get(i);
-
-                addNameFilterItem(i,c.getAutoPickupFilters().get(i));
-                var btn = new Button(
-                        550,
                         200 + i*18,
                         100,
                         10,
@@ -279,18 +260,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         );
         nevereBtn.active = item.getType() != ItemFilterType.NEVER;
 
-        var disabledBtn = new Button(
-                200 + btnWidth*2,
-                y,
-                btnWidth,
-                btnHeight,
-                Component.literal("Disabled"),
-                (x)->{
-                    updateNameFilter(item.getItemName(), ItemFilterType.DISABLED);
-                }
-        );
-        disabledBtn.active = item.getType() != ItemFilterType.DISABLED;
-
         var removeBtn = new Button(
                 200 + btnWidth*3,
                 y,
@@ -305,7 +274,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         this.addRenderableWidget(nameBtn);
         this.addRenderableWidget(alwaysBtn);
         this.addRenderableWidget(nevereBtn);
-        this.addRenderableWidget(disabledBtn);
         this.addRenderableWidget(removeBtn);
 
     }
@@ -322,12 +290,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
             var hoveredSlot = this.hoveredSlot;
             if(hoveredSlot != null){
                 updateNameFilter(hoveredSlot.getItem().getDescriptionId(),ItemFilterType.ALWAYS);
-                return true;
-            }
-        }else if (KeyBinding.MENU_ADD_TO_DISABLED_KEY.getKey().getValue() == pKeyCode) {
-            var hoveredSlot = this.hoveredSlot;
-            if(hoveredSlot != null){
-                updateNameFilter(hoveredSlot.getItem().getDescriptionId(),ItemFilterType.DISABLED);
                 return true;
             }
         }else if (KeyBinding.MENU_ADD_TO_NEVER_KEY.getKey().getValue() == pKeyCode) {
@@ -413,7 +375,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
         itemSelectionList.render(poseStack,mouseX, mouseY, partialTicks);
         itemSelectionList2.render(poseStack,mouseX, mouseY, partialTicks);
-        itemSelectionList3.render(poseStack,mouseX, mouseY, partialTicks);
         renderItemStateIcons(poseStack);
     }
 

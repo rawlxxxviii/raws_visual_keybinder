@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 public class ItemNameFilter {
 
     private String itemName;
-    private ItemFilterType type = ItemFilterType.DISABLED;
+    private ItemFilterType type;
 
     public boolean isMatch(ItemStack itemStack){
         return itemName == null || itemStack.getDescriptionId().equals(itemName);

@@ -19,7 +19,6 @@ public class KeyBinding {
 
     public static final String MENU_ADD_TO_ALWAYS = "MENU: Add to always";
     public static final String MENU_ADD_TO_NEVER = "MENU: Add to never";
-    public static final String MENU_ADD_TO_DISABLED = "MENU: Add to disabled";
     public static final String MENU_REMOVE_FROM_FILTERS = "MENU: remove from filters";
 
     public static final KeyMapping MENU_ADD_TO_ALWAYS_KEY = new KeyMapping(
@@ -33,12 +32,6 @@ public class KeyBinding {
             KeyConflictContext.GUI,
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_S,
-            MOD_KEY_CATEGORY);
-    public static final KeyMapping MENU_ADD_TO_DISABLED_KEY = new KeyMapping(
-            MENU_ADD_TO_DISABLED,
-            KeyConflictContext.GUI,
-            InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_D,
             MOD_KEY_CATEGORY);
     public static final KeyMapping MENU_REMOVE_FROM_FILTERS_KEY = new KeyMapping(
             MENU_REMOVE_FROM_FILTERS,
@@ -99,7 +92,6 @@ public class KeyBinding {
 
         event.register(KeyBinding.MENU_ADD_TO_ALWAYS_KEY);
         event.register(KeyBinding.MENU_ADD_TO_NEVER_KEY);
-        event.register(KeyBinding.MENU_ADD_TO_DISABLED_KEY);
         event.register(KeyBinding.MENU_REMOVE_FROM_FILTERS_KEY);
 
         event.register(KeyBinding.PICKUP_ALL_KEY);

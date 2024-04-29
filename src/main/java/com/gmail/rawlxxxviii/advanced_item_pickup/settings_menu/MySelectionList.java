@@ -143,11 +143,6 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                 this.parentList.removeNameFilter(name);
                 return true;
             }
-            else if(buttonNumber == 3 || buttonNumber == 4) // thumb buttons
-            {
-                this.parentList.updateNameFilter(name, ItemFilterType.DISABLED);
-                return true;
-            }
 
             return super.mouseClicked(p_94737_, p_94738_, buttonNumber);
         }
@@ -169,7 +164,6 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
         @Override
         public boolean keyPressed(int p_94745_, int p_94746_, int p_94747_) {
-            System.out.println("test");
             return super.keyPressed(p_94745_, p_94746_, p_94747_);
         }
 
