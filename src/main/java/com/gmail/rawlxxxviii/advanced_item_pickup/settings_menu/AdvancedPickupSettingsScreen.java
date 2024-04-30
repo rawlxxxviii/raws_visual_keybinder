@@ -8,6 +8,7 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.RemoveNameFilter_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.UpdateNameFilter_C2SPacket;
+import com.gmail.rawlxxxviii.advanced_item_pickup.util.ItemUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,8 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,9 +44,8 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
         super.init();
 
-        this.addStaticButtons();
-//        this.addVariableWidgets();
-        this.addList();
+       this.addVariableWidgets();
+        this.addLists();
 
 
 
@@ -55,7 +57,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     }
 
 
-    private void addList(){
+    private void addLists(){
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
 
             itemSelectionList =
@@ -98,63 +100,23 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         }
         if(buttonNumber == 0)//left
         {
-            this.updateNameFilter(hoveredSlot.getItem().getDescriptionId(), ItemFilterType.ALWAYS);
+            this.updateNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()), ItemFilterType.ALWAYS);
             return true;
         }
         else if(buttonNumber == 1)//left
         {
-            this.updateNameFilter(hoveredSlot.getItem().getDescriptionId(), ItemFilterType.NEVER);
+            this.updateNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()), ItemFilterType.NEVER);
             return true;
         }
         else if(buttonNumber == 2)//left
         {
-            this.removeNameFilter(hoveredSlot.getItem().getDescriptionId());
+            this.removeNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()));
             return true;
         }
 
         return  false;
     }
 
-    private void addStaticButtons(){
-
-
-
-        var btn = new Button(
-                leftPos + 10,
-                topPos + 10,
-                100,
-                10,
-                Component.literal("+ always (" + KeyBinding.MENU_ADD_TO_ALWAYS_KEY.getKey().getDisplayName().getString() + ")"),
-                (x)->{
-                    updateNameFilter(menu.getCarried().getDescriptionId(),ItemFilterType.ALWAYS);
-                }
-        );
-        var btn2 = new Button(
-                leftPos + 10,
-                topPos + 20,
-                100,
-                10,
-                Component.literal("+ never (" + KeyBinding.MENU_ADD_TO_NEVER_KEY.getKey().getDisplayName().getString() + ")"),
-                (x)->{
-                    updateNameFilter(menu.getCarried().getDescriptionId(),ItemFilterType.NEVER);
-                }
-        );
-        var btn4 = new Button(
-                leftPos + 10,
-                topPos + 40,
-                100,
-                10,
-                Component.literal("Remove (" + KeyBinding.MENU_REMOVE_FROM_FILTERS_KEY.getKey().getDisplayName().getString() + ")"),
-                (x)->{
-                    removeNameFilter(menu.getCarried().getDescriptionId());
-                }
-        );
-
-        this.addRenderableWidget(btn);
-        this.addRenderableWidget(btn2);
-        this.addRenderableWidget(btn4);
-
-    }
 
     @Override
     protected void containerTick() {
@@ -187,7 +149,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                         200 + i*18,
                         100,
                         10,
-                        Component.literal(item.getItemName()),
+                        Component.literal(item.getResourceLocation().toString()),
                         (x)->{
                         }
                 );
@@ -205,7 +167,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                         200 + i*18,
                         100,
                         10,
-                        Component.literal(item.getItemName()),
+                        Component.literal(item.getResourceLocation().toString()),
                         (x)->{
                         }
                 );
@@ -230,7 +192,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 y,
                 200,
                 btnHeight,
-                Component.literal(item.getItemName() ),
+                Component.literal(item.getResourceLocation().toString()),
                 (x)->{
                 }
         );
@@ -243,7 +205,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 btnHeight,
                 Component.literal("Allways"),
                 (x)->{
-                    updateNameFilter(item.getItemName(), ItemFilterType.ALWAYS);
+                    updateNameFilter(item.getResourceLocation(), ItemFilterType.ALWAYS);
                 }
         );
         alwaysBtn.active = item.getType() != ItemFilterType.ALWAYS;
@@ -255,7 +217,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 btnHeight,
                 Component.literal("Never"),
                 (x)->{
-                    updateNameFilter(item.getItemName(), ItemFilterType.NEVER);
+                    updateNameFilter(item.getResourceLocation(), ItemFilterType.NEVER);
                 }
         );
         nevereBtn.active = item.getType() != ItemFilterType.NEVER;
@@ -267,7 +229,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 btnHeight,
                 Component.literal("X"),
                 (x)->{
-                    removeNameFilter(item.getItemName());
+                    removeNameFilter(item.getResourceLocation());
                 }
         );
 
@@ -289,19 +251,19 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         } else if (KeyBinding.MENU_ADD_TO_ALWAYS_KEY.getKey().getValue() == pKeyCode) {
             var hoveredSlot = this.hoveredSlot;
             if(hoveredSlot != null){
-                updateNameFilter(hoveredSlot.getItem().getDescriptionId(),ItemFilterType.ALWAYS);
+                updateNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()),ItemFilterType.ALWAYS);
                 return true;
             }
         }else if (KeyBinding.MENU_ADD_TO_NEVER_KEY.getKey().getValue() == pKeyCode) {
             var hoveredSlot = this.hoveredSlot;
             if(hoveredSlot != null){
-                updateNameFilter(hoveredSlot.getItem().getDescriptionId(),ItemFilterType.NEVER);
+                updateNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()),ItemFilterType.NEVER);
                 return true;
             }
         }else if (KeyBinding.MENU_REMOVE_FROM_FILTERS_KEY.getKey().getValue() == pKeyCode) {
             var hoveredSlot = this.hoveredSlot;
             if(hoveredSlot != null){
-                removeNameFilter(hoveredSlot.getItem().getDescriptionId());
+                removeNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()));
                 return true;
             }
         }
@@ -309,12 +271,12 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         return false;
     }
 
-    public void updateNameFilter(String key, ItemFilterType type){
-        PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(key, type));
+    public void updateNameFilter(ResourceLocation resourceLocation, ItemFilterType type){
+        PacketHandler.sendToServer(new UpdateNameFilter_C2SPacket(resourceLocation, type));
     }
 
-    public void removeNameFilter(String key){
-        PacketHandler.sendToServer(new RemoveNameFilter_C2SPacket(key));
+    public void removeNameFilter(ResourceLocation resourceLocation){
+        PacketHandler.sendToServer(new RemoveNameFilter_C2SPacket(resourceLocation));
     }
 
     private void renderItemStateIcons(PoseStack pPoseStack){
@@ -326,8 +288,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 if(!slot.hasItem()) {
                     return;
                 }
-
-                var itemNameFilter = filters.stream().filter(x-> x.isMatch(slot.getItem())).findFirst().orElse(null);
+                var itemNameFilter = filters.stream().filter(x-> x.isMatch(slot.getItem().getItem())).findFirst().orElse(null);
                 if(itemNameFilter == null){
                     return;
                 }
@@ -339,9 +300,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     color = new Color(150,50,50,175).getRGB();
                 }
 
-                renderBlock( pPoseStack,
-                        getGuiLeft() + slot.x + 1,
-                        getGuiTop() + slot.y +1,
+                renderIconOverlay( pPoseStack,
+                        getGuiLeft() + slot.x,
+                        getGuiTop() + slot.y,
                         color
                 );
 
@@ -350,9 +311,19 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         });
     }
 
-    private void renderBlock(PoseStack poseStack, int x, int y, int color){
+    private void renderIconOverlay(PoseStack poseStack, int x, int y, int color){
         var size = 3;
-        fill(poseStack, x, y, x + size,  y + size, color);
+        int topPadding = 1;
+        int leftPadding = 1;
+
+        fill(
+                poseStack,
+                x + leftPadding,
+                y + topPadding,
+                x + leftPadding + size ,
+                y + topPadding + size,
+                color
+        );
     }
 
     @Override
@@ -376,6 +347,43 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         itemSelectionList.render(poseStack,mouseX, mouseY, partialTicks);
         itemSelectionList2.render(poseStack,mouseX, mouseY, partialTicks);
         renderItemStateIcons(poseStack);
+
+
+        if(this.hoveredSlot != null){
+
+            var itemStack = this.hoveredSlot.getItem();
+            var item = itemStack.getItem();
+            var itemId = item.getId(item);
+
+
+            var itemCreated = item.byId(itemId);
+
+            var bir = item.builtInRegistryHolder();
+            var obtainedResourcelocation = bir.key().location();
+            var item3 = ForgeRegistries.ITEMS.getValue(obtainedResourcelocation);
+
+            var item2 = ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:redstone"));
+
+
+
+            this.renderItem_TEST(new ItemStack(item3),10, 20 , "tsas");
+        }
+
+    }
+
+    private void renderItem_TEST(ItemStack itemStack, int x, int y, String text){
+
+        PoseStack posestack = RenderSystem.getModelViewStack();
+        posestack.translate(0.0D, 0.0D, 32.0D);
+        RenderSystem.applyModelViewMatrix();
+        this.setBlitOffset(200);
+        this.itemRenderer.blitOffset = 200.0F;
+        var font = net.minecraftforge.client.extensions.common.IClientItemExtensions.of(itemStack).getFont(itemStack, net.minecraftforge.client.extensions.common.IClientItemExtensions.FontContext.ITEM_COUNT);
+        if (font == null) font = this.font;
+        this.itemRenderer.renderAndDecorateItem(itemStack, x, y);
+//        this.itemRenderer.renderGuiItemDecorations(font, itemStack, x, y - (this.draggingItem.isEmpty() ? 0 : 8), text);
+        this.setBlitOffset(0);
+        this.itemRenderer.blitOffset = 0.0F;
     }
 
     @Override

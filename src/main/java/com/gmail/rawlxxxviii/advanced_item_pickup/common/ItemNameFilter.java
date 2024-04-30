@@ -1,28 +1,31 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.common;
 
+import com.gmail.rawlxxxviii.advanced_item_pickup.util.ItemUtils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class ItemNameFilter {
 
-    private String itemName;
+    private ResourceLocation resourceLocation;
     private ItemFilterType type;
 
-    public boolean isMatch(ItemStack itemStack){
-        return itemName == null || itemStack.getDescriptionId().equals(itemName);
+    public boolean isMatch(Item item){
+        return ItemUtils.getResourceLocation(item).equals(resourceLocation) ;
     }
 
-    public ItemNameFilter(String itemName, ItemFilterType type) {
-        this.itemName = itemName;
+    public ItemNameFilter(ResourceLocation resourceLocation, ItemFilterType type) {
+        this.resourceLocation = resourceLocation;
         this.type = type;
     }
 
-    public String getItemName() {
-        return itemName;
+    public ResourceLocation getResourceLocation() {
+        return resourceLocation;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setResourceLocation(ResourceLocation resourceLocation) {
+        this.resourceLocation = resourceLocation;
     }
 
     public ItemFilterType getType() {
@@ -36,14 +39,14 @@ public class ItemNameFilter {
     public CompoundTag serializeNBT(){
 
         var tag = new CompoundTag();
-        tag.putString("name", this.getItemName());
+        tag.putString("name", this.getResourceLocation().toString());
         tag.putInt("type", this.getType().ordinal());
 
         return tag;
     }
 
     public ItemNameFilter(CompoundTag nbt){
-        this.setItemName(nbt.getString("name"));
+        this.setResourceLocation(new ResourceLocation(nbt.getString("name")));
         this.setType( ItemFilterType.fromInteger(nbt.getInt("type")));
     }
 

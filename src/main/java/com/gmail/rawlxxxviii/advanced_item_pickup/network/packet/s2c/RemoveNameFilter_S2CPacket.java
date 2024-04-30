@@ -3,24 +3,25 @@
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
  public class RemoveNameFilter_S2CPacket {
 
-     private String name;
+     private ResourceLocation resourceLocation;
 
-     public RemoveNameFilter_S2CPacket(String name) {
-         this.name = name;
+     public RemoveNameFilter_S2CPacket(ResourceLocation resourceLocation) {
+         this.resourceLocation = resourceLocation;
      }
 
      public RemoveNameFilter_S2CPacket(FriendlyByteBuf buffer) {
-         this.name = buffer.readUtf();
+         this.resourceLocation = buffer.readResourceLocation();
      }
 
      public void encodeToBytes(FriendlyByteBuf buffer) {
-         buffer.writeUtf(this.name);
+         buffer.writeResourceLocation(this.resourceLocation);
      }
 
      public void handle(Supplier<NetworkEvent.Context> supplier) {
@@ -39,7 +40,7 @@ import java.util.function.Supplier;
              }
 
              player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
-                 c.removeNameFilter(name);
+                 c.removeNameFilter(resourceLocation);
                  c.setSettingsScreenUpToDate(false);
              });
          });

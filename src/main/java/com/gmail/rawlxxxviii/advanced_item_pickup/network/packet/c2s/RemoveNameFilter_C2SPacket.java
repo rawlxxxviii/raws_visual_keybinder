@@ -4,24 +4,25 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.RemoveNameFilter_S2CPacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
  public class RemoveNameFilter_C2SPacket {
 
-     private String name;
+     private ResourceLocation resourceLocation;
 
-     public RemoveNameFilter_C2SPacket(String name) {
-         this.name = name;
+     public RemoveNameFilter_C2SPacket(ResourceLocation resourceLocation) {
+         this.resourceLocation = resourceLocation;
      }
 
      public RemoveNameFilter_C2SPacket(FriendlyByteBuf buffer) {
-         this.name = buffer.readUtf();
+         this.resourceLocation = buffer.readResourceLocation();
      }
 
      public void encodeToBytes(FriendlyByteBuf buffer) {
-         buffer.writeUtf(this.name);
+         buffer.writeResourceLocation(this.resourceLocation);
      }
 
      public void handle(Supplier<NetworkEvent.Context> supplier) {
@@ -39,9 +40,9 @@ import java.util.function.Supplier;
              }
 
              player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
-                 c.removeNameFilter(name);
+                 c.removeNameFilter(resourceLocation);
                  PacketHandler.sendToPlayer(
-                         new RemoveNameFilter_S2CPacket(name)
+                         new RemoveNameFilter_S2CPacket(resourceLocation)
                          ,player
                  );
              });

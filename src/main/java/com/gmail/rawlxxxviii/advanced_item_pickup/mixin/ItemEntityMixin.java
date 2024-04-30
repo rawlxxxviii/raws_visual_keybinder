@@ -37,7 +37,7 @@ public abstract class ItemEntityMixin extends Entity {
                     return;
                 }
 
-                var filterResult = c.getFilterResult( this.getItem());
+                var filterResult = c.getFilterResult( this.getItem().getItem());
 
                 if (c.isAutoPickupEnabled()){
 

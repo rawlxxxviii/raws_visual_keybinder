@@ -1,15 +1,11 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSelectionList;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
-import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
@@ -43,8 +39,16 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
         this.parentList = parentListScreen;
 
-        itemNameFilters.forEach(itemNameFilter -> {
-            addEntry(new ItemEntry(itemNameFilter, this.parentList));
+        int columns = 5;
+
+        List<List<ItemNameFilter>> rows = new ArrayList<>();
+
+        for (int i = 0; i < itemNameFilters.size(); i++) {
+            rows.add(itemNameFilters.stream().skip((long) i * columns).limit(columns).toList());
+        }
+
+        rows.forEach(item -> {
+            addEntry(new ItemEntry(this.parentList,item));
         });
     }
 
@@ -111,14 +115,12 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
     @OnlyIn(Dist.CLIENT)
     public class ItemEntry extends MySelectionList.Entry {
 
-        private final String name;
-        private final ItemFilterType type;
+        private final List<ItemNameFilter> columns;
         AdvancedPickupSettingsScreen parentList;
 
-        ItemEntry(ItemNameFilter itemNameFilter,AdvancedPickupSettingsScreen parentList){
-            name = itemNameFilter.getItemName();
+        ItemEntry(AdvancedPickupSettingsScreen parentList,List<ItemNameFilter> columns){
             this.parentList = parentList;
-            type = itemNameFilter.getType();
+            this.columns = columns;
         }
 
         @Override
@@ -126,26 +128,26 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
             super.mouseMoved(p_94758_, p_94759_);
         }
 
-        @Override
-        public boolean mouseClicked(double p_94737_, double p_94738_, int buttonNumber) {
-            if(buttonNumber == 0)//left
-            {
-                this.parentList.updateNameFilter(name, ItemFilterType.ALWAYS);
-                return true;
-            }
-            else if(buttonNumber == 1)//left
-            {
-                this.parentList.updateNameFilter(name, ItemFilterType.NEVER);
-                return true;
-            }
-            else if(buttonNumber == 2)//left
-            {
-                this.parentList.removeNameFilter(name);
-                return true;
-            }
-
-            return super.mouseClicked(p_94737_, p_94738_, buttonNumber);
-        }
+//        @Override
+//        public boolean mouseClicked(double p_94737_, double p_94738_, int buttonNumber) {
+////            if(buttonNumber == 0)//left
+////            {
+////                this.parentList.updateNameFilter(name, ItemFilterType.ALWAYS);
+////                return true;
+////            }
+////            else if(buttonNumber == 1)//left
+////            {
+////                this.parentList.updateNameFilter(name, ItemFilterType.NEVER);
+////                return true;
+////            }
+////            else if(buttonNumber == 2)//left
+////            {
+////                this.parentList.removeNameFilter(name);
+////                return true;
+////            }
+////
+////            return super.mouseClicked(p_94737_, p_94738_, buttonNumber);
+//        }
 
         @Override
         public boolean mouseReleased(double p_94753_, double p_94754_, int p_94755_) {
@@ -183,10 +185,29 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
         }
 
         @Override
-        public void render(PoseStack p_93523_, int p_93524_, int p_93525_, int p_93526_, int p_93527_, int p_93528_, int p_93529_, int p_93530_, boolean p_93531_, float p_93532_) {
+        public void render(PoseStack poseStack, int p_93524_, int p_93525_, int p_93526_, int p_93527_, int p_93528_, int p_93529_, int p_93530_, boolean p_93531_, float p_93532_) {
 
-            Minecraft.getInstance().font.draw(p_93523_, this.name, p_93526_, (float)(p_93525_ + p_93528_ / 2 - 9 / 2), 16777215);
+            this.columns.forEach(item->{
+                Minecraft.getInstance().font.draw(poseStack, item.getResourceLocation().toString(), p_93526_, (float)(p_93525_ + p_93528_ / 2 - 9 / 2), 16777215);
+            });
 
         }
+
+
+//        private void renderItem_TEST(ItemStack itemStack, int x, int y, String text){
+//
+//            PoseStack posestack = RenderSystem.getModelViewStack();
+//            posestack.translate(0.0D, 0.0D, 32.0D);
+//            RenderSystem.applyModelViewMatrix();
+//            this.setBlitOffset(200);
+//            this.itemRenderer.blitOffset = 200.0F;
+//            var font = net.minecraftforge.client.extensions.common.IClientItemExtensions.of(itemStack).getFont(itemStack, net.minecraftforge.client.extensions.common.IClientItemExtensions.FontContext.ITEM_COUNT);
+//            if (font == null) font = this.font;
+//            this.itemRenderer.renderAndDecorateItem(itemStack, x, y);
+////        this.itemRenderer.renderGuiItemDecorations(font, itemStack, x, y - (this.draggingItem.isEmpty() ? 0 : 8), text);
+//            this.setBlitOffset(0);
+//            this.itemRenderer.blitOffset = 0.0F;
+//        }
+
     }
 }

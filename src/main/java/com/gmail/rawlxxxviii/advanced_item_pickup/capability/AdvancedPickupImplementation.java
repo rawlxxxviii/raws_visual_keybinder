@@ -6,10 +6,12 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.AdvancedPickupSe
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -43,16 +45,16 @@ public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvid
         return autoPickupNameFilters;
     }
 
-    public void updateNameFilter(String name, ItemFilterType itemFilterType){
-        var itemNameFilter = autoPickupNameFilters.stream().filter(x-> x.getItemName().equals(name)).findFirst();
+    public void updateNameFilter(ResourceLocation resourceLocation, ItemFilterType itemFilterType){
+        var itemNameFilter = autoPickupNameFilters.stream().filter(x-> x.getResourceLocation().equals(resourceLocation)).findFirst();
         if(itemNameFilter.isEmpty()){
-           autoPickupNameFilters.add(new ItemNameFilter(name,itemFilterType));
+           autoPickupNameFilters.add(new ItemNameFilter(resourceLocation,itemFilterType));
         }else{
             itemNameFilter.get().setType(itemFilterType);
         }
     }
-    public void removeNameFilter(String name){
-        autoPickupNameFilters.removeIf(x-> x.getItemName().equals(name));
+    public void removeNameFilter(ResourceLocation resourceLocation){
+        autoPickupNameFilters.removeIf(x-> x.getResourceLocation().equals(resourceLocation));
     }
 
 
@@ -66,16 +68,13 @@ public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvid
 
 
     public AdvancedPickupImplementation() {
-        autoPickupNameFilters = new ArrayList<ItemNameFilter>();
-        autoPickupNameFilters.add(new ItemNameFilter("block.minecraft.dirt", ItemFilterType.NEVER));
-        autoPickupNameFilters.add(new ItemNameFilter("item.minecraft.wheat_seeds", ItemFilterType.ALWAYS));
     }
 
 
 
-    public @Nullable ItemFilterType getFilterResult(ItemStack itemStack){
+    public @Nullable ItemFilterType getFilterResult(Item item){
 
-        var itemNameFilter = autoPickupNameFilters.stream().filter(x-> x.isMatch(itemStack)).findFirst();
+        var itemNameFilter = autoPickupNameFilters.stream().filter(x-> x.isMatch(item)).findFirst();
         return itemNameFilter.map(ItemNameFilter::getType).orElse(null);
 
     }
