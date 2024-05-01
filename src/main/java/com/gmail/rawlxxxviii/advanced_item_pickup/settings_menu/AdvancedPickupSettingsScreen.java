@@ -36,6 +36,14 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     private MySelectionList itemSelectionList;
     private MySelectionList itemSelectionList2;
 
+
+    private final int columnCount = 4;
+    private final int rowCount = 7;
+    private final int columnSize = 18;
+    private final int listWidth = columnCount*columnSize;
+    private final int listHeight = columnSize * rowCount;
+    private final int itemHeight = columnSize;
+
     private Item hoveredItem = null;
 
     public AdvancedPickupSettingsScreen(AdvancedPickupSettingsMenu menu, Inventory inventory, Component component) {
@@ -69,12 +77,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     private void addLists(){
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
 
-            int columnCount = 4;
-            int rowCount = 6;
-            int columnSize = 18;
-            int listWidth = columnCount*columnSize;
-            int listHeight = columnSize * rowCount;
-            int itemHeight = columnSize;
 
             itemSelectionList =
                     new MySelectionList(
@@ -82,7 +84,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                             listWidth,
                             listHeight,
                             columnCount,
-                            this.getGuiTop()+8,
+                            this.getGuiTop()+18,
                             this.getGuiLeft()+8,
                             itemHeight,
                             c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList(),
@@ -95,7 +97,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                             listWidth,
                             listHeight,
                             columnCount,
-                            this.getGuiTop()+8,
+                            this.getGuiTop()+18,
                             this.getGuiLeft()+8 + listWidth + columnSize - 9,
                             itemHeight,
                             c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList(),
@@ -222,6 +224,8 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     @Override
     protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {
+        this.font.draw(p_97808_, Component.literal("Always"), (float) 8 , (float)6, Color.RED.getRGB());
+        this.font.draw(p_97808_, Component.literal("Never"), (float) 8 + listWidth + columnSize - 9, (float)6, Color.RED.getRGB());
     }
 
     @Override
@@ -279,7 +283,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 var color = new Color(76, 76, 76,175).getRGB();
                 if(itemNameFilter.getType() == ItemFilterType.ALWAYS){
                     color = new Color(120, 202, 60,175).getRGB();
+
                 } else if (itemNameFilter.getType() == ItemFilterType.NEVER) {
+
                     color = new Color(150,50,50,175).getRGB();
                 }
 
@@ -322,6 +328,8 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     @Override
     public void render(@NotNull PoseStack poseStack, final int mouseX, final int mouseY, final float partialTicks) {
+        this.setHoveredItem(null);
+
         this.renderBackground(poseStack);
 
         super.render(poseStack, mouseX, mouseY, partialTicks);

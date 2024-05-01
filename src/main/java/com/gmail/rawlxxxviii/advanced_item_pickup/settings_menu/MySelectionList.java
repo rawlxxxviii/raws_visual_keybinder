@@ -79,7 +79,6 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
     @Override
     public void render(PoseStack p_93447_, int mouseX, int p_93449_, float p_93450_) {
-        this.parentList.setHoveredItem(null);
         super.render(p_93447_, mouseX, p_93449_, p_93450_);
     }
 
@@ -169,7 +168,6 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                 float p_93532_
         ) {
 
-            Item hoveredItem = null;
             for (int i = 0; i < columns.size(); i++) {
                 var item2 = ForgeRegistries.ITEMS.getValue(columns.get(i).getResourceLocation());
 
@@ -191,7 +189,6 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                         mouseY <= containerTop + rowIndex * itemHeight - (int) this.selectionList.getScrollAmount() + itemHeight
                 ){
                 this.parentList.setHoveredItem(item2);
-//                    hoveredItem = item2;
                 }
             }
 
