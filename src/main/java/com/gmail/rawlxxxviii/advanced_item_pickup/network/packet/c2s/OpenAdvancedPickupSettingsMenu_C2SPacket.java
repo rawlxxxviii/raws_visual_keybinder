@@ -43,7 +43,7 @@ import java.util.function.Supplier;
 
                  NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
                                  (containterId, playerInventory,player)-> c.createMenu(containterId,playerInventory,player),
-                                 Component.literal("advanced pickup menu")
+                                 Component.literal("Advanced pickup settings menu")
                          )
                      );
 

@@ -9,7 +9,4 @@ public class ItemUtils {
         return item.builtInRegistryHolder().key().location();
     }
 
-//    public static String getResourceLocationString(Item item){
-//        return  getResourceLocation(item).toString();
-//    }
 }

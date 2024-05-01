@@ -44,7 +44,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
         super.init();
 
-       this.addVariableWidgets();
+        this.addVariableWidgets();
         this.addLists();
 
 
@@ -60,14 +60,18 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     private void addLists(){
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
 
+            int listWidth = 90;
+            int listHeight = 80;
+            int itemHeight = 18;
+
             itemSelectionList =
                     new MySelectionList(
                             Minecraft.getInstance(),
+                            listWidth,
+                            listHeight,
+                            20,
                             200,
-                            80,
-                            20,
-                            20,
-                            10,
+                            itemHeight,
                             c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList(),
                             this
                     );
@@ -75,15 +79,14 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
             itemSelectionList2 =
                     new MySelectionList(
                             Minecraft.getInstance(),
-                            200,
-                            80,
-                            120,
+                            listWidth,
+                            listHeight,
                             20,
-                            10,
+                            320,
+                            itemHeight,
                             c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList(),
                             this
                     );
-
 
             addWidget(itemSelectionList);
             addWidget(itemSelectionList2);
@@ -133,46 +136,8 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
 
-
-            // list
             for (int i = 0; i < c.getAutoPickupFilters().size(); i++) {
                 addNameFilterItem(i,c.getAutoPickupFilters().get(i));
-            }
-
-            var allwaysItems = c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList();
-            for (int i = 0; i < allwaysItems.size(); i++) {
-                var item = allwaysItems.get(i);
-
-                addNameFilterItem(i,c.getAutoPickupFilters().get(i));
-                var btn = new Button(
-                        50,
-                        200 + i*18,
-                        100,
-                        10,
-                        Component.literal(item.getResourceLocation().toString()),
-                        (x)->{
-                        }
-                );
-
-                this.addRenderableWidget(btn);
-            }
-
-            var neverItems = c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList();
-            for (int i = 0; i < neverItems.size(); i++) {
-                var item = neverItems.get(i);
-
-                addNameFilterItem(i,c.getAutoPickupFilters().get(i));
-                var btn = new Button(
-                        250,
-                        200 + i*18,
-                        100,
-                        10,
-                        Component.literal(item.getResourceLocation().toString()),
-                        (x)->{
-                        }
-                );
-
-                this.addRenderableWidget(btn);
             }
 
         });
@@ -183,14 +148,14 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
         int btnBottomMargin = 2;
         int btnHeight = 12;
-        int btnWidth = 50;
+        int btnWidth = 20;
 
         int y = btnHeight * rowN + btnBottomMargin;
 
         var nameBtn = new Button(
                 0,
                 y,
-                200,
+                120,
                 btnHeight,
                 Component.literal(item.getResourceLocation().toString()),
                 (x)->{
@@ -199,11 +164,11 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         nameBtn.active = false;
 
         var alwaysBtn = new Button(
-                200,
+                120,
                 y,
                 btnWidth,
                 btnHeight,
-                Component.literal("Allways"),
+                Component.literal("A"),
                 (x)->{
                     updateNameFilter(item.getResourceLocation(), ItemFilterType.ALWAYS);
                 }
@@ -211,11 +176,11 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         alwaysBtn.active = item.getType() != ItemFilterType.ALWAYS;
 
         var nevereBtn = new Button(
-                200 + btnWidth,
+                120 + btnWidth,
                 y,
                 btnWidth,
                 btnHeight,
-                Component.literal("Never"),
+                Component.literal("N"),
                 (x)->{
                     updateNameFilter(item.getResourceLocation(), ItemFilterType.NEVER);
                 }
@@ -223,9 +188,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         nevereBtn.active = item.getType() != ItemFilterType.NEVER;
 
         var removeBtn = new Button(
-                200 + btnWidth*3,
+                120 + btnWidth*2,
                 y,
-                50,
+                btnWidth,
                 btnHeight,
                 Component.literal("X"),
                 (x)->{
@@ -240,6 +205,10 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     }
 
+
+    @Override
+    protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {
+    }
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
@@ -341,49 +310,11 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     public void render(@NotNull PoseStack poseStack, final int mouseX, final int mouseY, final float partialTicks) {
         this.renderBackground(poseStack);
 
-
         super.render(poseStack, mouseX, mouseY, partialTicks);
 
         itemSelectionList.render(poseStack,mouseX, mouseY, partialTicks);
         itemSelectionList2.render(poseStack,mouseX, mouseY, partialTicks);
         renderItemStateIcons(poseStack);
-
-
-        if(this.hoveredSlot != null){
-
-            var itemStack = this.hoveredSlot.getItem();
-            var item = itemStack.getItem();
-            var itemId = item.getId(item);
-
-
-            var itemCreated = item.byId(itemId);
-
-            var bir = item.builtInRegistryHolder();
-            var obtainedResourcelocation = bir.key().location();
-            var item3 = ForgeRegistries.ITEMS.getValue(obtainedResourcelocation);
-
-            var item2 = ForgeRegistries.ITEMS.getValue(new ResourceLocation("minecraft:redstone"));
-
-
-
-            this.renderItem_TEST(new ItemStack(item3),10, 20 , "tsas");
-        }
-
-    }
-
-    private void renderItem_TEST(ItemStack itemStack, int x, int y, String text){
-
-        PoseStack posestack = RenderSystem.getModelViewStack();
-        posestack.translate(0.0D, 0.0D, 32.0D);
-        RenderSystem.applyModelViewMatrix();
-        this.setBlitOffset(200);
-        this.itemRenderer.blitOffset = 200.0F;
-        var font = net.minecraftforge.client.extensions.common.IClientItemExtensions.of(itemStack).getFont(itemStack, net.minecraftforge.client.extensions.common.IClientItemExtensions.FontContext.ITEM_COUNT);
-        if (font == null) font = this.font;
-        this.itemRenderer.renderAndDecorateItem(itemStack, x, y);
-//        this.itemRenderer.renderGuiItemDecorations(font, itemStack, x, y - (this.draggingItem.isEmpty() ? 0 : 8), text);
-        this.setBlitOffset(0);
-        this.itemRenderer.blitOffset = 0.0F;
     }
 
     @Override

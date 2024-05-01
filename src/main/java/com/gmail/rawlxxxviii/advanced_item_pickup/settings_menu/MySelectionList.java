@@ -1,22 +1,29 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu;
 
+import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
+import com.gmail.rawlxxxviii.advanced_item_pickup.util.ItemUtils;
+import com.gmail.rawlxxxviii.advanced_item_pickup.util.ListUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry> {
 
-
+    public  static final int LEFT_PADDING = 5;
     AdvancedPickupSettingsScreen parentList;
 
     public MySelectionList(
@@ -39,17 +46,23 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
         this.parentList = parentListScreen;
 
-        int columns = 5;
+        int columns = 4;
 
-        List<List<ItemNameFilter>> rows = new ArrayList<>();
+        this.clearEntries();
+        List<List<ItemNameFilter>> rows = ListUtils.splitList(itemNameFilters, columns);
 
-        for (int i = 0; i < itemNameFilters.size(); i++) {
-            rows.add(itemNameFilters.stream().skip((long) i * columns).limit(columns).toList());
+        for (int i = 0; i < rows.size(); i++) {
+            addEntry(
+                    new ItemEntry(
+                            this.parentList,
+                            this,
+                            rows.get(i),
+                            i,
+                            left,
+                            top,
+                            itemHeight)
+            );
         }
-
-        rows.forEach(item -> {
-            addEntry(new ItemEntry(this.parentList,item));
-        });
     }
 
     @Override
@@ -117,10 +130,22 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
         private final List<ItemNameFilter> columns;
         AdvancedPickupSettingsScreen parentList;
+        private final int rowIndex;
+        private final int containerLeft;
+        private final int containerTop;
+        private final int itemHeight;
+        private final int itemWidth;
+        private final MySelectionList selectionList;
 
-        ItemEntry(AdvancedPickupSettingsScreen parentList,List<ItemNameFilter> columns){
+        ItemEntry(AdvancedPickupSettingsScreen parentList, MySelectionList selectionList,List<ItemNameFilter> columns, int rowIndex, int containerLeft, int containerTop, int itemHeight){
             this.parentList = parentList;
             this.columns = columns;
+            this.rowIndex = rowIndex;
+            this.containerLeft = containerLeft;
+            this.containerTop = containerTop;
+            this.itemHeight = itemHeight;
+            this.itemWidth = itemHeight;
+            this.selectionList = selectionList;
         }
 
         @Override
@@ -128,26 +153,35 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
             super.mouseMoved(p_94758_, p_94759_);
         }
 
-//        @Override
-//        public boolean mouseClicked(double p_94737_, double p_94738_, int buttonNumber) {
-////            if(buttonNumber == 0)//left
-////            {
-////                this.parentList.updateNameFilter(name, ItemFilterType.ALWAYS);
-////                return true;
-////            }
-////            else if(buttonNumber == 1)//left
-////            {
-////                this.parentList.updateNameFilter(name, ItemFilterType.NEVER);
-////                return true;
-////            }
-////            else if(buttonNumber == 2)//left
-////            {
-////                this.parentList.removeNameFilter(name);
-////                return true;
-////            }
-////
-////            return super.mouseClicked(p_94737_, p_94738_, buttonNumber);
-//        }
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int buttonNumber) {
+
+            var a = mouseX - containerLeft - MySelectionList.LEFT_PADDING;
+            var i = (int) a/itemWidth;
+
+            if(i < this.columns.size()){
+                var itemNameFilter = this.columns.get(i);
+
+                if(buttonNumber == 0)//left
+                {
+                    this.parentList.updateNameFilter(itemNameFilter.getResourceLocation(), ItemFilterType.ALWAYS);
+                    return true;
+                }
+                else if(buttonNumber == 1)//right
+                {
+                    this.parentList.updateNameFilter(itemNameFilter.getResourceLocation(), ItemFilterType.NEVER);
+                    return true;
+                }
+                else if(buttonNumber == 2)//middle
+                {
+                    this.parentList.removeNameFilter(itemNameFilter.getResourceLocation());
+                    return true;
+                }
+                return true;
+            }
+
+            return super.mouseClicked(mouseX, mouseY, buttonNumber);
+        }
 
         @Override
         public boolean mouseReleased(double p_94753_, double p_94754_, int p_94755_) {
@@ -185,29 +219,42 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
         }
 
         @Override
-        public void render(PoseStack poseStack, int p_93524_, int p_93525_, int p_93526_, int p_93527_, int p_93528_, int p_93529_, int p_93530_, boolean p_93531_, float p_93532_) {
+        public void render(
+                PoseStack poseStack,
+                int row,
+                int p_93525_,
+                int p_93526_,
+                int p_93527_,
+                int p_93528_,
+                int p_93529_,
+                int p_93530_,
+                boolean p_93531_,
+                float p_93532_
+        ) {
 
-            this.columns.forEach(item->{
-                Minecraft.getInstance().font.draw(poseStack, item.getResourceLocation().toString(), p_93526_, (float)(p_93525_ + p_93528_ / 2 - 9 / 2), 16777215);
-            });
+            for (int i = 0; i < columns.size(); i++) {
+                var item = columns.get(i);
+                var item2 = ForgeRegistries.ITEMS.getValue(item.getResourceLocation());
 
+
+
+                renderItem_TEST(
+                        poseStack,
+                        new ItemStack(item2),
+                        containerLeft + MySelectionList.LEFT_PADDING + i * itemWidth,
+                        containerTop + rowIndex * itemHeight - (int) this.selectionList.getScrollAmount()
+                );
+
+            }
         }
 
 
-//        private void renderItem_TEST(ItemStack itemStack, int x, int y, String text){
-//
-//            PoseStack posestack = RenderSystem.getModelViewStack();
-//            posestack.translate(0.0D, 0.0D, 32.0D);
-//            RenderSystem.applyModelViewMatrix();
-//            this.setBlitOffset(200);
-//            this.itemRenderer.blitOffset = 200.0F;
-//            var font = net.minecraftforge.client.extensions.common.IClientItemExtensions.of(itemStack).getFont(itemStack, net.minecraftforge.client.extensions.common.IClientItemExtensions.FontContext.ITEM_COUNT);
-//            if (font == null) font = this.font;
-//            this.itemRenderer.renderAndDecorateItem(itemStack, x, y);
-////        this.itemRenderer.renderGuiItemDecorations(font, itemStack, x, y - (this.draggingItem.isEmpty() ? 0 : 8), text);
-//            this.setBlitOffset(0);
-//            this.itemRenderer.blitOffset = 0.0F;
-//        }
+        private void renderItem_TEST(PoseStack poseStack, ItemStack itemStack, int x, int y){
+
+            var itemRenderer = Minecraft.getInstance().getItemRenderer();
+            itemRenderer.renderAndDecorateItem(itemStack, x, y);
+
+        }
 
     }
 }
