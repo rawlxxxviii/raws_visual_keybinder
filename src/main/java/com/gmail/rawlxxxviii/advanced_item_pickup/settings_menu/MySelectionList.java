@@ -1,5 +1,6 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu;
 
+import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.util.ItemUtils;
@@ -9,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,13 +25,14 @@ import java.util.Optional;
 
 public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry> {
 
-    public  static final int LEFT_PADDING = 5;
+    public static final int LEFT_PADDING = 0;
     AdvancedPickupSettingsScreen parentList;
 
     public MySelectionList(
             Minecraft minecraft,
             int width,
             int height,
+            int columnCount,
             int top,
             int left,
             int itemHeight,
@@ -46,10 +49,8 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
         this.parentList = parentListScreen;
 
-        int columns = 4;
-
         this.clearEntries();
-        List<List<ItemNameFilter>> rows = ListUtils.splitList(itemNameFilters, columns);
+        List<List<ItemNameFilter>> rows = ListUtils.splitList(itemNameFilters, columnCount);
 
         for (int i = 0; i < rows.size(); i++) {
             addEntry(
@@ -77,8 +78,9 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
     }
 
     @Override
-    public void render(PoseStack p_93447_, int p_93448_, int p_93449_, float p_93450_) {
-        super.render(p_93447_, p_93448_, p_93449_, p_93450_);
+    public void render(PoseStack p_93447_, int mouseX, int p_93449_, float p_93450_) {
+        this.parentList.setHoveredItem(null);
+        super.render(p_93447_, mouseX, p_93449_, p_93450_);
     }
 
     @Override
@@ -154,6 +156,55 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
         }
 
         @Override
+        public void render(
+                PoseStack poseStack,
+                int row,
+                int p_93525_,
+                int p_93526_,
+                int p_93527_,
+                int p_93528_,
+                int mouseX,
+                int mouseY,
+                boolean p_93531_,
+                float p_93532_
+        ) {
+
+            Item hoveredItem = null;
+            for (int i = 0; i < columns.size(); i++) {
+                var item2 = ForgeRegistries.ITEMS.getValue(columns.get(i).getResourceLocation());
+
+
+                renderItem_TEST(
+                        poseStack,
+                        new ItemStack(item2),
+                        containerLeft + MySelectionList.LEFT_PADDING + i * itemWidth,
+                        containerTop + rowIndex * itemHeight - (int) this.selectionList.getScrollAmount()
+                );
+
+
+                //check mouse over
+                if(
+                        mouseX >= containerLeft + MySelectionList.LEFT_PADDING + i * itemWidth &&
+                        mouseX <= containerLeft + MySelectionList.LEFT_PADDING + i * itemWidth + itemWidth &&
+
+                        mouseY >= containerTop + rowIndex * itemHeight - (int) this.selectionList.getScrollAmount() &&
+                        mouseY <= containerTop + rowIndex * itemHeight - (int) this.selectionList.getScrollAmount() + itemHeight
+                ){
+                this.parentList.setHoveredItem(item2);
+//                    hoveredItem = item2;
+                }
+            }
+
+        }
+
+        private void renderItem_TEST(PoseStack poseStack, ItemStack itemStack, int x, int y){
+
+            var itemRenderer = Minecraft.getInstance().getItemRenderer();
+            itemRenderer.renderAndDecorateItem(itemStack, x, y,5);
+
+        }
+
+        @Override
         public boolean mouseClicked(double mouseX, double mouseY, int buttonNumber) {
 
             var a = mouseX - containerLeft - MySelectionList.LEFT_PADDING;
@@ -218,43 +269,6 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
             return super.changeFocus(p_94756_);
         }
 
-        @Override
-        public void render(
-                PoseStack poseStack,
-                int row,
-                int p_93525_,
-                int p_93526_,
-                int p_93527_,
-                int p_93528_,
-                int p_93529_,
-                int p_93530_,
-                boolean p_93531_,
-                float p_93532_
-        ) {
-
-            for (int i = 0; i < columns.size(); i++) {
-                var item = columns.get(i);
-                var item2 = ForgeRegistries.ITEMS.getValue(item.getResourceLocation());
-
-
-
-                renderItem_TEST(
-                        poseStack,
-                        new ItemStack(item2),
-                        containerLeft + MySelectionList.LEFT_PADDING + i * itemWidth,
-                        containerTop + rowIndex * itemHeight - (int) this.selectionList.getScrollAmount()
-                );
-
-            }
-        }
-
-
-        private void renderItem_TEST(PoseStack poseStack, ItemStack itemStack, int x, int y){
-
-            var itemRenderer = Minecraft.getInstance().getItemRenderer();
-            itemRenderer.renderAndDecorateItem(itemStack, x, y);
-
-        }
 
     }
 }

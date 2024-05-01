@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -35,12 +36,16 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     private MySelectionList itemSelectionList;
     private MySelectionList itemSelectionList2;
 
+    private Item hoveredItem = null;
+
     public AdvancedPickupSettingsScreen(AdvancedPickupSettingsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
     }
 
     @Override
     protected void init(){
+
+        this.imageHeight = 246;
 
         super.init();
 
@@ -57,20 +62,28 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     }
 
 
+    public void setHoveredItem(Item item){
+        this.hoveredItem = item;
+    }
+
     private void addLists(){
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
 
-            int listWidth = 90;
-            int listHeight = 80;
-            int itemHeight = 18;
+            int columnCount = 4;
+            int rowCount = 6;
+            int columnSize = 18;
+            int listWidth = columnCount*columnSize;
+            int listHeight = columnSize * rowCount;
+            int itemHeight = columnSize;
 
             itemSelectionList =
                     new MySelectionList(
                             Minecraft.getInstance(),
                             listWidth,
                             listHeight,
-                            20,
-                            200,
+                            columnCount,
+                            this.getGuiTop()+8,
+                            this.getGuiLeft()+8,
                             itemHeight,
                             c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList(),
                             this
@@ -81,8 +94,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                             Minecraft.getInstance(),
                             listWidth,
                             listHeight,
-                            20,
-                            320,
+                            columnCount,
+                            this.getGuiTop()+8,
+                            this.getGuiLeft()+8 + listWidth + columnSize - 9,
                             itemHeight,
                             c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList(),
                             this
@@ -315,6 +329,12 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         itemSelectionList.render(poseStack,mouseX, mouseY, partialTicks);
         itemSelectionList2.render(poseStack,mouseX, mouseY, partialTicks);
         renderItemStateIcons(poseStack);
+
+        if(this.hoveredSlot != null){
+            renderTooltip(poseStack, mouseX,mouseY);
+        }else if(this.hoveredItem != null){
+            renderTooltip(poseStack, new ItemStack(this.hoveredItem), mouseX,mouseY);
+        }
     }
 
     @Override
