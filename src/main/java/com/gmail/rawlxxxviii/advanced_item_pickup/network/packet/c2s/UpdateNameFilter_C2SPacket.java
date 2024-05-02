@@ -33,8 +33,11 @@ public class UpdateNameFilter_C2SPacket {
 
     public void handle(Supplier<NetworkEvent.Context> supplier) {
 
-        var context = supplier.get();
+        if(resourceLocation.equals(new ResourceLocation("minecraft:air"))){
+            return;
+        }
 
+        var context = supplier.get();
         context.enqueueWork(()->{
             var player = context.getSender();
             if(player == null){
@@ -47,8 +50,6 @@ public class UpdateNameFilter_C2SPacket {
 
             player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
                 c.updateNameFilter(resourceLocation,itemFilterType);
-
-                player.sendSystemMessage(Component.translatable("autopickup: " + resourceLocation + " - " + itemFilterType ));
 
                 PacketHandler.sendToPlayer(
                         new UpdateNameFilter_S2C_Packet(resourceLocation,itemFilterType)

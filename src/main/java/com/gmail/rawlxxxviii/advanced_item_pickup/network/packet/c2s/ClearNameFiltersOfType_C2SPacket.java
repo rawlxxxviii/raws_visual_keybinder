@@ -1,7 +1,9 @@
  package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.ClearNameFiltersOfType_S2CPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.RemoveNameFilter_S2CPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -9,27 +11,24 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
- public class RemoveNameFilter_C2SPacket {
+ public class ClearNameFiltersOfType_C2SPacket {
 
-     private ResourceLocation resourceLocation;
+     private ItemFilterType itemFilterType;
 
-     public RemoveNameFilter_C2SPacket(ResourceLocation resourceLocation) {
-         this.resourceLocation = resourceLocation;
+     public ClearNameFiltersOfType_C2SPacket(ItemFilterType itemFilterType) {
+         this.itemFilterType = itemFilterType;
      }
 
-     public RemoveNameFilter_C2SPacket(FriendlyByteBuf buffer) {
-         this.resourceLocation = buffer.readResourceLocation();
+     public ClearNameFiltersOfType_C2SPacket(FriendlyByteBuf buffer) {
+         this.itemFilterType = buffer.readEnum(ItemFilterType.class);
      }
 
      public void encodeToBytes(FriendlyByteBuf buffer) {
-         buffer.writeResourceLocation(this.resourceLocation);
+         buffer.writeEnum(this.itemFilterType);
      }
 
      public void handle(Supplier<NetworkEvent.Context> supplier) {
 
-         if(resourceLocation.equals(new ResourceLocation("minecraft:air"))){
-             return;
-         }
 
          var context = supplier.get();
 
@@ -44,9 +43,9 @@ import java.util.function.Supplier;
              }
 
              player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
-                 c.removeNameFilter(resourceLocation);
+                 c.clearNameFiltersOfType(itemFilterType);
                  PacketHandler.sendToPlayer(
-                         new RemoveNameFilter_S2CPacket(resourceLocation)
+                         new ClearNameFiltersOfType_S2CPacket(itemFilterType)
                          ,player
                  );
              });

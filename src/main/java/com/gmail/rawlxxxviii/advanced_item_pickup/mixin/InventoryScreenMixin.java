@@ -59,11 +59,29 @@ public abstract class InventoryScreenMixin<T extends AbstractContainerMenu> exte
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent( c->{
 
 
+            raws_advanced_item_pickup$disableAutoPickupButton = new ImageButton(
+                    this.leftPos + this.imageWidth - 28,
+                    this.topPos + 6,
+                    10, 10,
+                    0, 0,
+                    10,
+                    new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
+                    64, 64,
+                    (button) -> {
+
+
+                        PacketHandler.sendToServer(new DisableAutoPickupKeyPressed_C2SPacket());
+
+                    },
+                    Component.literal("Disable auto pickup")
+            );
+
             raws_advanced_item_pickup$enableAutoPickupButton = new ImageButton(
-                    this.leftPos + 104 + 25, this.height / 2 - 22,
-                     20, 18,
-                     20, 0,
-                    18,
+                    this.leftPos + this.imageWidth - 28,
+                    this.topPos + 6,
+                     10, 10,
+                     10, 0,
+                    10,
                     new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
                     64, 64,
                     (button) -> {
@@ -74,27 +92,12 @@ public abstract class InventoryScreenMixin<T extends AbstractContainerMenu> exte
                     Component.literal("Enable auto pickup")
             );
 
-            raws_advanced_item_pickup$disableAutoPickupButton = new ImageButton(
-                    this.leftPos + 104 + 25, this.height / 2 - 22,
-                     20, 18,
-                     0, 0,
-                    18,
-                    new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
-                    64, 64,
-                    (button) -> {
-
-
-                        PacketHandler.sendToServer(new DisableAutoPickupKeyPressed_C2SPacket());
-
-                    },
-                    Component.literal("Enable auto pickup")
-            );
-
             raws_advanced_item_pickup$openAutoPickupFilterScreenButton = new ImageButton(
-                    this.leftPos + 104 + 25 + 20 , this.height / 2 - 22,
-                     20, 18,
-                     40, 0,
-                    18,
+                    this.leftPos + this.imageWidth - 16,
+                    this.topPos + 6,
+                     10, 10,
+                     20, 0,
+                    10,
                     new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
                     64, 64,
                     (button) -> {

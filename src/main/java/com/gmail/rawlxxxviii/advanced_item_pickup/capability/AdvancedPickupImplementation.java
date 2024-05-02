@@ -65,6 +65,10 @@ public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvid
         this.pickupTicks = Math.max(this.pickupTicks - 1, 0);
     }
 
+    @Override
+    public void clearNameFiltersOfType(ItemFilterType itemFilterType) {
+        this.autoPickupNameFilters.removeIf(x->x.getType() == itemFilterType);
+    }
 
 
     public AdvancedPickupImplementation() {

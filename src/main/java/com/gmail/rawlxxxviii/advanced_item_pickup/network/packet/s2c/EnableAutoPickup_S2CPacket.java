@@ -35,7 +35,7 @@ public class EnableAutoPickup_S2CPacket {
             }
             player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
                 c.setAutoPickupEnabled(true);
-
+                c.setSettingsScreenUpToDate(false);
             });
         });
     }

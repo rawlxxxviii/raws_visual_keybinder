@@ -1,25 +1,19 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
-import com.gmail.rawlxxxviii.advanced_item_pickup.util.ItemUtils;
 import com.gmail.rawlxxxviii.advanced_item_pickup.util.ListUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -188,7 +182,7 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                         mouseY >= containerTop + rowIndex * itemHeight - (int) this.selectionList.getScrollAmount() &&
                         mouseY <= containerTop + rowIndex * itemHeight - (int) this.selectionList.getScrollAmount() + itemHeight
                 ){
-                this.parentList.setHoveredItem(item2);
+                this.parentList.setHoveredListItem(item2);
                 }
             }
 

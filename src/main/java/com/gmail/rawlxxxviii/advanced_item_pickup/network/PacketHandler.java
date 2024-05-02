@@ -26,6 +26,16 @@ public class PacketHandler {
     public static void register(){
 
         INSTANCE.messageBuilder(
+                        ClearNameFiltersOfType_S2CPacket.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_CLIENT
+                )
+                .decoder(ClearNameFiltersOfType_S2CPacket::new)
+                .encoder(ClearNameFiltersOfType_S2CPacket::encodeToBytes)
+                .consumerMainThread(ClearNameFiltersOfType_S2CPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(
                         RemoveNameFilter_S2CPacket.class,
                     id(),
                     NetworkDirection.PLAY_TO_CLIENT
@@ -76,6 +86,20 @@ public class PacketHandler {
                 .add();
 
 
+
+
+
+
+
+        INSTANCE.messageBuilder(
+                        ClearNameFiltersOfType_C2SPacket.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(ClearNameFiltersOfType_C2SPacket::new)
+                .encoder(ClearNameFiltersOfType_C2SPacket::encodeToBytes)
+                .consumerMainThread(ClearNameFiltersOfType_C2SPacket::handle)
+                .add();
 
         INSTANCE.messageBuilder(
                         OpenAdvancedPickupSettingsMenu_C2SPacket.class,

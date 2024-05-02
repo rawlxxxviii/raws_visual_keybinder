@@ -6,6 +6,8 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.client.KeyBinding;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.ClearNameFiltersOfType_C2SPacket;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.DisableAutoPickupKeyPressed_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.RemoveNameFilter_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.UpdateNameFilter_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.util.ItemUtils;
@@ -13,6 +15,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -21,7 +24,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,12 +32,9 @@ import java.util.Optional;
 
 public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<AdvancedPickupSettingsMenu> {
 
-    private static final ResourceLocation TEXTURE =
-            new ResourceLocation(AdvancedItemPickupMod.MODID,"textures/gui/pickup_settings_menu_gui.png");
-
-    private MySelectionList itemSelectionList;
-    private MySelectionList itemSelectionList2;
-
+    private static final ResourceLocation TEXTURE = new ResourceLocation(
+                    AdvancedItemPickupMod.MODID,
+                    "textures/gui/pickup_settings_menu_gui.png");
 
     private final int columnCount = 4;
     private final int rowCount = 7;
@@ -44,7 +43,12 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     private final int listHeight = columnSize * rowCount;
     private final int itemHeight = columnSize;
 
-    private Item hoveredItem = null;
+    private MySelectionList itemSelectionList;
+    private MySelectionList itemSelectionList2;
+    private Item hoveredListItem = null;
+    private ImageButton clearAlwaysButton;
+    private ImageButton clearNeverButton;
+
 
     public AdvancedPickupSettingsScreen(AdvancedPickupSettingsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -57,55 +61,70 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
         super.init();
 
-        this.addVariableWidgets();
         this.addLists();
-
-
 
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
             c.setSettingsScreenUpToDate(true);
         });
-
-
     }
 
 
-    public void setHoveredItem(Item item){
-        this.hoveredItem = item;
+    public void setHoveredListItem(Item item){
+        this.hoveredListItem = item;
     }
 
     private void addLists(){
         Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
 
+            this.clearAlwaysButton = addWidget(new ImageButton(
+                    this.getGuiLeft() + 8 + listWidth - 10,
+                    this.getGuiTop() + 6,
+                    10, 10,
+                    40, 0,
+                    10,
+                    new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
+                    64, 64,
+                    (button) -> {
+                        PacketHandler.sendToServer(new ClearNameFiltersOfType_C2SPacket(ItemFilterType.ALWAYS));
+                    },
+                    Component.literal("Clear allways list")
+            ));
+            this.clearNeverButton = addWidget(new ImageButton(
+                    this.getGuiLeft() +  25,
+                    this.getGuiTop() + 6,
+                    10, 10,
+                    40, 0,
+                    10,
+                    new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
+                    64, 64,
+                    (button) -> {
+                        PacketHandler.sendToServer(new ClearNameFiltersOfType_C2SPacket(ItemFilterType.NEVER));
+                    },
+                    Component.literal("Clear allways list")
+            ));
 
-            itemSelectionList =
-                    new MySelectionList(
-                            Minecraft.getInstance(),
-                            listWidth,
-                            listHeight,
-                            columnCount,
-                            this.getGuiTop()+18,
-                            this.getGuiLeft()+8,
-                            itemHeight,
-                            c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList(),
-                            this
-                    );
-
-            itemSelectionList2 =
-                    new MySelectionList(
-                            Minecraft.getInstance(),
-                            listWidth,
-                            listHeight,
-                            columnCount,
-                            this.getGuiTop()+18,
-                            this.getGuiLeft()+8 + listWidth + columnSize - 9,
-                            itemHeight,
-                            c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList(),
-                            this
-                    );
-
-            addWidget(itemSelectionList);
-            addWidget(itemSelectionList2);
+            itemSelectionList = addWidget(new MySelectionList(
+                    Minecraft.getInstance(),
+                    listWidth,
+                    listHeight,
+                    columnCount,
+                    this.getGuiTop()+18,
+                    this.getGuiLeft()+8,
+                    itemHeight,
+                    c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList(),
+                    this
+            ));
+            itemSelectionList2 = addWidget(new MySelectionList(
+                    Minecraft.getInstance(),
+                    listWidth,
+                    listHeight,
+                    columnCount,
+                    this.getGuiTop()+18,
+                    this.getGuiLeft()+8 + listWidth + columnSize - 9,
+                    itemHeight,
+                    c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList(),
+                    this
+            ));
 
         });
     }
@@ -148,78 +167,6 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     }
 
-    private void addVariableWidgets(){
-
-        Minecraft.getInstance().player.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
-
-            for (int i = 0; i < c.getAutoPickupFilters().size(); i++) {
-                addNameFilterItem(i,c.getAutoPickupFilters().get(i));
-            }
-
-        });
-
-    }
-
-    private void addNameFilterItem(int rowN, ItemNameFilter item){
-
-        int btnBottomMargin = 2;
-        int btnHeight = 12;
-        int btnWidth = 20;
-
-        int y = btnHeight * rowN + btnBottomMargin;
-
-        var nameBtn = new Button(
-                0,
-                y,
-                120,
-                btnHeight,
-                Component.literal(item.getResourceLocation().toString()),
-                (x)->{
-                }
-        );
-        nameBtn.active = false;
-
-        var alwaysBtn = new Button(
-                120,
-                y,
-                btnWidth,
-                btnHeight,
-                Component.literal("A"),
-                (x)->{
-                    updateNameFilter(item.getResourceLocation(), ItemFilterType.ALWAYS);
-                }
-        );
-        alwaysBtn.active = item.getType() != ItemFilterType.ALWAYS;
-
-        var nevereBtn = new Button(
-                120 + btnWidth,
-                y,
-                btnWidth,
-                btnHeight,
-                Component.literal("N"),
-                (x)->{
-                    updateNameFilter(item.getResourceLocation(), ItemFilterType.NEVER);
-                }
-        );
-        nevereBtn.active = item.getType() != ItemFilterType.NEVER;
-
-        var removeBtn = new Button(
-                120 + btnWidth*2,
-                y,
-                btnWidth,
-                btnHeight,
-                Component.literal("X"),
-                (x)->{
-                    removeNameFilter(item.getResourceLocation());
-                }
-        );
-
-        this.addRenderableWidget(nameBtn);
-        this.addRenderableWidget(alwaysBtn);
-        this.addRenderableWidget(nevereBtn);
-        this.addRenderableWidget(removeBtn);
-
-    }
 
 
     @Override
@@ -228,34 +175,36 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         this.font.draw(p_97808_, Component.literal("Never"), (float) 8 + listWidth + columnSize - 9, (float)6, Color.RED.getRGB());
     }
 
+    public Item getHoveredItem() {
+        if(this.hoveredSlot != null){
+            return this.hoveredSlot.getItem().getItem();
+        }else if(this.hoveredListItem != null){
+            return this.hoveredListItem;
+        }
+        return null;
+    }
+
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if (super.keyPressed(pKeyCode, pScanCode, pModifiers)) {
-            return true;
-        }else if(KeyBinding.OPEN_SETTINGS_MENU_KEY.getKey().getValue() == pKeyCode){
-            this.onClose();
-            return true;
-        } else if (KeyBinding.MENU_ADD_TO_ALWAYS_KEY.getKey().getValue() == pKeyCode) {
-            var hoveredSlot = this.hoveredSlot;
-            if(hoveredSlot != null){
-                updateNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()),ItemFilterType.ALWAYS);
+
+        var hoveredItem = this.getHoveredItem();
+        if(hoveredItem != null){
+            if(KeyBinding.OPEN_SETTINGS_MENU_KEY.getKey().getValue() == pKeyCode){
+                this.onClose();
                 return true;
-            }
-        }else if (KeyBinding.MENU_ADD_TO_NEVER_KEY.getKey().getValue() == pKeyCode) {
-            var hoveredSlot = this.hoveredSlot;
-            if(hoveredSlot != null){
-                updateNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()),ItemFilterType.NEVER);
+            } else if (KeyBinding.MENU_ADD_TO_ALWAYS_KEY.getKey().getValue() == pKeyCode) {
+                updateNameFilter(ItemUtils.getResourceLocation(hoveredItem),ItemFilterType.ALWAYS);
                 return true;
-            }
-        }else if (KeyBinding.MENU_REMOVE_FROM_FILTERS_KEY.getKey().getValue() == pKeyCode) {
-            var hoveredSlot = this.hoveredSlot;
-            if(hoveredSlot != null){
-                removeNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()));
+            }else if (KeyBinding.MENU_ADD_TO_NEVER_KEY.getKey().getValue() == pKeyCode) {
+                    updateNameFilter(ItemUtils.getResourceLocation(hoveredItem),ItemFilterType.NEVER);
+                    return true;
+            }else if (KeyBinding.MENU_REMOVE_FROM_FILTERS_KEY.getKey().getValue() == pKeyCode) {
+                removeNameFilter(ItemUtils.getResourceLocation(hoveredItem));
                 return true;
             }
         }
 
-        return false;
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
     public void updateNameFilter(ResourceLocation resourceLocation, ItemFilterType type){
@@ -328,7 +277,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     @Override
     public void render(@NotNull PoseStack poseStack, final int mouseX, final int mouseY, final float partialTicks) {
-        this.setHoveredItem(null);
+        this.setHoveredListItem(null);
 
         this.renderBackground(poseStack);
 
@@ -336,13 +285,21 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
         itemSelectionList.render(poseStack,mouseX, mouseY, partialTicks);
         itemSelectionList2.render(poseStack,mouseX, mouseY, partialTicks);
+
+        clearAlwaysButton.render(poseStack,mouseX, mouseY, partialTicks);
+        clearNeverButton.render(poseStack,mouseX, mouseY, partialTicks);
+
         renderItemStateIcons(poseStack);
 
-        if(this.hoveredSlot != null){
-            renderTooltip(poseStack, mouseX,mouseY);
-        }else if(this.hoveredItem != null){
-            renderTooltip(poseStack, new ItemStack(this.hoveredItem), mouseX,mouseY);
+        var item = this.getHoveredItem();
+        if(item != null){
+            renderTooltip(poseStack, new ItemStack(item), mouseX,mouseY);
         }
+//        if(this.hoveredSlot != null){
+//            renderTooltip(poseStack, mouseX,mouseY);
+//        }else if(this.hoveredListItem != null){
+//            renderTooltip(poseStack, new ItemStack(this.hoveredListItem), mouseX,mouseY);
+//        }
     }
 
     @Override
