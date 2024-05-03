@@ -19,6 +19,7 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,9 +38,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     "textures/gui/pickup_settings_menu_gui.png");
 
     private final int columnCount = 4;
-    private final int rowCount = 7;
+    private final int rowCount = 7; //7
     private final int columnSize = 18;
-    private final int listWidth = columnCount*columnSize;
+    private final int listWidth = columnCount * columnSize;
     private final int listHeight = columnSize * rowCount;
     private final int itemHeight = columnSize;
 
@@ -78,9 +79,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
             this.clearAlwaysButton = addWidget(new ImageButton(
                     this.getGuiLeft() + 8 + listWidth - 10,
-                    this.getGuiTop() + 6,
+                    this.getGuiTop() + 10,
                     10, 10,
-                    40, 0,
+                    30, 0,
                     10,
                     new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
                     64, 64,
@@ -90,10 +91,10 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     Component.literal("Clear allways list")
             ));
             this.clearNeverButton = addWidget(new ImageButton(
-                    this.getGuiLeft() +  25,
-                    this.getGuiTop() + 6,
+                    this.getGuiLeft()+8 + listWidth*2 + columnSize - 9 - 10,
+                    this.getGuiTop() + 10,
                     10, 10,
-                    40, 0,
+                    30, 0,
                     10,
                     new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"),
                     64, 64,
@@ -108,7 +109,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     listWidth,
                     listHeight,
                     columnCount,
-                    this.getGuiTop()+18,
+                    this.getGuiTop()+22,
                     this.getGuiLeft()+8,
                     itemHeight,
                     c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList(),
@@ -119,7 +120,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     listWidth,
                     listHeight,
                     columnCount,
-                    this.getGuiTop()+18,
+                    this.getGuiTop()+22,
                     this.getGuiLeft()+8 + listWidth + columnSize - 9,
                     itemHeight,
                     c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList(),
@@ -132,27 +133,26 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
     @Override
     public boolean mouseClicked(double p_97748_, double p_97749_, int buttonNumber) {
 
-        var hoveredSlot = this.hoveredSlot;
-        if(hoveredSlot == null){
-            return super.mouseClicked(p_97748_, p_97749_, buttonNumber);
-        }
-        if(buttonNumber == 0)//left
-        {
-            this.updateNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()), ItemFilterType.ALWAYS);
-            return true;
-        }
-        else if(buttonNumber == 1)//left
-        {
-            this.updateNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()), ItemFilterType.NEVER);
-            return true;
-        }
-        else if(buttonNumber == 2)//left
-        {
-            this.removeNameFilter(ItemUtils.getResourceLocation(hoveredSlot.getItem().getItem()));
-            return true;
-        }
+        var hoveredItem = this.getHoveredItem();
+        if(hoveredItem != null){
 
-        return  false;
+            if(buttonNumber == 0)//left
+            {
+                this.updateNameFilter(ItemUtils.getResourceLocation(hoveredItem), ItemFilterType.ALWAYS);
+                return true;
+            }
+            else if(buttonNumber == 1)//left
+            {
+                this.updateNameFilter(ItemUtils.getResourceLocation(hoveredItem), ItemFilterType.NEVER);
+                return true;
+            }
+            else if(buttonNumber == 2)//left
+            {
+                this.removeNameFilter(ItemUtils.getResourceLocation(hoveredItem));
+                return true;
+            }
+        }
+        return super.mouseClicked(p_97748_, p_97749_, buttonNumber);
     }
 
 
@@ -170,9 +170,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
 
     @Override
-    protected void renderLabels(PoseStack p_97808_, int p_97809_, int p_97810_) {
-        this.font.draw(p_97808_, Component.literal("Always"), (float) 8 , (float)6, Color.RED.getRGB());
-        this.font.draw(p_97808_, Component.literal("Never"), (float) 8 + listWidth + columnSize - 9, (float)6, Color.RED.getRGB());
+    protected void renderLabels(PoseStack poseStack, int p_97809_, int p_97810_) {
+        this.font.draw(poseStack, Component.literal("Always"), (float) 8 , (float)10, new Color(120, 202, 60).getRGB());
+        this.font.draw(poseStack, Component.literal("Never"), (float) 8 + listWidth + columnSize - 9, (float)10, new Color(150,50,50).getRGB());
     }
 
     public Item getHoveredItem() {
@@ -292,14 +292,11 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         renderItemStateIcons(poseStack);
 
         var item = this.getHoveredItem();
-        if(item != null){
+        if(item != null && !Registry.ITEM.getKey(item).equals(new ResourceLocation("minecraft:air"))){
             renderTooltip(poseStack, new ItemStack(item), mouseX,mouseY);
         }
-//        if(this.hoveredSlot != null){
-//            renderTooltip(poseStack, mouseX,mouseY);
-//        }else if(this.hoveredListItem != null){
-//            renderTooltip(poseStack, new ItemStack(this.hoveredListItem), mouseX,mouseY);
-//        }
+
+
     }
 
     @Override
