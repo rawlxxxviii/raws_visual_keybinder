@@ -117,9 +117,18 @@ public abstract class InventoryScreenMixin<T extends AbstractContainerMenu> exte
     @Inject(method = "lambda$init$0(Lnet/minecraft/client/gui/components/Button;)V", at = @At("RETURN"))
     protected void updateGuiSize(CallbackInfo ci) {
 
-        raws_advanced_item_pickup$enableAutoPickupButton.setPosition(this.leftPos + 104 + 25, this.height / 2 - 22);
-        raws_advanced_item_pickup$disableAutoPickupButton.setPosition(this.leftPos + 104 + 25, this.height / 2 - 22);
-        raws_advanced_item_pickup$openAutoPickupFilterScreenButton.setPosition(this.leftPos + 104 + 25 + 20 , this.height / 2 - 22);
+        raws_advanced_item_pickup$enableAutoPickupButton.setPosition(
+                this.leftPos + this.imageWidth - 28,
+                this.topPos + 6
+        );
+        raws_advanced_item_pickup$disableAutoPickupButton.setPosition(
+                this.leftPos + this.imageWidth - 28,
+                this.topPos + 6
+        );
+        raws_advanced_item_pickup$openAutoPickupFilterScreenButton.setPosition(
+                this.leftPos + this.imageWidth - 16,
+                this.topPos + 6
+        );
     }
 
 }
