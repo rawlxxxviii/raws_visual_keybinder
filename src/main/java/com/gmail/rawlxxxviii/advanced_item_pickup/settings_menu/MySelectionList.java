@@ -1,39 +1,29 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
-import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemNameFilter;
 import com.gmail.rawlxxxviii.advanced_item_pickup.util.ListUtils;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
 public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry> {
 
-    AdvancedPickupSettingsScreen parentList;
+    AdvancedPickupSettingsScreen parentScreen;
+
 
     public MySelectionList(
             Minecraft minecraft,
@@ -57,7 +47,7 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
         this.x0 = left;
         this.x1 = width + this.x0;
 
-        this.parentList = parentListScreen;
+        this.parentScreen = parentListScreen;
 
         this.clearEntries();
         List<List<ItemNameFilter>> rows = ListUtils.splitList(itemNameFilters, columnCount);
@@ -65,11 +55,14 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
         for (int i = 0; i < rows.size(); i++) {
             addEntry(
                     new ItemEntry(
-                            this.parentList,
+                            this.parentScreen,
                             this,
                             rows.get(i),
                             i,
-                            itemHeight)
+                            itemHeight,
+                            this.getRowTop(i),
+                            this.getRowTop(i) + this.itemHeight
+                    )
             );
         }
     }
@@ -96,12 +89,40 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
         RenderSystem.setShaderTexture(0, new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/list_background.png"));
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        float f = 32.0F;
+        float size = 128.0F;
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.vertex((double)this.x0, (double)this.y1, 0.0D).uv((float)this.x0 / 32.0F, (float)(this.y1 + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).endVertex();
-        bufferbuilder.vertex((double)this.x1, (double)this.y1, 0.0D).uv((float)this.x1 / 32.0F, (float)(this.y1 + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).endVertex();
-        bufferbuilder.vertex((double)this.x1, (double)this.y0, 0.0D).uv((float)this.x1 / 32.0F, (float)(this.y0 + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).endVertex();
-        bufferbuilder.vertex((double)this.x0, (double)this.y0, 0.0D).uv((float)this.x0 / 32.0F, (float)(this.y0 + (int)this.getScrollAmount()) / 32.0F).color(32, 32, 32, 255).endVertex();
+        bufferbuilder // bot left
+                .vertex(this.x0, this.y1, 0.0D)
+                .uv(
+                    (float)0,
+                    (float)(this.y1 - this.y0 - 3) / size
+                )
+                .color(255, 255, 255, 255)
+                .endVertex();
+        bufferbuilder // bot right
+                .vertex(this.x1, this.y1, 0.0D)
+                .uv(
+                    (float)18 / size * 4,
+                    (float)(this.y1 - this.y0 - 3) / size
+                )
+                .color(255, 255, 255, 255)
+                .endVertex();
+        bufferbuilder // top right
+                .vertex(this.x1, this.y0+3, 0.0D)
+                .uv(
+                    (float)18 / size  * 4,
+                    (float)0
+                )
+                .color(255, 255, 255, 255)
+                .endVertex();
+        bufferbuilder // top left
+                .vertex(this.x0, this.y0+3, 0.0D)
+                .uv(
+                    (float)0,
+                    (float)0
+                )
+                .color(255, 255, 255, 255)
+                .endVertex();
         tesselator.end();
 
 
@@ -119,7 +140,7 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
 
-        int coverHeight = 22;
+        int coverHeight = 20;
         var width = x1 - x0;
 
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
@@ -144,6 +165,9 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                 .color(255, 255, 255, 255)
                 .endVertex();
         tesselator.end();
+
+
+        RenderSystem.setShaderTexture(0, new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/list_cover_bottom.png"));
 
 
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
@@ -232,15 +256,20 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
         private final int rowIndex;
         private final int itemHeight;
         private final int itemWidth;
+        private final int rowTop;
+        private final int rowBottom;
         private final MySelectionList selectionList;
 
-        ItemEntry(AdvancedPickupSettingsScreen parentScreen, MySelectionList selectionList,List<ItemNameFilter> columns, int rowIndex, int itemHeight){
+        ItemEntry(AdvancedPickupSettingsScreen parentScreen, MySelectionList selectionList,List<ItemNameFilter> columns, int rowIndex, int itemHeight, int rowTop, int rowBottom){
             this.parentScreen = parentScreen;
             this.columns = columns;
             this.rowIndex = rowIndex;
             this.itemHeight = itemHeight;
             this.itemWidth = itemHeight;
             this.selectionList = selectionList;
+            this.rowTop = rowTop;
+            this.rowBottom = rowBottom;
+
         }
 
         @Override
@@ -262,13 +291,15 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                 float p_93532_
         ) {
 
+            renderBackground(poseStack);
+
             for (int i = 0; i < columns.size(); i++) {
                 var item2 = ForgeRegistries.ITEMS.getValue(columns.get(i).getResourceLocation());
 
 
                 renderItem_TEST(
                         new ItemStack(item2),
-                        getLeft() + i * itemWidth,
+                        getLeft() + i * itemWidth +1,
                         getRowTop(rowIndex)
                 );
 
@@ -295,6 +326,53 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
             itemRenderer.renderAndDecorateItem(itemStack, x, y);
         }
 
+        public void renderBackground(PoseStack p_93447_) {
+
+            Tesselator tesselator = Tesselator.getInstance();
+            BufferBuilder bufferbuilder = tesselator.getBuilder();
+            RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+
+
+            RenderSystem.setShaderTexture(0, new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/list_row_background.png"));
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            float size = 128.0F;
+            bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            bufferbuilder // bot left
+                    .vertex(getLeft(), rowBottom - this.selectionList.getScrollAmount() -1, 0.0D)
+                    .uv(
+                            (float)0,
+                            (float)(18) / size
+                    )
+                    .color(255, 255, 255, 255)
+                    .endVertex();
+            bufferbuilder // bot right
+                    .vertex(getRight(), rowBottom - this.selectionList.getScrollAmount() -1, 0.0D)
+                    .uv(
+                            (float)72 / size,
+                            (float)(18) / size
+                    )
+                    .color(255, 255, 255, 255)
+                    .endVertex();
+            bufferbuilder // top right
+                    .vertex(getRight(), rowTop - this.selectionList.getScrollAmount() -1, 0.0D)
+                    .uv(
+                            (float)18 / size  * 4,
+                            (float)0
+                    )
+                    .color(255, 255, 255, 255)
+                    .endVertex();
+            bufferbuilder // top left
+                    .vertex(getLeft(), rowTop - this.selectionList.getScrollAmount() -1, 0.0D)
+                    .uv(
+                            (float)0,
+                            (float)0
+                    )
+                    .color(255, 255, 255, 255)
+                    .endVertex();
+            tesselator.end();
+
+
+        }
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int buttonNumber) {
