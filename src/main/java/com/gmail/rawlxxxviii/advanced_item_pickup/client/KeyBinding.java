@@ -25,13 +25,13 @@ public class KeyBinding {
             MENU_ADD_TO_ALWAYS,
             KeyConflictContext.GUI,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_W,
+            GLFW.GLFW_KEY_A,
             MOD_KEY_CATEGORY);
     public static final KeyMapping MENU_ADD_TO_NEVER_KEY = new KeyMapping(
             MENU_ADD_TO_NEVER,
             KeyConflictContext.GUI,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_S,
+            GLFW.GLFW_KEY_D,
             MOD_KEY_CATEGORY);
     public static final KeyMapping MENU_REMOVE_FROM_FILTERS_KEY = new KeyMapping(
             MENU_REMOVE_FROM_FILTERS,
@@ -77,14 +77,14 @@ public class KeyBinding {
             OPEN_VICINITY_PICKUP,
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_V,
+            GLFW.GLFW_KEY_C,
             MOD_KEY_CATEGORY);
 
     public static final KeyMapping OPEN_SETTINGS_MENU_KEY = new KeyMapping(
             OPEN_SETTINGS_MENU,
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_C,
+            GLFW.GLFW_KEY_V,
             MOD_KEY_CATEGORY);
 
 

@@ -142,10 +142,13 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
         drawString(poseStack, Minecraft.getInstance().font, this.listTitle,
                 getLeft(),
-                getTop() - 22,
+                getTop() - 12,
                 listColor.getRGB()
         );
 
+        if(getScrollAmount()> 3){
+            hLine(poseStack,getLeft(),getRight()-1,getTop(), new Color(55,55,55).getRGB());
+        }
     }
 
     @Override

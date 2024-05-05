@@ -60,7 +60,7 @@ never list
 		> only pickup by using vicinity menu (in inventory)
 
 
-allways list
+always list
 	- items are picked up
 		- even when auto pickup is disabled
 

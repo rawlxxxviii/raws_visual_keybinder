@@ -40,14 +40,14 @@ public class AdvancedPickupSettingsMenu extends AbstractContainerMenu {
     private void addPlayerInventory(Inventory playerInventory) {
         for (int row = 0; row < 3; ++row) {
             for (int i = 0; i < 9; ++i) {
-                this.addSlot(new Slot(playerInventory, i + row * 9 + 9, 8 + i * 18, 166 + row * 18));
+                this.addSlot(new Slot(playerInventory, i + row * 9 + 9, 8 + i * 18, 166 +25 + row * 18));
             }
         }
     }
 
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 224));
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 224 +25));
         }
     }
 }
