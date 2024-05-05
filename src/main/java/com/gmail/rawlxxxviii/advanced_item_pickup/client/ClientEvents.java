@@ -1,7 +1,9 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.client;
 
+import com.gmail.rawlxxxviii.advanced_item_pickup.menu.VicinityPickupMenu;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.*;
+import com.gmail.rawlxxxviii.advanced_item_pickup.screen.VicinityPickupScreen;
 import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.AdvancedPickupSettingsScreen;
 import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.ModMenuTypes;
 import net.minecraft.client.Minecraft;
@@ -42,6 +44,7 @@ public class ClientEvents {
                 PacketHandler.sendToServer(new ToggleAutoPickupKeyPressed_C2SPacket());
             }
             if(KeyBinding.OPEN_VICINITY_PICKUP_KEY.consumeClick()) {
+                PacketHandler.sendToServer(new OpenVicinityPickupMenu_C2SPacket());
 
 //                Minecraft.getInstance().setScreen(new AdvancedPickupSettingsScreen(Component.literal("")));
             }
@@ -78,6 +81,7 @@ public class ClientEvents {
         public static void onClientSetup(FMLClientSetupEvent event) {
 
             MenuScreens.register(ModMenuTypes.ADVANCED_PICKUP_SETTINGS_MENU.get(), AdvancedPickupSettingsScreen::new);
+            MenuScreens.register(ModMenuTypes.VICINITY_PICKUP_MENU.get(), VicinityPickupScreen::new);
 
         }
 

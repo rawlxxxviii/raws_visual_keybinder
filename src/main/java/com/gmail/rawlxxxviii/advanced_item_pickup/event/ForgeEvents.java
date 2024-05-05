@@ -1,8 +1,10 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.event;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.IAdvancedPickup;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.IAdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickupAttacher;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.vicinity_pickup.VicinityPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.vicinity_pickup.VicinityPickupAttacher;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.UpdateAdvancedPickupSettings_S2CPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,7 +17,6 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 import static com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod.MODID;
 
@@ -31,6 +32,9 @@ public class ForgeEvents {
 
         if(!event.getObject().getCapability(AdvancedPickup.INSTANCE).isPresent()) {
             AdvancedPickupAttacher.AdvancedPickupProvider.attach(event);
+        }
+        if(!event.getObject().getCapability(AdvancedPickup.INSTANCE).isPresent()) {
+            VicinityPickupAttacher.VicinityPickupProvider.attach(event);
         }
     }
 
@@ -49,19 +53,23 @@ public class ForgeEvents {
             }
 
             event.getOriginal().reviveCaps();
+
             event.getOriginal().getCapability(AdvancedPickup.INSTANCE).ifPresent(oldStore ->{
+                event.getEntity().getCapability(AdvancedPickup.INSTANCE).ifPresent(newStore->{
+                    newStore.copyFrom(oldStore);
 
+                    PacketHandler.sendToPlayer(
+                            new UpdateAdvancedPickupSettings_S2CPacket(newStore.serializeNBT())
+                            ,serverPlayer
+                    );
+                });
+            });
 
-
-                        event.getEntity().getCapability(AdvancedPickup.INSTANCE).ifPresent(newStore->{
-                            newStore.copyFrom(oldStore);
-
-                            PacketHandler.sendToPlayer(
-                                    new UpdateAdvancedPickupSettings_S2CPacket(newStore.serializeNBT())
-                                    ,serverPlayer
-                            );
-                        });
-                    });
+            event.getOriginal().getCapability(VicinityPickup.INSTANCE).ifPresent(oldStore ->{
+                event.getEntity().getCapability(VicinityPickup.INSTANCE).ifPresent(newStore->{
+                    newStore.copyFrom(oldStore);
+                });
+            });
 
             event.getOriginal().invalidateCaps();
         }

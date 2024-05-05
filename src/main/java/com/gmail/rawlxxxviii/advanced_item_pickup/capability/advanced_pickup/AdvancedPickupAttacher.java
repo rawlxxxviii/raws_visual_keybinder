@@ -1,19 +1,13 @@
-package com.gmail.rawlxxxviii.advanced_item_pickup.capability;
+package com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup;
 
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -42,10 +36,6 @@ public class AdvancedPickupAttacher  {
         @Override
         public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap) {
             return ICapabilityProvider.super.getCapability(cap);
-        }
-
-        void invalidate() {
-            this.optional.invalidate();
         }
 
         @Override

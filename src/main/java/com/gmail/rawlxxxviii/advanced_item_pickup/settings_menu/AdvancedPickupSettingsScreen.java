@@ -1,7 +1,7 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.client.KeyBinding;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;

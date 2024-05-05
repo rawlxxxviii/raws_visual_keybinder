@@ -1,6 +1,6 @@
  package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

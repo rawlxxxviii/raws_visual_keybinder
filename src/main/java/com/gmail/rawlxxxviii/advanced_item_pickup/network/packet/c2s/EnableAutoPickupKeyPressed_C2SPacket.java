@@ -1,6 +1,6 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.s2c.EnableAutoPickup_S2CPacket;
 import net.minecraft.ChatFormatting;

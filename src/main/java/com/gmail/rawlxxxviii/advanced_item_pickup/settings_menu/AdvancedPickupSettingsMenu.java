@@ -19,8 +19,6 @@ public class AdvancedPickupSettingsMenu extends AbstractContainerMenu {
     public AdvancedPickupSettingsMenu(int id, Inventory inventory) {
         super(ModMenuTypes.ADVANCED_PICKUP_SETTINGS_MENU.get(), id);
 
-        var player = inventory.player;
-
         addPlayerInventory(inventory);
         addPlayerHotbar(inventory);
     }

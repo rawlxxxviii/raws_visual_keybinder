@@ -1,7 +1,6 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.mixin;
 
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickup;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.AdvancedPickupAttacher;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

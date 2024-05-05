@@ -92,6 +92,16 @@ public class PacketHandler {
 
 
         INSTANCE.messageBuilder(
+                        OpenVicinityPickupMenu_C2SPacket.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(OpenVicinityPickupMenu_C2SPacket::new)
+                .encoder(OpenVicinityPickupMenu_C2SPacket::encodeToBytes)
+                .consumerMainThread(OpenVicinityPickupMenu_C2SPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(
                         ClearNameFiltersOfType_C2SPacket.class,
                     id(),
                     NetworkDirection.PLAY_TO_SERVER

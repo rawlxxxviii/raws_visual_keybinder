@@ -1,6 +1,7 @@
  package com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickup;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.vicinity_pickup.VicinityPickup;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleMenuProvider;
@@ -9,13 +10,13 @@ import net.minecraftforge.network.NetworkHooks;
 
 import java.util.function.Supplier;
 
- public class OpenAdvancedPickupSettingsMenu_C2SPacket {
+ public class OpenVicinityPickupMenu_C2SPacket {
 
 
-     public OpenAdvancedPickupSettingsMenu_C2SPacket() {
+     public OpenVicinityPickupMenu_C2SPacket() {
      }
 
-     public OpenAdvancedPickupSettingsMenu_C2SPacket(FriendlyByteBuf buffer) {
+     public OpenVicinityPickupMenu_C2SPacket(FriendlyByteBuf buffer) {
      }
 
      public void encodeToBytes(FriendlyByteBuf buffer) {
@@ -35,15 +36,16 @@ import java.util.function.Supplier;
                  return;
              }
 
-             serverPlayer.getCapability(AdvancedPickup.INSTANCE).ifPresent(c->{
+             serverPlayer.getCapability(VicinityPickup.INSTANCE).ifPresent(c->{
 
                  NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
                                  (containterId, playerInventory,player)-> c.createMenu(containterId,playerInventory,player),
-                                 Component.literal("Advanced pickup settings menu")
+                                 Component.literal("Vicinity Pickup menu")
                          )
                      );
 
-            });
+
+             });
          });
      }
 
