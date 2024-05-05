@@ -19,12 +19,15 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +41,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     "textures/gui/pickup_settings_menu_gui.png");
 
     private final int columnCount = 4;
-    private final int rowCount = 7; //7
+    private final int rowCount = 7;
     private final int columnSize = 18;
     private final int listWidth = columnCount * columnSize;
     private final int listHeight = columnSize * rowCount;
@@ -104,27 +107,34 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     Component.literal("Clear allways list")
             ));
 
+
             itemSelectionList = addWidget(new MySelectionList(
                     Minecraft.getInstance(),
                     listWidth,
                     listHeight,
                     columnCount,
-                    this.getGuiTop()+22,
+                    this.getGuiTop()+38,
                     this.getGuiLeft()+8,
                     itemHeight,
                     c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.ALWAYS).toList(),
-                    this
+                    this,
+                    itemSelectionList == null ? 0 : itemSelectionList.getScrollAmount(),
+                    Component.literal("Allways"),
+                    new Color(50, 50, 50)
             ));
             itemSelectionList2 = addWidget(new MySelectionList(
                     Minecraft.getInstance(),
                     listWidth,
                     listHeight,
                     columnCount,
-                    this.getGuiTop()+22,
+                    this.getGuiTop()+38,
                     this.getGuiLeft()+8 + listWidth + columnSize - 9,
                     itemHeight,
                     c.getAutoPickupFilters().stream().filter(x->x.getType() == ItemFilterType.NEVER).toList(),
-                    this
+                    this,
+                    itemSelectionList2 == null ? 0 : itemSelectionList2.getScrollAmount(),
+                    Component.literal("Never"),
+                    new Color(50, 50, 50)
             ));
 
         });
@@ -171,8 +181,9 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
 
     @Override
     protected void renderLabels(PoseStack poseStack, int p_97809_, int p_97810_) {
-        this.font.draw(poseStack, Component.literal("Always"), (float) 8 , (float)10, new Color(120, 202, 60).getRGB());
-        this.font.draw(poseStack, Component.literal("Never"), (float) 8 + listWidth + columnSize - 9, (float)10, new Color(150,50,50).getRGB());
+
+        drawCenteredString(poseStack,font,Component.literal("Auto pickup settings"), getGuiLeft() + this.imageWidth / 2, 15, new Color(250, 250, 250).getRGB());
+
     }
 
     public Item getHoveredItem() {
@@ -232,9 +243,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                 var color = new Color(76, 76, 76,175).getRGB();
                 if(itemNameFilter.getType() == ItemFilterType.ALWAYS){
                     color = new Color(120, 202, 60,175).getRGB();
-
                 } else if (itemNameFilter.getType() == ItemFilterType.NEVER) {
-
                     color = new Color(150,50,50,175).getRGB();
                 }
 
@@ -296,8 +305,8 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
             renderTooltip(poseStack, new ItemStack(item), mouseX,mouseY);
         }
 
-
     }
+
 
     @Override
     public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {

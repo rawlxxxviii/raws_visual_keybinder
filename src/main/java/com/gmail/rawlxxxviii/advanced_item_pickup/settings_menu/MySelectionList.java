@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,13 +18,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 
 public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry> {
 
     AdvancedPickupSettingsScreen parentScreen;
-
+    Component listTitle;
+    Color listColor;
 
     public MySelectionList(
             Minecraft minecraft,
@@ -34,11 +37,16 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
             int left,
             int itemHeight,
             List<ItemNameFilter> itemNameFilters,
-            AdvancedPickupSettingsScreen parentListScreen
+            AdvancedPickupSettingsScreen parentListScreen,
+            double scrollPosition,
+            Component listTitle,
+            Color listColor
     ) {
 
         super(minecraft, width, height, top, height + top, itemHeight);
 
+        this.listTitle = listTitle;
+        this.listColor = listColor;
         this.setRenderTopAndBottom(false);
         this.setRenderBackground(false); // own implementation in this renderBackground class
 
@@ -58,21 +66,20 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                             this.parentScreen,
                             this,
                             rows.get(i),
-                            i,
                             itemHeight,
                             this.getRowTop(i),
                             this.getRowTop(i) + this.itemHeight
                     )
             );
         }
+
+        this.setScrollAmount( scrollPosition);
     }
 
     @Override
     protected int getScrollbarPosition() {
         return this.width + this.x0;
     }
-
-
 
     @Override
     public void updateNarration(NarrationElementOutput p_169152_) {
@@ -128,79 +135,16 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
     }
 
-    public void renderTopAndBottom(PoseStack p_93447_) {
-
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-
-
-        RenderSystem.setShaderTexture(0, new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/list_cover_top.png"));
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-
-        int coverHeight = 20;
-        var width = x1 - x0;
-
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder // bot left
-                .vertex( this.x0, this.y0 , 250.0D)
-                .uv((float)0, (float)coverHeight / 256.0F)
-                .color(255, 255, 255, 255)
-                .endVertex();
-        bufferbuilder // bot right
-                .vertex((double)this.x1, (double)this.y0, 250.0D)
-                .uv((float)width / 256.0F, (float)coverHeight / 256.0F)
-                .color(255, 255, 255, 255)
-                .endVertex();
-        bufferbuilder // top right
-                .vertex((double)this.x1, (double)this.y0 - coverHeight, 250.0D)
-                .uv((float)width / 256.0F, (float)0)
-                .color(255, 255, 255, 255)
-                .endVertex();
-        bufferbuilder // top left
-                .vertex((double)this.x0, (double)this.y0 - coverHeight, 250.0D)
-                .uv(0, 0)
-                .color(255, 255, 255, 255)
-                .endVertex();
-        tesselator.end();
-
-
-        RenderSystem.setShaderTexture(0, new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/list_cover_bottom.png"));
-
-
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder // bot left
-                .vertex( this.x0, this.y1 + coverHeight , 250.0D)
-                .uv((float)0, (float)coverHeight / 256.0F)
-                .color(255, 255, 255, 255)
-                .endVertex();
-        bufferbuilder // bot right
-                .vertex((double)this.x1, (double)this.y1 + coverHeight, 250.0D)
-                .uv((float)width / 256.0F, (float)coverHeight / 256.0F)
-                .color(255, 255, 255, 255)
-                .endVertex();
-        bufferbuilder // top right
-                .vertex((double)this.x1, (double)this.y1, 250.0D)
-                .uv((float)width / 256.0F, (float)0)
-                .color(255, 255, 255, 255)
-                .endVertex();
-        bufferbuilder // top left
-                .vertex((double)this.x0, (double)this.y1 , 250.0D)
-                .uv(0, 0)
-                .color(255, 255, 255, 255)
-                .endVertex();
-        tesselator.end();
-
-    }
-
     @Override
     public void render(PoseStack poseStack, int mouseX, int p_93449_, float p_93450_) {
         this.renderBackground(poseStack);
         super.render(poseStack, mouseX, p_93449_, p_93450_);
 
-        renderTopAndBottom(poseStack);
+        drawString(poseStack, Minecraft.getInstance().font, this.listTitle,
+                getLeft(),
+                getTop() - 22,
+                listColor.getRGB()
+        );
 
     }
 
@@ -253,17 +197,15 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
 
         private final List<ItemNameFilter> columns;
         AdvancedPickupSettingsScreen parentScreen;
-        private final int rowIndex;
         private final int itemHeight;
         private final int itemWidth;
         private final int rowTop;
         private final int rowBottom;
         private final MySelectionList selectionList;
 
-        ItemEntry(AdvancedPickupSettingsScreen parentScreen, MySelectionList selectionList,List<ItemNameFilter> columns, int rowIndex, int itemHeight, int rowTop, int rowBottom){
+        ItemEntry(AdvancedPickupSettingsScreen parentScreen, MySelectionList selectionList,List<ItemNameFilter> columns, int itemHeight, int rowTop, int rowBottom){
             this.parentScreen = parentScreen;
             this.columns = columns;
-            this.rowIndex = rowIndex;
             this.itemHeight = itemHeight;
             this.itemWidth = itemHeight;
             this.selectionList = selectionList;
@@ -291,13 +233,14 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                 float p_93532_
         ) {
 
+            enableScissor(getLeft(),getTop(),getRight(), getBottom());
+
             renderBackground(poseStack);
 
             for (int i = 0; i < columns.size(); i++) {
                 var item2 = ForgeRegistries.ITEMS.getValue(columns.get(i).getResourceLocation());
 
-
-                renderItem_TEST(
+                renderItem(
                         new ItemStack(item2),
                         getLeft() + i * itemWidth +1,
                         getRowTop(rowIndex)
@@ -306,25 +249,31 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                 //check mouse over
                 if(
                         mouseX >= getLeft() &&
-                        mouseX <= getRight() &&
+                        mouseX < getRight() &&
                         mouseY >= getTop() &&
-                        mouseY <= getBottom() &&
+                        mouseY < getBottom() &&
 
                         mouseX >= getLeft() + i * itemWidth &&
-                        mouseX <= getLeft() + i * itemWidth + itemWidth &&
+                        mouseX < getLeft() + i * itemWidth + itemWidth &&
                         mouseY >= getRowTop(rowIndex) &&
-                        mouseY <= getRowTop(rowIndex) + itemHeight
+                        mouseY < getRowTop(rowIndex) + itemHeight
                 ){
                     this.parentScreen.setHoveredListItem(item2);
                 }
             }
 
+            disableScissor();
         }
 
-        private void renderItem_TEST(ItemStack itemStack, int x, int y){
+
+        private void renderItem(ItemStack itemStack, int x, int y){
+
             var itemRenderer = Minecraft.getInstance().getItemRenderer();
             itemRenderer.renderAndDecorateItem(itemStack, x, y);
+
         }
+
+
 
         public void renderBackground(PoseStack p_93447_) {
 
@@ -336,9 +285,10 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
             RenderSystem.setShaderTexture(0, new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/list_row_background.png"));
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             float size = 128.0F;
+            double z = 60.0D;
             bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
             bufferbuilder // bot left
-                    .vertex(getLeft(), rowBottom - this.selectionList.getScrollAmount() -1, 0.0D)
+                    .vertex(getLeft(), rowBottom - this.selectionList.getScrollAmount() -1, z)
                     .uv(
                             (float)0,
                             (float)(18) / size
@@ -346,7 +296,7 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                     .color(255, 255, 255, 255)
                     .endVertex();
             bufferbuilder // bot right
-                    .vertex(getRight(), rowBottom - this.selectionList.getScrollAmount() -1, 0.0D)
+                    .vertex(getRight(), rowBottom - this.selectionList.getScrollAmount() -1, z)
                     .uv(
                             (float)72 / size,
                             (float)(18) / size
@@ -354,7 +304,7 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                     .color(255, 255, 255, 255)
                     .endVertex();
             bufferbuilder // top right
-                    .vertex(getRight(), rowTop - this.selectionList.getScrollAmount() -1, 0.0D)
+                    .vertex(getRight(), rowTop - this.selectionList.getScrollAmount() -1, z)
                     .uv(
                             (float)18 / size  * 4,
                             (float)0
@@ -362,7 +312,7 @@ public class MySelectionList extends AbstractSelectionList<MySelectionList.Entry
                     .color(255, 255, 255, 255)
                     .endVertex();
             bufferbuilder // top left
-                    .vertex(getLeft(), rowTop - this.selectionList.getScrollAmount() -1, 0.0D)
+                    .vertex(getLeft(), rowTop - this.selectionList.getScrollAmount() -1, z)
                     .uv(
                             (float)0,
                             (float)0
