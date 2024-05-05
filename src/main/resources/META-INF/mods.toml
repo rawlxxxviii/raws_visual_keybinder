@@ -27,7 +27,7 @@ displayName="Raws' Advanced Item pickup" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="examplemod.png" #optional
+logoFile="logo.png" #optional
 # A text field displayed in the mod UI
 credits="" #optional
 # A text field displayed in the mod UI
@@ -43,27 +43,19 @@ authors="rawlxxviii" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 
-    Raws' Advanced item pickup gives more control over itempickup.
+    Raws' Advanced item pickup gives players more control over itempickup.
+
+    - Automatic item pickup can now be toggled.
+    - Items can be picked up by holding down a key.
+    - Mark items to be never automatically picked up
+    - Mark items to be always automatically picked
 
 
-    - toggle auto pickup
-    - hold button to pickup all
-    - vicinity pickup in inventory
+    Never list:
+        Items in this list will not be automatically picked up even when autopickup is on. To pickup these items hold down the pickup button.
 
-
-
-never list
-	- items are NOT picked up even when
-		- pressing pickup all button
-		- auto pickup enabled
-
-		> only pickup by using vicinity menu (in inventory)
-
-
-always list
-	- items are picked up
-		- even when auto pickup is disabled
-
+    Always list:
+        Items in this list will always be automatically picked picked up even when autopickup is off.
 
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.

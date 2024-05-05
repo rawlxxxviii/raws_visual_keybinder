@@ -245,17 +245,17 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     return;
                 }
 
-                var color = new Color(76, 76, 76,175).getRGB();
-                if(itemNameFilter.getType() == ItemFilterType.ALWAYS){
-                    color = ALWAYS_COLOR.getRGB();
-                } else if (itemNameFilter.getType() == ItemFilterType.NEVER) {
-                    color = NEVER_COLOR .getRGB();
-                }
+//                var color = new Color(76, 76, 76,175).getRGB();
+//                if(itemNameFilter.getType() == ItemFilterType.ALWAYS){
+//                    color = ALWAYS_COLOR.getRGB();
+//                } else if (itemNameFilter.getType() == ItemFilterType.NEVER) {
+//                    color = NEVER_COLOR .getRGB();
+//                }
 
                 renderIconOverlay( pPoseStack,
                         getGuiLeft() + slot.x,
                         getGuiTop() + slot.y,
-                        color
+                        itemNameFilter.getType()
                 );
 
             });
@@ -263,19 +263,21 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         });
     }
 
-    private void renderIconOverlay(PoseStack poseStack, int x, int y, int color){
-        var size = 3;
-        int topPadding = 1;
-        int leftPadding = 1;
+    private void renderIconOverlay(PoseStack poseStack, int x, int y, ItemFilterType itemFilterType){
 
-        fill(
-                poseStack,
-                x + leftPadding,
-                y + topPadding,
-                x + leftPadding + size ,
-                y + topPadding + size,
-                color
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, new ResourceLocation(AdvancedItemPickupMod.MODID, "textures/gui/gui_buttons.png"));
+
+        blit(poseStack,
+                x, y,
+                301,
+                40, itemFilterType == ItemFilterType.ALWAYS ? 0 : 10,
+                10, 10,
+                64, 64
         );
+
+
     }
 
     @Override
@@ -285,7 +287,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
         RenderSystem.setShaderTexture(0, TEXTURE);
-        this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
+        blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
     }
 
     @Override
