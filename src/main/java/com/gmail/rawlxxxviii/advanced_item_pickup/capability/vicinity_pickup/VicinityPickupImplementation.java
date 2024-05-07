@@ -7,6 +7,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraftforge.event.TickEvent;
 
 public class VicinityPickupImplementation implements IVicinityPickup, MenuProvider {
 
@@ -20,6 +21,14 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
 
     public void copyFrom(IVicinityPickup source) {
         this.reach = source.getReach();
+    }
+
+    @Override
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+
+        if (event.player.containerMenu instanceof VicinityPickupMenu vicinityPickupMenu){
+            vicinityPickupMenu.onEntitiesUpdated();
+        }
     }
 
 

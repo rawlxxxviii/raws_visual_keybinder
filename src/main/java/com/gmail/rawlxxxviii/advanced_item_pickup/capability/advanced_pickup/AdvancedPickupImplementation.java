@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvider {
 
-    private static final int MAX_TICK_COUNT = 6;
+//    private static final int MAX_TICK_COUNT = 6;
 
     private boolean settingsScreenUpToDate = false;
 
@@ -57,8 +57,8 @@ public class AdvancedPickupImplementation implements IAdvancedPickup, MenuProvid
     }
 
 
-    public void addPickupTick() {
-        this.pickupTicks = Math.min(this.pickupTicks + 2, MAX_TICK_COUNT);
+    public void setPickingUp() {
+        this.pickupTicks = 6;// Math.min(this.pickupTicks + 2, MAX_TICK_COUNT);
     }
     public void subtractPickupTick() {
         this.pickupTicks = Math.max(this.pickupTicks - 1, 0);

@@ -9,6 +9,7 @@ import com.gmail.rawlxxxviii.advanced_item_pickup.common.VicinityContainer;
 import com.gmail.rawlxxxviii.advanced_item_pickup.menu.VicinityPickupMenu;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.ClearNameFiltersOfType_C2SPacket;
+import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.PickUpAllKeyDown_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.RemoveNameFilter_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.UpdateNameFilter_C2SPacket;
 import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.AdvancedPickupSettingsMenu;
@@ -72,7 +73,7 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
         drawCenteredString(poseStack,font,
                 Component.literal("Vicinity"),
                 this.imageWidth / 2,
-                5,
+                8,
                 new Color(250, 250, 250).getRGB()
         );
 
@@ -81,8 +82,13 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        System.out.println("keyPressed");
         if(KeyBinding.OPEN_VICINITY_PICKUP_KEY.getKey().getValue() == pKeyCode){
             this.onClose();
+            return true;
+        }
+        if (KeyBinding.PICKUP_ALL_KEY.getKey().getValue() == pKeyCode) {
+            PacketHandler.sendToServer(new PickUpAllKeyDown_C2SPacket());
             return true;
         }
         return super.keyPressed(pKeyCode, pScanCode, pModifiers);

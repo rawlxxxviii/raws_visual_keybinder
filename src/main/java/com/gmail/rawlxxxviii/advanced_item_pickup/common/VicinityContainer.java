@@ -1,16 +1,15 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.common;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.menu.VicinityPickupMenu;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -19,19 +18,51 @@ public class VicinityContainer implements Container {
 
     private List<ItemEntity> itemEntities = new ArrayList<ItemEntity>();
     private VicinityPickupMenu parentMenu;
+    private Player player;
 
-    public VicinityContainer(VicinityPickupMenu parentMenu) {
+    public VicinityContainer(VicinityPickupMenu parentMenu,Player player) {
         this.parentMenu = parentMenu;
+        this.player = player;
+
+        this.setItemEntities();
     }
 
 
-    public void setItemEntities(List<ItemEntity> itemEntities){
-        this.itemEntities = itemEntities;
+    public void setItemEntities(){
+
+        var reach = 1.85;
+        var verticalOffset = .5;
+        var verticalAddedReach = .5;
+
+        var aabb = new AABB(
+                player.getX() - reach,
+                player.getY() - reach + verticalOffset,
+                player.getZ() - reach,
+                player.getX() + reach,
+                player.getY() + reach + verticalOffset + verticalAddedReach,
+                player.getZ() + reach
+        );
+
+        this.itemEntities = player.level.getEntitiesOfClass(
+                ItemEntity.class,
+                aabb
+        );
+
+        this.sortEntities();
+
     }
 
-    public List<ItemEntity> getItemEntities(){
-        return itemEntities;
+    public void sortEntities(){
+        this.itemEntities
+            .sort(Comparator.comparing(a -> a.getUUID().toString()));
     }
+
+
+    public void onUpdate(){
+        this.setItemEntities();
+    }
+
+
 
     @Override
     public int getContainerSize() {
@@ -51,10 +82,14 @@ public class VicinityContainer implements Container {
         return true;
     }
 
+    private int parentIndexCorrection(){
+        return parentMenu.getScrollRowPos() * VicinityPickupMenu.COLUMN_COUNT - 36;
+    }
+
     @Override
     public ItemStack getItem(int index) {
 
-        index += parentMenu.getScrollRowPos() * VicinityPickupMenu.COLUMN_COUNT;
+        index += parentIndexCorrection();
 
         if(index >= itemEntities.size()){
             return ItemStack.EMPTY;
@@ -67,7 +102,7 @@ public class VicinityContainer implements Container {
 
     @Override
     public ItemStack removeItem(int index, int amount) {
-        index += parentMenu.getScrollRowPos() * VicinityPickupMenu.COLUMN_COUNT;
+        index += parentIndexCorrection();
 
         if(index >= itemEntities.size()){
             return ItemStack.EMPTY;
@@ -93,7 +128,7 @@ public class VicinityContainer implements Container {
 
     @Override
     public ItemStack removeItemNoUpdate(int p_18951_) {
-        return new ItemStack( ForgeRegistries.ITEMS.getValue( new ResourceLocation("minecraft:dirt") ),10);
+        return ItemStack.EMPTY;
     }
 
     @Override

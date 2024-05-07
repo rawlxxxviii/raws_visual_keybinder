@@ -9,6 +9,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.event.TickEvent;
 
 import java.util.ArrayList;
 
@@ -17,5 +18,6 @@ public interface IVicinityPickup extends INBTSerializable<CompoundTag>, MenuProv
 
     float getReach();
     void copyFrom(IVicinityPickup source);
+    void onPlayerTick(TickEvent.PlayerTickEvent event);
 
 }

@@ -3,27 +3,23 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.menu;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.VicinityContainer;
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.VicinitySlot;
 import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.ModMenuTypes;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerListener;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 
-import javax.annotation.concurrent.Immutable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VicinityPickupMenu extends AbstractContainerMenu implements ContainerListener {
 
     private static final int VICINITY_SLOT_ROW_COUNT = 6;
-    private static final int VICINITY_TOP = 17;
-    private static final int INVENTORY_TOP = 143;
+    private static final int VICINITY_TOP = 20;
+    private static final int INVENTORY_TOP = 146;
 
     public static final int COLUMN_COUNT = 9;
 
@@ -42,22 +38,16 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
     public VicinityPickupMenu(int id, Inventory inventory) {
         super(ModMenuTypes.VICINITY_PICKUP_MENU.get(), id);
 
+
         this.inventory = inventory;
 
-        vicinityContainer = new VicinityContainer(this);
+        vicinityContainer = new VicinityContainer(this, inventory.player);
 
-        updateVicinityContainerContents();
         addSlots();
 
 
     }
 
-    private void updateVicinityContainerContents(){
-
-        vicinityContainer.setItemEntities(getItemEntities(inventory.player));
-//        broadcastChanges();
-//        broadcastFullState();
-    }
 
 
     public int getScrollRowPos() {
@@ -93,7 +83,7 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
                 var slot =
                         new VicinitySlot(
                                 vicinityContainer,
-                                i + row * COLUMN_COUNT,
+                                i + row * COLUMN_COUNT+36,
                                 8 + i * 18,
                                 VICINITY_TOP + row * 18
                         );
@@ -104,15 +94,6 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
     }
 
 
-    //TODO add more reach
-    private List<ItemEntity> getItemEntities(Player player){
-
-        return player.level.getEntitiesOfClass(
-                ItemEntity.class,
-                new AABB(player.blockPosition())
-        );
-
-    }
 
     @Override
     public void containerChanged(Container p_18983_) {
@@ -133,7 +114,7 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
         ItemStack itemstackCopy = itemstack.copy();
 
         if(slot.container instanceof VicinityContainer){
-            if (!this.moveItemStackTo(itemstack, 0, 4*9, true)) {
+            if (!this.moveItemStackTo(itemstack, 0, 4*9, false)) {
                 return ItemStack.EMPTY;
             }
         }else{
@@ -161,6 +142,8 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
         return player.isAlive();
     }
 
-
+    public void onEntitiesUpdated(){
+        this.vicinityContainer.onUpdate();
+    }
 
 }

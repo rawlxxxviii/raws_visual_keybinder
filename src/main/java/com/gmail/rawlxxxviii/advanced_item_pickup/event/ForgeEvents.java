@@ -3,6 +3,7 @@ package com.gmail.rawlxxxviii.advanced_item_pickup.event;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.IAdvancedPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickupAttacher;
+import com.gmail.rawlxxxviii.advanced_item_pickup.capability.vicinity_pickup.IVicinityPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.vicinity_pickup.VicinityPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.capability.vicinity_pickup.VicinityPickupAttacher;
 import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
@@ -102,9 +103,18 @@ public class ForgeEvents {
 
     @SubscribeEvent
     public static void  onPlayerTick(TickEvent.PlayerTickEvent event){
-        if(event.side == LogicalSide.SERVER) {
-            event.player.getCapability(AdvancedPickup.INSTANCE).ifPresent(IAdvancedPickup::subtractPickupTick);
+
+        if(event.phase == TickEvent.Phase.START){
+
+            if(event.side == LogicalSide.SERVER ) {
+                event.player.getCapability(AdvancedPickup.INSTANCE).ifPresent(IAdvancedPickup::subtractPickupTick);
+            }
+
+            event.player.getCapability(VicinityPickup.INSTANCE).ifPresent(c->{
+                c.onPlayerTick(event);
+            });
         }
+
     }
 
 

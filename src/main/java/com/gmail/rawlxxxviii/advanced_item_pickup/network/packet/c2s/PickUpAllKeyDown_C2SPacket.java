@@ -32,7 +32,7 @@ public class PickUpAllKeyDown_C2SPacket {
                 return;
             }
 
-            player.getCapability(AdvancedPickup.INSTANCE).ifPresent(IAdvancedPickup::addPickupTick);
+            player.getCapability(AdvancedPickup.INSTANCE).ifPresent(IAdvancedPickup::setPickingUp);
 
         });
     }

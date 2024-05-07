@@ -21,7 +21,7 @@ public interface IAdvancedPickup extends INBTSerializable<CompoundTag>, MenuProv
     ArrayList<ItemNameFilter> getAutoPickupFilters();
     void updateNameFilter(ResourceLocation resourceLocation, ItemFilterType itemFilterType);
     void removeNameFilter(ResourceLocation resourceLocation);
-    void addPickupTick();
+    void setPickingUp();
     void subtractPickupTick();
     void clearNameFiltersOfType(ItemFilterType itemFilterType);
 
