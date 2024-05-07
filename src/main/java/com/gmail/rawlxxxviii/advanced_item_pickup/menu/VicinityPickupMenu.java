@@ -1,24 +1,38 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.menu;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.common.VicinityContainer;
+import com.gmail.rawlxxxviii.advanced_item_pickup.common.VicinitySlot;
 import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.ModMenuTypes;
-import net.minecraft.client.Minecraft;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
-public class VicinityPickupMenu extends AbstractContainerMenu {
+import javax.annotation.concurrent.Immutable;
+import java.util.ArrayList;
+import java.util.List;
 
-    private final VicinityContainer vicinityContainer = new VicinityContainer();
+public class VicinityPickupMenu extends AbstractContainerMenu implements ContainerListener {
+
+    private static final int VICINITY_SLOT_ROW_COUNT = 6;
+    private static final int VICINITY_TOP = 17;
+    private static final int INVENTORY_TOP = 143;
+
+    public static final int COLUMN_COUNT = 9;
+
+    private final VicinityContainer vicinityContainer;
+    private final Inventory inventory;
+
+    private final List<Slot> vicinitySlots = new ArrayList<>();
+
+    private int scrollRowPos = 0;
 
 
     public VicinityPickupMenu(int id, Inventory inventory, FriendlyByteBuf extraData) {
@@ -28,34 +42,118 @@ public class VicinityPickupMenu extends AbstractContainerMenu {
     public VicinityPickupMenu(int id, Inventory inventory) {
         super(ModMenuTypes.VICINITY_PICKUP_MENU.get(), id);
 
+        this.inventory = inventory;
 
-        addPlayerInventory(inventory);
-        addPlayerHotbar(inventory);
+        vicinityContainer = new VicinityContainer(this);
 
-        vicinityContainer.setContainerSize(3);
-        var containerSize = vicinityContainer.getContainerSize();
-        for (int i = 0; i < containerSize; i++) {
+        updateVicinityContainerContents();
+        addSlots();
 
-            addSlot(new Slot(vicinityContainer,i,10 + 10*i,20));
-        }
 
-        getItemEntities(inventory.player);
     }
 
-    private void getItemEntities(Player player){
+    private void updateVicinityContainerContents(){
+
+        vicinityContainer.setItemEntities(getItemEntities(inventory.player));
+//        broadcastChanges();
+//        broadcastFullState();
+    }
 
 
-        System.out.println(
-                player.level.getEntitiesOfClass(
-                        ItemEntity.class,
-                        new AABB(player.blockPosition())
-                )
+    public int getScrollRowPos() {
+        return scrollRowPos;
+    }
+
+    public void setScrollRowPos(int scrollRowPos) {
+        this.scrollRowPos = scrollRowPos;
+//        this.broadcastFullState();
+    }
+
+    private void addSlots() {
+
+        for (int i = 0; i < 9; ++i) {
+            this.addSlot(new Slot( inventory, i, 8 + i * 18, INVENTORY_TOP + 54 + 4));
+        }
+
+        for (int row = 0; row < 3; ++row) {
+            for (int i = 0; i < 9; ++i) {
+                this.addSlot(
+                        new Slot(
+                                inventory,
+                                i + row * 9 + 9,
+                                8 + i * 18,
+                                INVENTORY_TOP + row * 18
+                        )
+                );
+            }
+        }
+
+        for (int row = 0; row < VICINITY_SLOT_ROW_COUNT; ++row) {
+            for (int i = 0; i < COLUMN_COUNT; ++i) {
+                var slot =
+                        new VicinitySlot(
+                                vicinityContainer,
+                                i + row * COLUMN_COUNT,
+                                8 + i * 18,
+                                VICINITY_TOP + row * 18
+                        );
+                this.vicinitySlots.add(slot);
+                this.addSlot(slot);
+            }
+        }
+    }
+
+
+    //TODO add more reach
+    private List<ItemEntity> getItemEntities(Player player){
+
+        return player.level.getEntitiesOfClass(
+                ItemEntity.class,
+                new AABB(player.blockPosition())
         );
+
     }
 
     @Override
-    public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
-        return ItemStack.EMPTY;
+    public void containerChanged(Container p_18983_) {
+    }
+
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int slotIndex) {
+
+        if(slotIndex >= slots.size() ){
+            return ItemStack.EMPTY;
+        }
+        Slot slot = this.slots.get(slotIndex);
+        if(!slot.hasItem()){
+            return ItemStack.EMPTY;
+        }
+        ItemStack itemstack = slot.getItem();
+        ItemStack itemstackCopy = itemstack.copy();
+
+        if(slot.container instanceof VicinityContainer){
+            if (!this.moveItemStackTo(itemstack, 0, 4*9, true)) {
+                return ItemStack.EMPTY;
+            }
+        }else{
+            player.drop(slot.getItem().copy(),true);
+            slot.getItem().setCount(0);
+            slot.setChanged();
+            return ItemStack.EMPTY;
+        }
+
+
+
+
+        if (itemstack.isEmpty()) {
+            slot.set(ItemStack.EMPTY);
+        } else {
+            slot.setChanged();
+        }
+
+
+        return itemstackCopy;
     }
 
     @Override
@@ -65,24 +163,4 @@ public class VicinityPickupMenu extends AbstractContainerMenu {
 
 
 
-    private void addPlayerInventory(Inventory playerInventory) {
-        for (int row = 0; row < 3; ++row) {
-            for (int i = 0; i < 9; ++i) {
-                this.addSlot(
-                        new Slot(
-                                playerInventory,
-                                i + row * 9 + 9,
-                                8 + i * 18,
-                                166 +25 + row * 18
-                        )
-                );
-            }
-        }
-    }
-
-    private void addPlayerHotbar(Inventory playerInventory) {
-        for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 224 +25));
-        }
-    }
 }

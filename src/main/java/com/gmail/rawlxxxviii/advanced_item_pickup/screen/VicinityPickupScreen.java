@@ -49,7 +49,7 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
     @Override
     protected void init(){
 
-        this.imageHeight = 246 + 25;
+        this.imageHeight = 222;
 
         super.init();
 
@@ -72,7 +72,7 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
         drawCenteredString(poseStack,font,
                 Component.literal("Vicinity"),
                 this.imageWidth / 2,
-                8,
+                5,
                 new Color(250, 250, 250).getRGB()
         );
 
@@ -81,6 +81,10 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        if(KeyBinding.OPEN_VICINITY_PICKUP_KEY.getKey().getValue() == pKeyCode){
+            this.onClose();
+            return true;
+        }
         return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
@@ -121,8 +125,15 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
     }
 
     @Override
-    public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-        return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+    public boolean mouseScrolled(double p_94686_, double p_94687_, double value) {
+
+        var min = 0;
+        var max = 10;
+        this.menu.setScrollRowPos(
+                Math.max(min, Math.min(max, this.menu.getScrollRowPos() - (int)value))
+        );
+
+        return super.mouseScrolled(p_94686_, p_94687_, value);
     }
 
     @Override

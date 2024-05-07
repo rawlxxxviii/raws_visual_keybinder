@@ -1,44 +1,94 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.common;
 
+import com.gmail.rawlxxxviii.advanced_item_pickup.menu.VicinityPickupMenu;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.ContainerListener;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
 public class VicinityContainer implements Container {
 
-    public int containerSize = 0;
-    
-    public VicinityContainer() {
+    private List<ItemEntity> itemEntities = new ArrayList<ItemEntity>();
+    private VicinityPickupMenu parentMenu;
+
+    public VicinityContainer(VicinityPickupMenu parentMenu) {
+        this.parentMenu = parentMenu;
+    }
+
+
+    public void setItemEntities(List<ItemEntity> itemEntities){
+        this.itemEntities = itemEntities;
+    }
+
+    public List<ItemEntity> getItemEntities(){
+        return itemEntities;
     }
 
     @Override
     public int getContainerSize() {
-        return containerSize;
+        return itemEntities.size();
     }
 
-    public void setContainerSize(int size) {
-        containerSize = size;
-    }
 
     @Override
     public boolean isEmpty() {
-        return false;
+
+        for(var x : this.itemEntities) {
+            if (!x.getItem().isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
-    public ItemStack getItem(int p_18941_) {
-        return new ItemStack( ForgeRegistries.ITEMS.getValue( new ResourceLocation("minecraft:dirt") ),10);
+    public ItemStack getItem(int index) {
+
+        index += parentMenu.getScrollRowPos() * VicinityPickupMenu.COLUMN_COUNT;
+
+        if(index >= itemEntities.size()){
+            return ItemStack.EMPTY;
+        }
+
+        var itemEntity = itemEntities.get(index);
+        return itemEntity == null ? ItemStack.EMPTY : itemEntity.getItem();
+
     }
 
     @Override
-    public ItemStack removeItem(int p_18942_, int p_18943_) {
-        return new ItemStack( ForgeRegistries.ITEMS.getValue( new ResourceLocation("minecraft:dirt") ),10);
+    public ItemStack removeItem(int index, int amount) {
+        index += parentMenu.getScrollRowPos() * VicinityPickupMenu.COLUMN_COUNT;
+
+        if(index >= itemEntities.size()){
+            return ItemStack.EMPTY;
+        }
+        var itemEntity = itemEntities.get(index);
+        if(amount == 0 || itemEntity == null || itemEntity.getItem().isEmpty()){
+            return ItemStack.EMPTY;
+        }
+
+        var result = itemEntity.getItem().split(amount);
+
+        if(!result.isEmpty()){
+            this.setChanged();
+        }
+
+        return  result;
+    }
+
+    @Override
+    public void clearContent() {
+        itemEntities.clear();
     }
 
     @Override
@@ -58,7 +108,7 @@ public class VicinityContainer implements Container {
 
     @Override
     public void setChanged() {
-
+        this.parentMenu.containerChanged(this);
     }
 
     @Override
@@ -78,7 +128,7 @@ public class VicinityContainer implements Container {
 
     @Override
     public boolean canPlaceItem(int p_18952_, ItemStack p_18953_) {
-        return Container.super.canPlaceItem(p_18952_, p_18953_);
+        return  false;
     }
 
     @Override
@@ -96,8 +146,4 @@ public class VicinityContainer implements Container {
         return Container.super.hasAnyMatching(p_216875_);
     }
 
-    @Override
-    public void clearContent() {
-
-    }
 }
