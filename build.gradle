@@ -7,8 +7,8 @@ plugins {
 }
 
 version = '0.1.0'
-group = 'com.gmail.rawlxxxviii.advanced_item_pickup' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'advanced_item_pickup'
+group = 'com.gmail.rawlxxxviii.vicinity_item_pickup' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'vicinity_item_pickup'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -135,8 +135,6 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.19.2-43.3.0'
 
-    // Apply Mixin AP
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
@@ -153,21 +151,12 @@ dependencies {
 
 }
 
-mixin {
-    add sourceSets.main, 'mixins.advanced_item_pickup.refmap.json'
-    config 'advanced_item_pickup.mixins.json'
-
-    debug.verbose = true
-    debug.export = true
-    dumpTargetOnFailure = true
-
-}
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "advanced_item_pickup",
+                "Specification-Title"     : "vicinity_item_pickup",
                 "Specification-Vendor"    : "rawlxxxviii",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,

@@ -15,7 +15,7 @@ license="All rights reserved"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="advanced_item_pickup" #mandatory
+modId="vicinity_item_pickup" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 # ${file.jarVersion} will substitute the value of the Implementation-Version as read from the mod's JAR file metadata
 # see the associated build.gradle script for how to populate this completely automatically during a build
@@ -43,23 +43,13 @@ authors="rawlxxviii" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 
-    Raws' Advanced item pickup gives players more control over itempickup.
+    Vicinity item pickup lets players pickup items via a container menu.
 
-    - Automatic item pickup can now be toggled.
-    - Items can be picked up by holding down a key.
-    - Mark items to be never automatically picked up
-    - Mark items to be always automatically picked
-
-
-    Never list:
-        Items in this list will not be automatically picked up even when autopickup is on. To pickup these items hold down the pickup button.
-
-    Always list:
-        Items in this list will always be automatically picked picked up even when autopickup is off.
+    Standard item pickup can be disabled via config or via an other mod. Raws' Advanced item pickup can be used for this.
 
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies.advanced_item_pickup]] #optional
+[[dependencies.vicinity_item_pickup]] #optional
     # the modid of the dependency
     modId="forge" #mandatory
     # Does this dependency have to exist - if not, ordering below must be specified
@@ -71,7 +61,7 @@ description='''
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
 # Here's another dependency
-[[dependencies.advanced_item_pickup]]
+[[dependencies.vicinity_item_pickup]]
     modId="minecraft"
     mandatory=true
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
