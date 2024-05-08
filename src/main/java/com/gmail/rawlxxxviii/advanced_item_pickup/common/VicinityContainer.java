@@ -1,6 +1,7 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.common;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.menu.VicinityPickupMenu;
+import com.gmail.rawlxxxviii.advanced_item_pickup.util.MathUtils;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -20,6 +21,8 @@ public class VicinityContainer implements Container {
     private VicinityPickupMenu parentMenu;
     private Player player;
 
+    private static final double REACH = 2.3f;
+
     public VicinityContainer(VicinityPickupMenu parentMenu,Player player) {
         this.parentMenu = parentMenu;
         this.player = player;
@@ -30,17 +33,16 @@ public class VicinityContainer implements Container {
 
     public void setItemEntities(){
 
-        var reach = 1.85;
         var verticalOffset = .5;
         var verticalAddedReach = .5;
 
         var aabb = new AABB(
-                player.getX() - reach,
-                player.getY() - reach + verticalOffset,
-                player.getZ() - reach,
-                player.getX() + reach,
-                player.getY() + reach + verticalOffset + verticalAddedReach,
-                player.getZ() + reach
+                player.getX() - REACH,
+                player.getY() - REACH + verticalOffset,
+                player.getZ() - REACH,
+                player.getX() + REACH,
+                player.getY() + REACH + verticalOffset + verticalAddedReach,
+                player.getZ() + REACH
         );
 
         this.itemEntities = player.level.getEntitiesOfClass(
@@ -48,10 +50,19 @@ public class VicinityContainer implements Container {
                 aabb
         );
 
+        this.filterItemsByDistance();
         this.sortEntities();
 
     }
 
+    public void filterItemsByDistance(){
+
+        this.itemEntities.removeIf(x->
+                        MathUtils.getDistance(player.getX(),x.getX(),player.getZ(),x.getZ())
+                                > REACH
+            );
+    }
+    
     public void sortEntities(){
         this.itemEntities
             .sort(Comparator.comparing(a -> a.getUUID().toString()));
