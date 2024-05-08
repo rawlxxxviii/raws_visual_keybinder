@@ -1,33 +1,17 @@
 package com.gmail.rawlxxxviii.advanced_item_pickup.screen;
 
 import com.gmail.rawlxxxviii.advanced_item_pickup.AdvancedItemPickupMod;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.advanced_pickup.AdvancedPickup;
-import com.gmail.rawlxxxviii.advanced_item_pickup.capability.vicinity_pickup.VicinityPickup;
 import com.gmail.rawlxxxviii.advanced_item_pickup.client.KeyBinding;
-import com.gmail.rawlxxxviii.advanced_item_pickup.common.ItemFilterType;
-import com.gmail.rawlxxxviii.advanced_item_pickup.common.VicinityContainer;
 import com.gmail.rawlxxxviii.advanced_item_pickup.menu.VicinityPickupMenu;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.PacketHandler;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.ClearNameFiltersOfType_C2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.PickUpAllKeyDown_C2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.RemoveNameFilter_C2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.network.packet.c2s.UpdateNameFilter_C2SPacket;
-import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.AdvancedPickupSettingsMenu;
-import com.gmail.rawlxxxviii.advanced_item_pickup.settings_menu.MySelectionList;
-import com.gmail.rawlxxxviii.advanced_item_pickup.util.ItemUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +21,7 @@ import java.util.Optional;
 
 public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickupMenu> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(
+    private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(
                     AdvancedItemPickupMod.MODID,
                     "textures/gui/vicinity_pickup_gui.png");
 
@@ -57,6 +41,11 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
 
     }
 
+    public boolean canScroll() {
+        return this.menu.getMaxScroll()>0;
+    }
+
+
 
     @Override
     public boolean mouseClicked(double p_97748_, double p_97749_, int buttonNumber) {
@@ -73,6 +62,14 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
         drawCenteredString(poseStack,font,
                 Component.literal("Vicinity"),
                 this.imageWidth / 2,
+                7,
+                new Color(250, 250, 250).getRGB()
+        );
+//        this.font.draw(p_98616_, creativemodetab.getDisplayName(), 8.0F, 6.0F, creativemodetab.getLabelColor());
+
+        drawCenteredString(poseStack,font,
+                Component.literal(String.valueOf(this.menu.getScrollRowPosition())+"/"+String.valueOf(menu.getMaxScroll())),
+                this.imageWidth / 2 + 50,
                 7,
                 new Color(250, 250, 250).getRGB()
         );
@@ -95,8 +92,36 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
-        RenderSystem.setShaderTexture(0, TEXTURE);
+        RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
         blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight, 512, 512);
+
+
+        //scrollbar
+        int scrollbarHeight = 108;
+        int scrollbarButtonHeight = 10;
+
+        blit(pPoseStack,
+                this.getGuiLeft() + imageWidth + 15,  this.getGuiTop() + 18,
+                220, 0,
+                10, scrollbarHeight,
+                512, 512
+        );
+
+
+        int buttonY = 0;
+
+        if(menu.getMaxScroll() > 0){
+            double a = (double)menu.getScrollRowPosition() / (double) menu.getMaxScroll();
+            double b = scrollbarHeight - scrollbarButtonHeight;
+            buttonY = (int)(a * b);
+        }
+
+        this.blit(pPoseStack,
+                this.getGuiLeft() + imageWidth + 15, this.getGuiTop() + 18 + buttonY,
+                240 + (this.canScroll() ? 0 : 20),0,
+                10,10,
+                512, 512
+        );
     }
 
     @Override
@@ -128,11 +153,13 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
     @Override
     public boolean mouseScrolled(double p_94686_, double p_94687_, double value) {
 
-        var min = 0;
-        var max = 10;
-        this.menu.setScrollRowPos(
-                Math.max(min, Math.min(max, this.menu.getScrollRowPos() - (int)value))
-        );
+        var isMouseOverScrollBar = true;
+        if(isMouseOverScrollBar){
+
+            this.menu.setScrollRowPos(this.menu.getScrollRowPosition() - (int)value);
+
+            return true;
+        }
 
         return super.mouseScrolled(p_94686_, p_94687_, value);
     }

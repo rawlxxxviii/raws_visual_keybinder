@@ -17,11 +17,12 @@ import java.util.List;
 
 public class VicinityPickupMenu extends AbstractContainerMenu implements ContainerListener {
 
-    private static final int VICINITY_SLOT_ROW_COUNT = 6;
+    public static final int VICINITY_SLOT_ROW_COUNT = 6;
+    public static final int VICINITY_SLOT_COLUMN_COUNT = 9;
+
     private static final int VICINITY_TOP = 20;
     private static final int INVENTORY_TOP = 146;
 
-    public static final int COLUMN_COUNT = 9;
 
     private final VicinityContainer vicinityContainer;
     private final Inventory inventory;
@@ -49,14 +50,28 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
     }
 
 
+    public int vicinityItemCount(){
+        return vicinityContainer.getContainerSize();
+    }
 
-    public int getScrollRowPos() {
+
+    public int getMaxScroll() {
+        var itemCount = this.vicinityItemCount();
+        if(itemCount <= VICINITY_SLOT_ROW_COUNT*VICINITY_SLOT_COLUMN_COUNT){
+            return 0;
+        }
+        return itemCount/VICINITY_SLOT_COLUMN_COUNT + 1 - VICINITY_SLOT_ROW_COUNT;
+    }
+
+    public int getScrollRowPosition() {
         return scrollRowPos;
     }
 
-    public void setScrollRowPos(int scrollRowPos) {
-        this.scrollRowPos = scrollRowPos;
-//        this.broadcastFullState();
+    public void setScrollRowPos(int value) {
+
+        this.scrollRowPos =
+                Math.max(0, Math.min(getMaxScroll(), value));
+
     }
 
     private void addSlots() {
@@ -79,11 +94,11 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
         }
 
         for (int row = 0; row < VICINITY_SLOT_ROW_COUNT; ++row) {
-            for (int i = 0; i < COLUMN_COUNT; ++i) {
+            for (int i = 0; i < VICINITY_SLOT_COLUMN_COUNT; ++i) {
                 var slot =
                         new VicinitySlot(
                                 vicinityContainer,
-                                i + row * COLUMN_COUNT+36,
+                                i + row * VICINITY_SLOT_COLUMN_COUNT +36,
                                 8 + i * 18,
                                 VICINITY_TOP + row * 18
                         );
@@ -144,6 +159,8 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
 
     public void onEntitiesUpdated(){
         this.vicinityContainer.onUpdate();
+        this.setScrollRowPos(this.getScrollRowPosition());
+
     }
 
 }

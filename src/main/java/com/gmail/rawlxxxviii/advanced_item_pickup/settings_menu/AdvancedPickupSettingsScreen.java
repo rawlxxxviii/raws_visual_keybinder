@@ -35,7 +35,7 @@ public class AdvancedPickupSettingsScreen extends AbstractContainerScreen<Advanc
                     "textures/gui/pickup_settings_menu_gui.png");
 
     private final int columnCount = 4;
-    private final int rowCount = 7;
+    private final int rowCount = 5;
     private final int LIST_TOP_POSITION = 42;
     private final int columnSize = 18;
     private final int listWidth = columnCount * columnSize;

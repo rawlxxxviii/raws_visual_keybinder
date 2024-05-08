@@ -94,7 +94,7 @@ public class VicinityContainer implements Container {
     }
 
     private int parentIndexCorrection(){
-        return parentMenu.getScrollRowPos() * VicinityPickupMenu.COLUMN_COUNT - 36;
+        return parentMenu.getScrollRowPosition() * VicinityPickupMenu.VICINITY_SLOT_COLUMN_COUNT - 36;
     }
 
     @Override
