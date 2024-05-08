@@ -64,8 +64,10 @@ public class VicinityContainer implements Container {
     }
     
     public void sortEntities(){
+
         this.itemEntities
-            .sort(Comparator.comparing(a -> a.getUUID().toString()));
+//            .sort(Comparator.comparing(a -> a.getUUID().toString()));
+            .sort(Comparator.comparing(ItemEntity::getAge));
     }
 
 

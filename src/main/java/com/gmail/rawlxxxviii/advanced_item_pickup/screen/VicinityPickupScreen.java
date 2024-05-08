@@ -34,7 +34,7 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
     @Override
     protected void init(){
 
-        this.imageHeight = 222;
+        this.imageHeight = 228;
 
         super.init();
 
@@ -67,12 +67,6 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
         );
 //        this.font.draw(p_98616_, creativemodetab.getDisplayName(), 8.0F, 6.0F, creativemodetab.getLabelColor());
 
-        drawCenteredString(poseStack,font,
-                Component.literal(String.valueOf(this.menu.getScrollRowPosition())+"/"+String.valueOf(menu.getMaxScroll())),
-                this.imageWidth / 2 + 50,
-                7,
-                new Color(250, 250, 250).getRGB()
-        );
 
     }
 
@@ -99,26 +93,23 @@ public class VicinityPickupScreen extends AbstractContainerScreen<VicinityPickup
         //scrollbar
         int scrollbarHeight = 108;
         int scrollbarButtonHeight = 10;
-
         blit(pPoseStack,
-                this.getGuiLeft() + imageWidth + 15,  this.getGuiTop() + 18,
-                220, 0,
+                this.getGuiLeft() + imageWidth + 4,  this.getGuiTop() + 18,
+                220 + (this.canScroll() ? 0 : 10), 0,
                 10, scrollbarHeight,
                 512, 512
         );
 
-
+        //scrollbar button
         int buttonY = 0;
-
         if(menu.getMaxScroll() > 0){
             double a = (double)menu.getScrollRowPosition() / (double) menu.getMaxScroll();
             double b = scrollbarHeight - scrollbarButtonHeight;
             buttonY = (int)(a * b);
         }
-
         this.blit(pPoseStack,
-                this.getGuiLeft() + imageWidth + 15, this.getGuiTop() + 18 + buttonY,
-                240 + (this.canScroll() ? 0 : 20),0,
+                this.getGuiLeft() + imageWidth + 4, this.getGuiTop() + 18 + buttonY,
+                240 + (this.canScroll() ? 0 : 10),0,
                 10,10,
                 512, 512
         );

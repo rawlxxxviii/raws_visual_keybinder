@@ -74,6 +74,13 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
 
     }
 
+
+    @Override
+
+    public boolean canTakeItemForPickAll(ItemStack p_38908_, Slot p_38909_) {
+        return false;
+    }
+
     private void addSlots() {
 
         for (int i = 0; i < 9; ++i) {
