@@ -2,11 +2,14 @@ package com.gmail.rawlxxxviii.vicinity_item_pickup.event;
 
 import com.gmail.rawlxxxviii.vicinity_item_pickup.capability.vicinity_pickup.VicinityPickup;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.capability.vicinity_pickup.VicinityPickupAttacher;
+import com.gmail.rawlxxxviii.vicinity_item_pickup.network.PacketHandler;
+import com.gmail.rawlxxxviii.vicinity_item_pickup.network.packet.s2c.UpdateVicinityPickupSettings_S2CPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,6 +31,35 @@ public class ForgeEvents {
 
     }
 
+    @SubscribeEvent
+    public static void  onEntityJoinWorldEvent(EntityJoinLevelEvent event){
+
+        if(!(event.getEntity() instanceof ServerPlayer player)){
+            return;
+        }
+        if(player.level.isClientSide){
+            return;
+        }
+
+
+        player.getCapability(VicinityPickup.INSTANCE).ifPresent(c->{
+
+            // todo: get from server config (to update)
+            c.setReach(2.3);
+            c.setVerticalOffset(0.5);
+            c.setVerticalExtraReachTop(0.5);
+
+
+            PacketHandler.sendToPlayer(
+                    new UpdateVicinityPickupSettings_S2CPacket(
+                            c.serializeNBT()
+                    ),
+                    player
+            );
+
+        });
+
+    }
 
     @SubscribeEvent
     public static void  onPlayerClone(PlayerEvent.Clone event){
@@ -53,19 +85,6 @@ public class ForgeEvents {
 
             event.getOriginal().invalidateCaps();
         }
-    }
-
-
-    @SubscribeEvent
-    public static void  onPlayerTick(TickEvent.PlayerTickEvent event){
-
-        if(event.phase == TickEvent.Phase.START){
-
-            event.player.getCapability(VicinityPickup.INSTANCE).ifPresent(c->{
-                c.onPlayerTick(event);
-            });
-        }
-
     }
 
 

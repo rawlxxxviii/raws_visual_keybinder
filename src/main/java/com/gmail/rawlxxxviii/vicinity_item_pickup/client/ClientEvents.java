@@ -30,7 +30,9 @@ public class ClientEvents {
             }
             if(KeyBinding.OPEN_VICINITY_PICKUP_KEY.consumeClick()) {
 
-                PacketHandler.sendToServer(new OpenVicinityPickupMenu_C2SPacket());
+                if(Minecraft.getInstance().player != null){
+                    Minecraft.getInstance().setScreen(new VicinityPickupScreen(Minecraft.getInstance().player));
+                }
             }
 
         }
@@ -57,7 +59,7 @@ public class ClientEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
-            MenuScreens.register(ModMenuTypes.VICINITY_PICKUP_MENU.get(), VicinityPickupScreen::new);
+            MenuScreens.register(ModMenuTypes.VICINITY_PICKUP_MENU.get(), VicinityPickupContainerScreen::new);
 
         }
 

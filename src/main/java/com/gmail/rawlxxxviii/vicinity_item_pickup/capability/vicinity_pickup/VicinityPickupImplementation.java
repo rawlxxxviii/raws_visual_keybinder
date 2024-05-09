@@ -12,8 +12,9 @@ import net.minecraftforge.event.TickEvent;
 public class VicinityPickupImplementation implements IVicinityPickup, MenuProvider {
 
 
-    private float reach = 50F;
-
+    private double reach = 2.3; //2.3
+    private double verticalOffset = 0.5; //0.5D
+    private double verticalExtraReachTop = 0.5; //0.5D
 
     public VicinityPickupImplementation() {
     }
@@ -21,28 +22,41 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
 
     public void copyFrom(IVicinityPickup source) {
         this.reach = source.getReach();
+        this.verticalOffset = source.getVerticalOffset();
+        this.verticalExtraReachTop = source.getVerticalExtraReachTop();
     }
 
     @Override
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+    public void setReach(double value) {
+        this.reach = value;
+    }
 
-        if (event.player.containerMenu instanceof VicinityPickupMenu vicinityPickupMenu){
-            vicinityPickupMenu.onEntitiesUpdated();
-        }
+    @Override
+    public void setVerticalOffset(double value) {
+        this.verticalOffset = value;
+    }
+
+    @Override
+    public void setVerticalExtraReachTop(double value) {
+        this.verticalExtraReachTop = value;
     }
 
 
     @Override
     public CompoundTag serializeNBT() {
         final CompoundTag tag = new CompoundTag();
-        tag.putFloat("reach", this.getReach());
+        tag.putDouble("reach", this.getReach());
+        tag.putDouble("verticalOffset", this.getVerticalOffset());
+        tag.putDouble("verticalExtraReachTop", this.getVerticalExtraReachTop());
 
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.reach = nbt.getFloat("reach");
+        this.reach = nbt.getDouble("reach");
+        this.verticalOffset = nbt.getDouble("verticalOffset");
+        this.verticalExtraReachTop = nbt.getDouble("verticalExtraReachTop");
     }
 
 
@@ -58,7 +72,17 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
     }
 
     @Override
-    public float getReach() {
+    public double getReach() {
         return reach;
+    }
+
+    @Override
+    public double getVerticalOffset() {
+        return verticalOffset;
+    }
+
+    @Override
+    public double getVerticalExtraReachTop() {
+        return verticalExtraReachTop;
     }
 }

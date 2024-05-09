@@ -9,8 +9,13 @@ import net.minecraftforge.event.TickEvent;
 @AutoRegisterCapability
 public interface IVicinityPickup extends INBTSerializable<CompoundTag>, MenuProvider {
 
-    float getReach();
+    double getReach();
+    double getVerticalOffset();
+    double getVerticalExtraReachTop();
     void copyFrom(IVicinityPickup source);
-    void onPlayerTick(TickEvent.PlayerTickEvent event);
+
+    void setReach(double value);
+    void setVerticalOffset(double value);
+    void setVerticalExtraReachTop(double value);
 
 }

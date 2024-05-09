@@ -1,11 +1,7 @@
 package com.gmail.rawlxxxviii.vicinity_item_pickup.menu;
 
-import com.gmail.rawlxxxviii.vicinity_item_pickup.common.VicinityContainer;
-import com.gmail.rawlxxxviii.vicinity_item_pickup.common.VicinitySlot;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.settings_menu.ModMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.Container;
-import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -15,22 +11,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VicinityPickupMenu extends AbstractContainerMenu implements ContainerListener {
+public class VicinityPickupMenu extends AbstractContainerMenu {
 
-    public static final int VICINITY_SLOT_ROW_COUNT = 6;
-    public static final int VICINITY_SLOT_COLUMN_COUNT = 9;
-
-    private static final int VICINITY_TOP = 20;
     private static final int INVENTORY_TOP = 146;
 
-
-    private final VicinityContainer vicinityContainer;
     private final Inventory inventory;
-
-    private final List<Slot> vicinitySlots = new ArrayList<>();
-
-    private int scrollRowPos = 0;
-
 
     public VicinityPickupMenu(int id, Inventory inventory, FriendlyByteBuf extraData) {
         this(id, inventory);
@@ -39,47 +24,13 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
     public VicinityPickupMenu(int id, Inventory inventory) {
         super(ModMenuTypes.VICINITY_PICKUP_MENU.get(), id);
 
-
         this.inventory = inventory;
-
-        vicinityContainer = new VicinityContainer(this, inventory.player);
 
         addSlots();
 
-
     }
 
 
-    public int vicinityItemCount(){
-        return vicinityContainer.getContainerSize();
-    }
-
-
-    public int getMaxScroll() {
-        var itemCount = this.vicinityItemCount();
-        if(itemCount <= VICINITY_SLOT_ROW_COUNT*VICINITY_SLOT_COLUMN_COUNT){
-            return 0;
-        }
-        return itemCount/VICINITY_SLOT_COLUMN_COUNT + 1 - VICINITY_SLOT_ROW_COUNT;
-    }
-
-    public int getScrollRowPosition() {
-        return scrollRowPos;
-    }
-
-    public void setScrollRowPos(int value) {
-
-        this.scrollRowPos =
-                Math.max(0, Math.min(getMaxScroll(), value));
-
-    }
-
-
-    @Override
-
-    public boolean canTakeItemForPickAll(ItemStack p_38908_, Slot p_38909_) {
-        return false;
-    }
 
     private void addSlots() {
 
@@ -100,26 +51,9 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
             }
         }
 
-        for (int row = 0; row < VICINITY_SLOT_ROW_COUNT; ++row) {
-            for (int i = 0; i < VICINITY_SLOT_COLUMN_COUNT; ++i) {
-                var slot =
-                        new VicinitySlot(
-                                vicinityContainer,
-                                i + row * VICINITY_SLOT_COLUMN_COUNT +36,
-                                8 + i * 18,
-                                VICINITY_TOP + row * 18
-                        );
-                this.vicinitySlots.add(slot);
-                this.addSlot(slot);
-            }
-        }
     }
 
 
-
-    @Override
-    public void containerChanged(Container p_18983_) {
-    }
 
 
     @Override
@@ -132,31 +66,12 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
         if(!slot.hasItem()){
             return ItemStack.EMPTY;
         }
-        ItemStack itemstack = slot.getItem();
-        ItemStack itemstackCopy = itemstack.copy();
 
-        if(slot.container instanceof VicinityContainer){
-            if (!this.moveItemStackTo(itemstack, 0, 4*9, false)) {
-                return ItemStack.EMPTY;
-            }
-        }else{
-            player.drop(slot.getItem().copy(),true);
-            slot.getItem().setCount(0);
-            slot.setChanged();
-            return ItemStack.EMPTY;
-        }
+        player.drop(slot.getItem().copy(),true);
+        slot.getItem().setCount(0);
+        slot.setChanged();
+        return ItemStack.EMPTY;
 
-
-
-
-        if (itemstack.isEmpty()) {
-            slot.set(ItemStack.EMPTY);
-        } else {
-            slot.setChanged();
-        }
-
-
-        return itemstackCopy;
     }
 
     @Override
@@ -164,10 +79,5 @@ public class VicinityPickupMenu extends AbstractContainerMenu implements Contain
         return player.isAlive();
     }
 
-    public void onEntitiesUpdated(){
-        this.vicinityContainer.onUpdate();
-        this.setScrollRowPos(this.getScrollRowPosition());
-
-    }
 
 }

@@ -2,6 +2,7 @@ package com.gmail.rawlxxxviii.vicinity_item_pickup.network;
 
 import com.gmail.rawlxxxviii.vicinity_item_pickup.VicinityItemPickupMod;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.packet.c2s.*;
+import com.gmail.rawlxxxviii.vicinity_item_pickup.network.packet.s2c.UpdateVicinityPickupSettings_S2CPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -25,6 +26,16 @@ public class PacketHandler {
     public static void register(){
 
         INSTANCE.messageBuilder(
+                        UpdateVicinityPickupSettings_S2CPacket.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_CLIENT
+                )
+                .decoder(UpdateVicinityPickupSettings_S2CPacket::new)
+                .encoder(UpdateVicinityPickupSettings_S2CPacket::encodeToBytes)
+                .consumerMainThread(UpdateVicinityPickupSettings_S2CPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(
                         OpenVicinityPickupMenu_C2SPacket.class,
                     id(),
                     NetworkDirection.PLAY_TO_SERVER
@@ -33,6 +44,17 @@ public class PacketHandler {
                 .encoder(OpenVicinityPickupMenu_C2SPacket::encodeToBytes)
                 .consumerMainThread(OpenVicinityPickupMenu_C2SPacket::handle)
                 .add();
+
+        INSTANCE.messageBuilder(
+                        PickupItemEntity_C2SPacket.class,
+                    id(),
+                    NetworkDirection.PLAY_TO_SERVER
+                )
+                .decoder(PickupItemEntity_C2SPacket::new)
+                .encoder(PickupItemEntity_C2SPacket::encodeToBytes)
+                .consumerMainThread(PickupItemEntity_C2SPacket::handle)
+                .add();
+
 
 
     }
