@@ -185,7 +185,8 @@ public class VicinityPickupContainerScreen extends AbstractContainerScreen<Vicin
         if(itemCount <= VICINITY_SLOT_ROW_COUNT * VICINITY_SLOT_COLUMN_COUNT){
             return 0;
         }
-        return itemCount / VICINITY_SLOT_COLUMN_COUNT - VICINITY_SLOT_ROW_COUNT;
+
+        return (int) Math.ceil((double)itemCount / VICINITY_SLOT_COLUMN_COUNT) - VICINITY_SLOT_ROW_COUNT;
     }
 
     public int vicinityItemCount(){
