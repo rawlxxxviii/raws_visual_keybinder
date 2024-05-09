@@ -13,7 +13,7 @@ import java.util.List;
 
 public class VicinityPickupMenu extends AbstractContainerMenu {
 
-    private static final int INVENTORY_TOP = 146;
+    public static final int INVENTORY_TOP = 146;
 
     private final Inventory inventory;
 

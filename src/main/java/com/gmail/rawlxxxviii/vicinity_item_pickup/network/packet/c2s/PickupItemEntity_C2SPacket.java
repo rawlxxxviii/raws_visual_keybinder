@@ -15,20 +15,28 @@ import java.util.function.Supplier;
  public class PickupItemEntity_C2SPacket {
 
      private int id;
+     private int count;
 
-     public PickupItemEntity_C2SPacket(int id) {
+     public PickupItemEntity_C2SPacket(int id, int count) {
          this.id = id;
+         this.count = count;
      }
 
      public PickupItemEntity_C2SPacket(FriendlyByteBuf buffer) {
          this.id = buffer.readInt();
+         this.count = buffer.readInt();
      }
 
      public void encodeToBytes(FriendlyByteBuf buffer) {
          buffer.writeInt(this.id);
+         buffer.writeInt(this.count);
      }
 
      public void handle(Supplier<NetworkEvent.Context> supplier) {
+
+         if(count < 1){
+             return;
+         }
 
          var context = supplier.get();
 
@@ -59,27 +67,40 @@ import java.util.function.Supplier;
                  }
 
 
-                 ItemStack itemstack = itemEntity.getItem();
-                 Item item = itemstack.getItem();
-                 int initialCount = itemstack.getCount();
+                 ItemStack itemStack = itemEntity.getItem();
+                 Item item = itemStack.getItem();
 
-                 int hook = net.minecraftforge.event.ForgeEventFactory.onItemPickup(itemEntity, serverPlayer);
-                 if (hook < 0) return;
+                 var itemsToAddCount = Math.min(itemStack.getCount(), count);
+                 if(
+                         itemsToAddCount < 1
+                                 ||
+                         net.minecraftforge.event.ForgeEventFactory.onItemPickup(itemEntity, serverPlayer) < 0
+                 ){
+                     return;
+                 }
 
-                 ItemStack copy = itemstack.copy();
-                 if (
-                         (hook == 1 || initialCount <= 0 || serverPlayer.getInventory().add(itemstack))
-                 ) {
-                     copy.setCount(copy.getCount() - itemEntity.getItem().getCount());
+
+                 ItemStack copyToAdd = itemStack.copy();
+                 copyToAdd.setCount(count);
+
+
+                 if (serverPlayer.getInventory().add(copyToAdd)) {
+
+                     var amountTaken = itemsToAddCount - copyToAdd.getCount();
+                     itemStack.setCount(itemStack.getCount() - amountTaken);
+
+                     ItemStack copy = itemStack.copy(); //
+                     copy.setCount(amountTaken);
                      net.minecraftforge.event.ForgeEventFactory.firePlayerItemPickupEvent(serverPlayer, itemEntity, copy);
-                     serverPlayer.take(itemEntity, initialCount);
-                     if (itemstack.isEmpty()) {
+
+                     serverPlayer.take(itemEntity, amountTaken);
+                     if (itemStack.isEmpty()) {
                          itemEntity.discard();
-                         itemstack.setCount(initialCount);
                      }
 
-                     serverPlayer.awardStat(Stats.ITEM_PICKED_UP.get(item), initialCount);
+                     serverPlayer.awardStat(Stats.ITEM_PICKED_UP.get(item), amountTaken);
                      serverPlayer.onItemPickup(itemEntity);
+
                  }
              });
 

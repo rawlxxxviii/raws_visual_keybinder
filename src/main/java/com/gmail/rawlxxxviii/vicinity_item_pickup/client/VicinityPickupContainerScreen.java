@@ -19,6 +19,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,8 +58,6 @@ public class VicinityPickupContainerScreen extends AbstractContainerScreen<Vicin
 
         super.init();
 
-
-        //todo move to onupdate
         setItemEntities();
 
     }
@@ -78,8 +77,43 @@ public class VicinityPickupContainerScreen extends AbstractContainerScreen<Vicin
         if(vicinitySlotIndex > -1){
             var itemEntityIndex = vicinitySlotIndex + scrollRowPos*VICINITY_SLOT_COLUMN_COUNT;
             if(this.itemEntities.size() > itemEntityIndex){
-                PacketHandler.sendToServer(new PickupItemEntity_C2SPacket( itemEntities.get(itemEntityIndex).getId() ));
-                return true;
+                var itemEntity = itemEntities.get(itemEntityIndex);
+
+                if(buttonNumber == 0){
+
+                    if(hasShiftDown()){
+                        this.itemEntities.stream().filter(listItem->
+                                ForgeRegistries.ITEMS.getKey(listItem.getItem().getItem()).equals(
+                                  ForgeRegistries.ITEMS.getKey(itemEntity.getItem().getItem())
+                                )
+                            )
+                            .forEach( listItem -> {
+                                PacketHandler.sendToServer(
+                                        new PickupItemEntity_C2SPacket( listItem.getId(), listItem.getItem().getCount())
+                                );
+                            });
+                        return true;
+                    }else{
+                        PacketHandler.sendToServer(
+                                new PickupItemEntity_C2SPacket( itemEntity.getId(), itemEntity.getItem().getCount())
+                        );
+                        return true;
+                    }
+
+                } else if (buttonNumber == 1) {
+                    ;
+                    PacketHandler.sendToServer( new PickupItemEntity_C2SPacket(
+                                    itemEntity.getId(),
+                                    (int) Math.ceil((double)itemEntity.getItem().getCount() / 2)
+                            ));
+                    return true;
+                } else if (buttonNumber == 2) {
+
+                    PacketHandler.sendToServer(
+                            new PickupItemEntity_C2SPacket( itemEntity.getId(), 1)
+                    );
+                    return true;
+                }
             }
         }
 
@@ -117,7 +151,7 @@ public class VicinityPickupContainerScreen extends AbstractContainerScreen<Vicin
 
     @Override
     protected boolean hasClickedOutside(double x, double y, int p_97759_, int p_97760_, int p_97761_) {
-        if(isInsideVicinitySlots(x, y)){
+        if(y < getGuiTop() + VicinityPickupMenu.INVENTORY_TOP - 8){
             return true;
         }
 
@@ -151,7 +185,7 @@ public class VicinityPickupContainerScreen extends AbstractContainerScreen<Vicin
         if(itemCount <= VICINITY_SLOT_ROW_COUNT * VICINITY_SLOT_COLUMN_COUNT){
             return 0;
         }
-        return itemCount / VICINITY_SLOT_COLUMN_COUNT + 1 - VICINITY_SLOT_ROW_COUNT;
+        return itemCount / VICINITY_SLOT_COLUMN_COUNT - VICINITY_SLOT_ROW_COUNT;
     }
 
     public int vicinityItemCount(){
@@ -275,7 +309,8 @@ public class VicinityPickupContainerScreen extends AbstractContainerScreen<Vicin
             if(vicinitySlotIndex > -1){
                 var itemEntityIndex = vicinitySlotIndex + scrollRowPos*VICINITY_SLOT_COLUMN_COUNT;
                 if(
-                    this.itemEntities.size() > itemEntityIndex &&
+                    this.itemEntities.size() > itemEntityIndex
+                            &&
                     !Registry.ITEM.getKey(itemEntities.get(itemEntityIndex).getItem().getItem()).equals(new ResourceLocation("minecraft:air"))
                 ){
                     renderTooltip(poseStack, itemEntities.get(itemEntityIndex).getItem(), mouseX,mouseY);

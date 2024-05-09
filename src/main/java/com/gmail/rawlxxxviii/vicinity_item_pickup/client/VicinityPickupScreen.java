@@ -174,7 +174,7 @@ public class VicinityPickupScreen extends Screen {
     public boolean mouseClicked(double p_97748_, double p_97749_, int buttonNumber) {
 
         this.itemEntities.stream().findFirst().ifPresent(itemEntity ->
-                PacketHandler.sendToServer(new PickupItemEntity_C2SPacket(itemEntity.getId()))
+                PacketHandler.sendToServer(new PickupItemEntity_C2SPacket(itemEntity.getId(),1))
         );
 
         return super.mouseClicked(p_97748_, p_97749_, buttonNumber);
