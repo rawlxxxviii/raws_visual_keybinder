@@ -1,7 +1,6 @@
-package com.gmail.rawlxxxviii.vicinity_item_pickup.settings_menu;
+package com.gmail.rawlxxxviii.vicinity_item_pickup.menu;
 
 import com.gmail.rawlxxxviii.vicinity_item_pickup.VicinityItemPickupMod;
-import com.gmail.rawlxxxviii.vicinity_item_pickup.menu.VicinityPickupMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.eventbus.api.IEventBus;

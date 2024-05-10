@@ -2,7 +2,7 @@ package com.gmail.rawlxxxviii.vicinity_item_pickup.client;
 
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.packet.c2s.*;
-import com.gmail.rawlxxxviii.vicinity_item_pickup.settings_menu.ModMenuTypes;
+import com.gmail.rawlxxxviii.vicinity_item_pickup.menu.ModMenuTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;

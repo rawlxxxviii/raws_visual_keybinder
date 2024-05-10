@@ -1,7 +1,7 @@
 package com.gmail.rawlxxxviii.vicinity_item_pickup;
 
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.PacketHandler;
-import com.gmail.rawlxxxviii.vicinity_item_pickup.settings_menu.ModMenuTypes;
+import com.gmail.rawlxxxviii.vicinity_item_pickup.menu.ModMenuTypes;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;

@@ -12,9 +12,9 @@ import net.minecraftforge.event.TickEvent;
 public class VicinityPickupImplementation implements IVicinityPickup, MenuProvider {
 
 
-    private double reach = 2.3; //2.3
-    private double verticalOffset = 0.5; //0.5D
-    private double verticalExtraReachTop = 0.5; //0.5D
+    private double reach = 2.3;
+    private double verticalOffset = 0.5;
+    private double verticalExtraReachTop = 0.5;
 
     public VicinityPickupImplementation() {
     }

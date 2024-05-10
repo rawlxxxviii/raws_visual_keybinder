@@ -2,6 +2,7 @@ package com.gmail.rawlxxxviii.vicinity_item_pickup.event;
 
 import com.gmail.rawlxxxviii.vicinity_item_pickup.capability.vicinity_pickup.VicinityPickup;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.capability.vicinity_pickup.VicinityPickupAttacher;
+import com.gmail.rawlxxxviii.vicinity_item_pickup.config.ModConfig;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.packet.s2c.UpdateVicinityPickupSettings_S2CPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,11 +45,9 @@ public class ForgeEvents {
 
         player.getCapability(VicinityPickup.INSTANCE).ifPresent(c->{
 
-            // todo: get from server config (to update)
-            c.setReach(2.3);
-            c.setVerticalOffset(0.5);
-            c.setVerticalExtraReachTop(0.5);
-
+            c.setReach(ModConfig.reach.get());
+            c.setVerticalOffset(ModConfig.verticalOffset.get());
+            c.setVerticalExtraReachTop(ModConfig.verticalExtraReachTop.get());
 
             PacketHandler.sendToPlayer(
                     new UpdateVicinityPickupSettings_S2CPacket(
