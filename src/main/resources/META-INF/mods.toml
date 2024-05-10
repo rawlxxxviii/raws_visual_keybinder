@@ -21,7 +21,7 @@ modId="vicinity_item_pickup" #mandatory
 # see the associated build.gradle script for how to populate this completely automatically during a build
 version="${file.jarVersion}" #mandatory
  # A display name for the mod
-displayName="Raws' Advanced Item pickup" #mandatory
+displayName="Raws' Vicinity item pickup" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -31,7 +31,7 @@ logoFile="logo.png" #optional
 # A text field displayed in the mod UI
 credits="" #optional
 # A text field displayed in the mod UI
-authors="rawlxxviii" #optional
+authors="rawlxxxviii" #optional
 # Display Test controls the display for your mod in the server connection screen
 # MATCH_VERSION means that your mod will cause a red X if the versions on client and server differ. This is the default behaviour and should be what you choose if you have server and client elements to your mod.
 # IGNORE_SERVER_VERSION means that your mod will not cause a red X if it's present on the server but not on the client. This is what you should use if you're a server only mod.
@@ -45,7 +45,7 @@ description='''
 
     Vicinity item pickup lets players pickup items via a container menu.
 
-    Standard item pickup can be disabled via config or via an other mod. Raws' Advanced item pickup can be used for this.
+    Standard item pickup can be disabled via config or via an other mod. Raws' Advanced item pickup could be used for this.
 
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.

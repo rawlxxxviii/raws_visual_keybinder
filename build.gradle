@@ -51,11 +51,11 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'advanced_item_pickup'
+            property 'forge.enabledGameTestNamespaces', 'vicinity_item_pickup'
 
 
             mods {
-                advanced_item_pickup {
+                vicinity_item_pickup {
                     source sourceSets.main
                 }
             }
@@ -68,10 +68,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'advanced_item_pickup'
+            property 'forge.enabledGameTestNamespaces', 'vicinity_item_pickup'
 
             mods {
-                advanced_item_pickup {
+                vicinity_item_pickup {
                     source sourceSets.main
                 }
             }
@@ -87,10 +87,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'advanced_item_pickup'
+            property 'forge.enabledGameTestNamespaces', 'vicinity_item_pickup'
 
             mods {
-                advanced_item_pickup {
+                vicinity_item_pickup {
                     source sourceSets.main
                 }
             }
@@ -104,10 +104,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'advanced_item_pickup', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'vicinity_item_pickup', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                advanced_item_pickup {
+                vicinity_item_pickup {
                     source sourceSets.main
                 }
             }
