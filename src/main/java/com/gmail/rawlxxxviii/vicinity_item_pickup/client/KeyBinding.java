@@ -16,9 +16,8 @@ public class KeyBinding {
     public static final KeyMapping OPEN_VICINITY_PICKUP_KEY = new KeyMapping(
             OPEN_VICINITY_PICKUP,
             KeyConflictContext.IN_GAME,
-            KeyModifier.CONTROL,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_E,
+            GLFW.GLFW_KEY_V,
             MOD_KEY_CATEGORY);
 
 
