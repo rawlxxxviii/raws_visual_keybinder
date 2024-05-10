@@ -1,12 +1,15 @@
 package com.gmail.rawlxxxviii.vicinity_item_pickup;
 
+import com.gmail.rawlxxxviii.vicinity_item_pickup.config.VicinityPickupConfig;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.menu.ModMenuTypes;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -25,12 +28,13 @@ public class VicinityItemPickupMod
         ModMenuTypes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, VicinityPickupConfig.GENERAL_SPEC, MODID+".toml");
+
     }
 
 
     @SubscribeEvent
     public void commonSetup(final FMLCommonSetupEvent event) {
-
         event.enqueueWork(PacketHandler::register);
     }
 

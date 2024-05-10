@@ -2,14 +2,13 @@ package com.gmail.rawlxxxviii.vicinity_item_pickup.event;
 
 import com.gmail.rawlxxxviii.vicinity_item_pickup.capability.vicinity_pickup.VicinityPickup;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.capability.vicinity_pickup.VicinityPickupAttacher;
-import com.gmail.rawlxxxviii.vicinity_item_pickup.config.ModConfig;
+import com.gmail.rawlxxxviii.vicinity_item_pickup.config.VicinityPickupConfig;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.PacketHandler;
 import com.gmail.rawlxxxviii.vicinity_item_pickup.network.packet.s2c.UpdateVicinityPickupSettings_S2CPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -45,9 +44,10 @@ public class ForgeEvents {
 
         player.getCapability(VicinityPickup.INSTANCE).ifPresent(c->{
 
-            c.setReach(ModConfig.reach.get());
-            c.setVerticalOffset(ModConfig.verticalOffset.get());
-            c.setVerticalExtraReachTop(ModConfig.verticalExtraReachTop.get());
+            c.setReach(VicinityPickupConfig.reach.get());
+            c.setVerticalOffset(VicinityPickupConfig.verticalOffset.get());
+            c.setVerticalExtraReachTop(VicinityPickupConfig.verticalExtraReachTop.get());
+            c.setDisableVanillaPickup(VicinityPickupConfig.disableVanillaPickup.get());
 
             PacketHandler.sendToPlayer(
                     new UpdateVicinityPickupSettings_S2CPacket(

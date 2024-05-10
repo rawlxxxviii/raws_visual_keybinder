@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -224,7 +223,7 @@ public class VicinityPickupContainerScreen extends AbstractContainerScreen<Vicin
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if(KeyBinding.OPEN_VICINITY_PICKUP_KEY_OLD.getKey().getValue() == pKeyCode){
+        if(KeyBinding.OPEN_VICINITY_PICKUP_KEY.getKey().getValue() == pKeyCode){
             this.onClose();
             return true;
         }

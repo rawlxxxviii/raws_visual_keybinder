@@ -15,6 +15,7 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
     private double reach = 2.3;
     private double verticalOffset = 0.5;
     private double verticalExtraReachTop = 0.5;
+    private boolean disableVanillaPickup = false;
 
     public VicinityPickupImplementation() {
     }
@@ -24,6 +25,7 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
         this.reach = source.getReach();
         this.verticalOffset = source.getVerticalOffset();
         this.verticalExtraReachTop = source.getVerticalExtraReachTop();
+        this.disableVanillaPickup = source.getDisableVanillaPickup();
     }
 
     @Override
@@ -41,6 +43,11 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
         this.verticalExtraReachTop = value;
     }
 
+    @Override
+    public void setDisableVanillaPickup(boolean value) {
+        this.disableVanillaPickup = value;
+    }
+
 
     @Override
     public CompoundTag serializeNBT() {
@@ -48,6 +55,7 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
         tag.putDouble("reach", this.getReach());
         tag.putDouble("verticalOffset", this.getVerticalOffset());
         tag.putDouble("verticalExtraReachTop", this.getVerticalExtraReachTop());
+        tag.putBoolean("disableVanillaPickup", this.getDisableVanillaPickup());
 
         return tag;
     }
@@ -57,6 +65,7 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
         this.reach = nbt.getDouble("reach");
         this.verticalOffset = nbt.getDouble("verticalOffset");
         this.verticalExtraReachTop = nbt.getDouble("verticalExtraReachTop");
+        this.disableVanillaPickup = nbt.getBoolean("disableVanillaPickup");
     }
 
 
@@ -84,5 +93,10 @@ public class VicinityPickupImplementation implements IVicinityPickup, MenuProvid
     @Override
     public double getVerticalExtraReachTop() {
         return verticalExtraReachTop;
+    }
+
+    @Override
+    public boolean getDisableVanillaPickup() {
+        return disableVanillaPickup;
     }
 }

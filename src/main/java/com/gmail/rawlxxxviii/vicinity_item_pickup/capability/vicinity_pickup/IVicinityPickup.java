@@ -12,10 +12,14 @@ public interface IVicinityPickup extends INBTSerializable<CompoundTag>, MenuProv
     double getReach();
     double getVerticalOffset();
     double getVerticalExtraReachTop();
+    boolean getDisableVanillaPickup();
+
     void copyFrom(IVicinityPickup source);
 
     void setReach(double value);
     void setVerticalOffset(double value);
     void setVerticalExtraReachTop(double value);
+    void setDisableVanillaPickup(boolean value);
+
 
 }

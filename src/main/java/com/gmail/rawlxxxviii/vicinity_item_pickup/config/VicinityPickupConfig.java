@@ -2,7 +2,7 @@ package com.gmail.rawlxxxviii.vicinity_item_pickup.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ModConfig {
+public class VicinityPickupConfig {
 
     public static final ForgeConfigSpec GENERAL_SPEC;
 
