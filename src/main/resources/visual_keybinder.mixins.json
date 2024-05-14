@@ -1,7 +1,7 @@
 {
   "required": true,
   "compatibilityLevel": "JAVA_17",
-  "package": "com.gmail.rawlxxxviii.vicinity_item_pickup.mixin",
+  "package": "com.gmail.rawlxxxviii.visual_keybinder.mixin",
   "refmap": "mixins.vicinity_item_pickup.refmap.json",
   "injectors": {
     "defaultRequire": 1
@@ -9,7 +9,7 @@
   "server": [
   ],
   "mixins": [
-    "ItemEntityMixin"
+    "ControlsScreenMixin"
   ],
   "client": [
   ],

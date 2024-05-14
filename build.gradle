@@ -7,8 +7,8 @@ plugins {
 }
 
 version = '1.19.2-43.3.0-0.1.0 Beta'
-group = 'com.gmail.rawlxxxviii.vicinity_item_pickup' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'vicinity_item_pickup'
+group = 'com.gmail.rawlxxxviii.visual_keybinder' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'visual_keybinder'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -51,11 +51,11 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'vicinity_item_pickup'
+            property 'forge.enabledGameTestNamespaces', 'visual_keybinder'
 
 
             mods {
-                vicinity_item_pickup {
+                visual_keybinder {
                     source sourceSets.main
                 }
             }
@@ -68,10 +68,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'vicinity_item_pickup'
+            property 'forge.enabledGameTestNamespaces', 'visual_keybinder'
 
             mods {
-                vicinity_item_pickup {
+                visual_keybinder {
                     source sourceSets.main
                 }
             }
@@ -87,10 +87,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'vicinity_item_pickup'
+            property 'forge.enabledGameTestNamespaces', 'visual_keybinder'
 
             mods {
-                vicinity_item_pickup {
+                visual_keybinder {
                     source sourceSets.main
                 }
             }
@@ -104,10 +104,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'vicinity_item_pickup', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'visual_keybinder', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                vicinity_item_pickup {
+                visual_keybinder {
                     source sourceSets.main
                 }
             }
@@ -155,8 +155,8 @@ dependencies {
 }
 
 mixin {
-    add sourceSets.main, 'mixins.vicinity_item_pickup.refmap.json'
-    config 'vicinity_item_pickup.mixins.json'
+    add sourceSets.main, 'mixins.visual_keybinder.refmap.json'
+    config 'visual_keybinder.mixins.json'
 
     debug.verbose = true
     debug.export = true
@@ -168,7 +168,7 @@ mixin {
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "vicinity_item_pickup",
+                "Specification-Title"     : "visual_keybinder",
                 "Specification-Vendor"    : "rawlxxxviii",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
