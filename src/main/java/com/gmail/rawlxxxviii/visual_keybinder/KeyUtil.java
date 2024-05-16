@@ -22,6 +22,20 @@ public class KeyUtil {
         return false;
     }
 
+    public static boolean hasConflict(List<KeyMapping> keyMappings, KeyMapping item, int skipIndex){
+
+        for (int i = 0; i < keyMappings.size(); i++) {
+            if(i == skipIndex){
+                continue;
+            }
+            if(keyMappings.get(i).same(item)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
 
 }
