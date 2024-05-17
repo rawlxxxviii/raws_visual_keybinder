@@ -22,12 +22,14 @@ public abstract class ControlsScreenMixin extends OptionsSubScreen {
     @Inject(method = "init", at = @At("RETURN"))
     protected void initInject(CallbackInfo ci){
 
-        int i = this.width / 2 - 155;
-        int j = i + 160;
-        int k = this.height / 6 - 12;
-        this.addRenderableWidget(new Button(j + 170, k, 150, 20, Component.literal("Alternative"), (p_97538_) -> {
-            this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options));
-        }));
+        this.addRenderableWidget
+            (new Button(
+                    this.width / 2 - 155 + 160 + 150,
+                    this.height / 6 - 12,
+                    150, 20,
+                    Component.literal("Alternative"),
+                    (p_97538_) -> this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options)))
+        );
 
     }
 

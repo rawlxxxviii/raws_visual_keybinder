@@ -13,6 +13,7 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,11 +53,11 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         boolean hasConflicts = KeyUtil.hasConflict(keyMappings);
 
 
-        this.addEntry(new TitleEntry(Component.literal("Bindings for: ").append(selectedKey.getKey().getDisplayName()), hasConflicts?AlternativeKeybindScreen.CONFLICT_COLOR:Color.white.getRGB()));
+        this.addEntry(new TitleEntry(Component.literal("Bindings for: ").append(selectedKey.getKey().getDisplayName()), Color.white.getRGB()));
 
-        this.addEntry(new EmptyEntry());
 
         if(keyMappings.isEmpty()){
+            this.addEntry(new EmptyEntry());
             this.addEntry(new TitleEntry(Component.literal("- Unused -"), Color.DARK_GRAY.getRGB()));
         }
 
@@ -68,19 +69,25 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
             String category = keyMapping.getCategory();
             if (!category.equals(c)) {
                 c = category;
+                addEntry( new KeyDetailsList.EmptyEntry() );
                 this.addEntry(new TitleEntry(Component.translatable(category),AlternativeKeybindScreen.CATEGORY_COLOR));
             }
 
             addEntry( new KeyEntry( keyMapping, KeyUtil.hasConflict(keyMappings, keyMapping, i)) );
             addEntry( new KeyInfoEntry( keyMapping, KeyUtil.hasConflict(keyMappings, keyMapping, i)) );
-            addEntry( new KeyDetailsList.EmptyEntry() );
         }
     }
 
     public void onBindingsUpdated(){
         buildEndtries();
+        setScrollAmount(getScrollAmount());
     }
 
+
+    @Override
+    public int getRowWidth() {
+        return width;
+    }
 
     public KeyboardLayoutKey getSelectedKey() {
         return selectedKey;
@@ -279,8 +286,14 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
-            KeyDetailsList.this.minecraft.font.draw(poseStack, Component.translatable(key.getName()), getLeft(), (float)(p_193925_ + p_193928_ / 2 - 9 / 2), isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
-            KeyDetailsList.this.minecraft.font.draw(poseStack, Component.translatable(key.getKeyConflictContext().toString()), getRight()-75, (float)(p_193925_ + p_193928_ / 2 - 9 / 2), Color.GRAY.getRGB());
+            minecraft.font.draw(poseStack, Component.translatable(key.getName()), getLeft(), (float)(p_193925_ + p_193928_ / 2), 16777215);
+            if(key.getKeyConflictContext() == KeyConflictContext.GUI){
+                minecraft.font.draw(poseStack, Component.literal("In GUI"), getRight()-75, (float)(p_193925_ + p_193928_ / 2 ), Color.GRAY.getRGB());
+            } else if (key.getKeyConflictContext() == KeyConflictContext.IN_GAME) {
+                minecraft.font.draw(poseStack, Component.literal("In game"), getRight()-75, (float)(p_193925_ + p_193928_ / 2 ), Color.GRAY.getRGB());
+            }else{
+                minecraft.font.draw(poseStack, Component.literal("In game and GUI"), getRight()-105, (float)(p_193925_ + p_193928_ / 2 ), Color.GRAY.getRGB());
+            }
 
             disableScissor();
         }
@@ -370,18 +383,18 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
             this.isConflicting = isConflicting;
             this.changeButton = new Button(
                     0, 0,
-                    80 , 20,
+                    110 , 20,
                 Component.literal("Edit"), (p_193939_) -> {
                     KeyDetailsList.this.parentScreen.setKeyMappingToChange(key);
                 });
 
             this.resetButton = new Button(
                 0, 0,
-                80, 20,
-                Component.literal("Default: " + key.getDefaultKey().getDisplayName().getString()),
+                100, 20,
+                Component.translatable("controls.reset").append("(").append(key.getDefaultKey().getDisplayName().getString()).append(")"),
                 (p_193935_) -> {
                     this.key.setToDefault();
-                    KeyDetailsList.this.minecraft.options.setKey(key, key.getDefaultKey());
+                    minecraft.options.setKey(key, key.getDefaultKey());
                     KeyMapping.resetMapping();
                     parentScreen.onBindingsChanged();
                 });
@@ -394,17 +407,18 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
-            this.resetButton.x = getLeft() + 10 ;
+
+            this.resetButton.x = getLeft() + 10 + 110 + 5;
             this.resetButton.y = p_193925_;
             this.resetButton.active = !this.key.isDefault();
+            this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : KeyUtil.hasDefaultConflict(parentScreen.getAllKeyMappings(), key) ? AlternativeKeybindScreen.CONFLICT_COLOR:Color.white.getRGB());
             this.resetButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            this.changeButton.x = getLeft() + 10 + 80 + 10;
+
+            this.changeButton.x = getLeft() + 10;
             this.changeButton.y = p_193925_;
-            this.changeButton.setMessage(this.key.getTranslatedKeyMessage());
-            if(parentScreen.getKeyMappingToChange() == key){
-                this.changeButton.setMessage(Component.literal("> ... <"));
-            }
+            this.changeButton.setFGColor(isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:Color.white.getRGB());
+            this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? Component.literal("> ... <") : this.key.getTranslatedKeyMessage());
             this.changeButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
             disableScissor();

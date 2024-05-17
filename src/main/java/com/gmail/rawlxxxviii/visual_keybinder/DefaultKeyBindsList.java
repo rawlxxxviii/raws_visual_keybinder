@@ -1,29 +1,23 @@
 package com.gmail.rawlxxxviii.visual_keybinder;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.narration.NarratedElementType;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.gui.screens.controls.KeyBindsList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,13 +36,20 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         this.x1 = width + this.x0;
 
 
+        buildEntries();
+
+    }
+
+    private void buildEntries(){
+        clearEntries();
 
         KeyMapping[] keyMappings = ArrayUtils.clone(minecraft.options.keyMappings);
         Arrays.sort(keyMappings);
 
         String c = null;
-        for(KeyMapping keymapping : keyMappings) {
-            String category = keymapping.getCategory();
+        for (int i = 0; i < keyMappings.length; i++) {
+            var keyMapping = keyMappings[i];
+            String category = keyMapping.getCategory();
             if (!category.equals(c)) {
                 if(c != null){
                     this.addEntry(new EmptyEntry());
@@ -57,16 +58,21 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
                 this.addEntry(new CategoryEntry(Component.translatable(category)));
             }
 
-            Component component = Component.translatable(keymapping.getName());
-            int i = minecraft.font.width(component);
-            if (i > this.maxNameWidth) {
-                this.maxNameWidth = i;
-            }
+            Component component = Component.translatable(keyMapping.getName());
 
-            this.addEntry(new KeyEntry(keymapping, component));
+            this.addEntry(new KeyEntry(keyMapping, component, KeyUtil.hasConflict(Arrays.stream(keyMappings).toList(), keyMapping, i)));
         }
     }
 
+    @Override
+    public int getRowWidth() {
+        return width;
+    }
+
+    public void onBindingsUpdated(){
+        buildEntries();
+        setScrollAmount(getScrollAmount());
+    }
 
     @Override
     protected int getScrollbarPosition() {
@@ -87,9 +93,9 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         @Override
-        public void render(PoseStack p_193888_, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
+        public void render(@NotNull PoseStack poseStack, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
-            minecraft.font.draw(p_193888_, this.name, getLeft()  , p_193890_ + p_193893_ - 10, AlternativeKeybindScreen.CATEGORY_COLOR);
+            minecraft.font.draw(poseStack, this.name, getLeft()  , p_193890_ + p_193893_ - 10, AlternativeKeybindScreen.CATEGORY_COLOR);
             disableScissor();
         }
 
@@ -192,58 +198,46 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         private final Component name;
         private final Button changeButton;
         private final Button resetButton;
+        private final boolean isConflicting;
 
-        KeyEntry(final KeyMapping p_193916_, final Component p_193917_) {
+        KeyEntry(final KeyMapping p_193916_, final Component p_193917_, boolean isConflicting) {
             this.key = p_193916_;
             this.name = p_193917_;
-            this.changeButton = new Button(0, 0, 75 + 20 /* Forge: Add space */, 20, p_193917_, (p_193939_) -> {
-//                KeyBindsList.this.keyBindsScreen.selectedKey = p_193916_;
+            this.isConflicting = isConflicting;
+            this.changeButton = new Button(0, 0, 80 , 20, p_193917_, (p_193939_) -> {
+                DefaultKeyBindsList.this.parentScreen.setKeyMappingToChange(p_193916_);
             }) {
                 protected MutableComponent createNarrationMessage() {
                     return p_193916_.isUnbound() ? Component.translatable("narrator.controls.unbound", p_193917_) : Component.translatable("narrator.controls.bound", p_193917_, super.createNarrationMessage());
                 }
             };
-            this.resetButton = new Button(0, 0, 50, 20, Component.translatable("controls.reset"), (p_193935_) -> {
-//                this.key.setToDefault();
-//                KeyBindsList.this.minecraft.options.setKey(p_193916_, p_193916_.getDefaultKey());
-//                KeyMapping.resetMapping();
-            }) {
-                protected MutableComponent createNarrationMessage() {
-                    return Component.translatable("narrator.controls.reset", p_193917_);
-                }
-            };
+            this.resetButton = new Button(0, 0, 90, 20,
+                    Component.translatable("controls.reset").append("(").append(key.getDefaultKey().getDisplayName().getString()).append(")"),
+                    (p_193935_) -> {
+                        this.key.setToDefault();
+                        minecraft.options.setKey(p_193916_, p_193916_.getDefaultKey());
+                        KeyMapping.resetMapping();
+                        DefaultKeyBindsList.this.parentScreen.onBindingsChanged();
+                    }
+            );
         }
 
         @Override
         public void render(PoseStack p_193923_, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
-//            boolean flag = KeyBindsList.this.keyBindsScreen.selectedKey == this.key;
-            float maxWidth = 150;
+
+
             minecraft.font.draw(p_193923_, this.name, getLeft(), p_193925_ + p_193928_ - 10, 16777215);
             this.resetButton.x = p_193926_ + 190 + 20;
             this.resetButton.y = p_193925_;
             this.resetButton.active = !this.key.isDefault();
+            this.changeButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : KeyUtil.hasDefaultConflict(parentScreen.getAllKeyMappings(), key) ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
             this.resetButton.render(p_193923_, p_193929_, p_193930_, p_193932_);
+
             this.changeButton.x = p_193926_ + 105;
             this.changeButton.y = p_193925_;
-            this.changeButton.setMessage(this.key.getTranslatedKeyMessage());
-            boolean flag1 = false;
-            boolean keyCodeModifierConflict = true; // gracefully handle conflicts like SHIFT vs SHIFT+G
-            if (!this.key.isUnbound()) {
-                for(KeyMapping keymapping : minecraft.options.keyMappings) {
-                    if (keymapping != this.key && this.key.same(keymapping)) {
-                        flag1 = true;
-                        keyCodeModifierConflict &= keymapping.hasKeyModifierConflict(this.key);
-                    }
-                }
-            }
-
-//            if (flag) {
-//                this.changeButton.setMessage(Component.literal("> ").append(this.changeButton.getMessage().copy().withStyle(ChatFormatting.YELLOW)).append(" <").withStyle(ChatFormatting.YELLOW));
-//            } else if (flag1) {
-                this.changeButton.setMessage(this.changeButton.getMessage().copy().withStyle(keyCodeModifierConflict ? ChatFormatting.GOLD : ChatFormatting.RED));
-//            }
-
+            this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? Component.literal("> ... <") : this.key.getTranslatedKeyMessage());
+            this.changeButton.setFGColor(isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
             this.changeButton.render(p_193923_, p_193929_, p_193930_, p_193932_);
 
             disableScissor();

@@ -48,7 +48,7 @@ public class KeyButton extends ImageButton {
 
         var canvasX = keyboardLayoutKey.isWide()?120:0;
 
-        //usage
+//        //usage
         blit(poseStack,
                 this.x, this.y,
 
@@ -74,7 +74,7 @@ public class KeyButton extends ImageButton {
                 keyboardLayoutKey.getKey().getDisplayName(),
                 this.x + this.width / 2,
                 this.y + (this.height - 8) / 2,
-                isEmpty ? Color.gray.getRGB() : Color.WHITE.getRGB()
+                isEmpty ? Color.gray.getRGB() : hasConflict? AlternativeKeybindScreen.CONFLICT_COLOR : Color.WHITE.getRGB()
         );
     }
 
