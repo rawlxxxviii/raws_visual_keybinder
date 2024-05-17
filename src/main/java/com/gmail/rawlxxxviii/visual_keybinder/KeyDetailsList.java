@@ -90,7 +90,7 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
 
     @Override
     protected int getScrollbarPosition() {
-        return this.width + this.x0;
+        return this.width + this.x0 - 6;
     }
 
     @Override

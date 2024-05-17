@@ -3,7 +3,6 @@ package com.gmail.rawlxxxviii.visual_keybinder;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
@@ -13,7 +12,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.apache.commons.lang3.ArrayUtils;
-import org.checkerframework.checker.units.qual.K;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -57,6 +55,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     private static int layoutTop = 30;
     private static int layoutLeft = 30;
+    private static int layoutWidth = 30;
     private static int layoutHeight = 30;
 
     private static int detailsListTop = 30;
@@ -94,6 +93,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         defaultListWidth = width - detailsListWidth - PAGE_PADDING_LEFT - PAGE_PADDING_RIGHT - PAGE_MID_GAP;
 
         layoutLeft = PAGE_PADDING_LEFT;
+        layoutWidth = width - PAGE_PADDING_RIGHT - layoutLeft;
         detailsListLeft = PAGE_PADDING_LEFT;
         defaultListLeft = detailsListLeft + detailsListWidth + PAGE_MID_GAP;
 
@@ -107,6 +107,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         ));
 
         this.setActiveKeyboardLayout(activeKeyboardLayoutIndex);
+
 
         rotateLayoutButton = addRenderableWidget(new Button(
                 this.width - 155,
@@ -170,7 +171,8 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         }
         activeKeyboardLayout = keyBoardLayouts.get(index);
         activeKeyboardLayoutIndex = index;
-        createLayoutButtons(this.activeKeyboardLayout.getKeyboardLayout());
+        createLayoutButtons(this.activeKeyboardLayout);
+
     }
 
 
@@ -521,20 +523,30 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         ).toList();
     }
 
-    private void createLayoutButtons(List<KeyboardLayoutKey> keyboardLayout){
+    private void createLayoutButtons(KeyBoardLayout keyboardLayout){
 
         keyButtons.forEach(item->{
             removeWidget(item);
         });
         keyButtons.clear();
 
-        keyboardLayout.forEach(item->{
+
+        double widthScale = (double)layoutWidth / (double)keyboardLayout.getWidth();
+        double heightScale = (double)layoutHeight / (double)keyboardLayout.getHeight();
+
+        keyboardLayout.getKeyboardLayoutKeys().forEach(item->{
 
             var btn = new KeyButton(
                     this,
                     item,
-                    layoutLeft + item.getX(),
-                    layoutTop + item.getY(),
+                    layoutLeft + item.getX()
+                            + (layoutWidth / 2 -  keyboardLayout.getWidth() / 2) // center to center
+                            - keyboardLayout.getMinX() // set min to 0
+                    ,
+                    layoutTop + item.getY()
+                            + (layoutHeight / 2 - keyboardLayout.getHeight() / 2) // center to center
+                            - keyboardLayout.getMinY()
+                    ,
                     (x)->{
 
                         if(detailsList != null){

@@ -76,7 +76,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
 
     @Override
     protected int getScrollbarPosition() {
-        return this.width + this.x0;
+        return this.width + this.x0 - 6;
     }
 
     @OnlyIn(Dist.CLIENT)
