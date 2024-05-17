@@ -204,15 +204,13 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
             this.key = p_193916_;
             this.name = p_193917_;
             this.isConflicting = isConflicting;
-            this.changeButton = new Button(0, 0, 80 , 20, p_193917_, (p_193939_) -> {
-                DefaultKeyBindsList.this.parentScreen.setKeyMappingToChange(p_193916_);
-            }) {
-                protected MutableComponent createNarrationMessage() {
-                    return p_193916_.isUnbound() ? Component.translatable("narrator.controls.unbound", p_193917_) : Component.translatable("narrator.controls.bound", p_193917_, super.createNarrationMessage());
+            this.changeButton = new Button(0, 0, 100 , 20, p_193917_,
+                (p_193939_) -> {
+                    DefaultKeyBindsList.this.parentScreen.setKeyMappingToChange(p_193916_);
                 }
-            };
+            );
             this.resetButton = new Button(0, 0, 90, 20,
-                    Component.translatable("controls.reset").append("(").append(key.getDefaultKey().getDisplayName().getString()).append(")"),
+                    Component.literal("(").append(key.getDefaultKey().getDisplayName().getString()).append(")"),
                     (p_193935_) -> {
                         this.key.setToDefault();
                         minecraft.options.setKey(p_193916_, p_193916_.getDefaultKey());
@@ -220,6 +218,18 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
                         DefaultKeyBindsList.this.parentScreen.onBindingsChanged();
                     }
             );
+        }
+
+        public boolean isConflicting() {
+            return isConflicting;
+        }
+
+        public Button getChangeButton() {
+            return changeButton;
+        }
+
+        public Button getResetButton() {
+            return resetButton;
         }
 
         @Override
@@ -231,13 +241,13 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
             this.resetButton.x = p_193926_ + 190 + 20;
             this.resetButton.y = p_193925_;
             this.resetButton.active = !this.key.isDefault();
-            this.changeButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : KeyUtil.hasDefaultConflict(parentScreen.getAllKeyMappings(), key) ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
+            this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : KeyUtil.hasDefaultConflict(parentScreen.getAllKeyMappings(), key) ? AlternativeKeybindScreen.CONFLICT_COLOR:AlternativeKeybindScreen.RESET_COLOR);
             this.resetButton.render(p_193923_, p_193929_, p_193930_, p_193932_);
 
             this.changeButton.x = p_193926_ + 105;
             this.changeButton.y = p_193925_;
             this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? Component.literal("> ... <") : this.key.getTranslatedKeyMessage());
-            this.changeButton.setFGColor(isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
+            this.changeButton.setFGColor(key.isUnbound() ? AlternativeKeybindScreen.UNBOUND_COLOR : isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
             this.changeButton.render(p_193923_, p_193929_, p_193930_, p_193932_);
 
             disableScissor();

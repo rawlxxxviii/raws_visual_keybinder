@@ -2,6 +2,7 @@ package com.gmail.rawlxxxviii.visual_keybinder;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
@@ -24,12 +25,15 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     public static final int CATEGORY_COLOR =
             new Color(143, 178, 236).getRGB();
     public static final int CONFLICT_COLOR = new Color(243, 164, 39).getRGB();
+    public static final int RESET_COLOR = new Color(161, 200, 123).getRGB();
+    public static final int UNBOUND_COLOR = new Color(142, 149, 154).getRGB();
 
     public static final int KEY_BUTTON_WIDTH = 16;
     public static final int WIDE_KEY_BUTTON_WIDTH = 60;
     public static final int KEY_BUTTON_HEIGHT = 16;
 
     private DefaultKeyBindsList defaultKeyBindsList;
+
 
     private Button rotateLayoutButton;
     private Button resetButton;
@@ -105,7 +109,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         this.setActiveKeyboardLayout(activeKeyboardLayoutIndex);
 
         rotateLayoutButton = addRenderableWidget(new Button(
-                this.width - 150,
+                this.width - 155,
                 + 5,
                 150, 20,
                 Component.empty(),
@@ -114,16 +118,16 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         );
 
         addRenderableWidget(new Button(
-                this.width / 2 + 50,
+                this.width / 2 - 75,
                 this.height - PAGE_PADDING_BOTTOM + 5,
                 150, 20, CommonComponents.GUI_DONE,
                 (button) -> this.minecraft.setScreen(this.lastScreen)
         ));
 
         resetButton = this.addRenderableWidget(new Button(
-                this.width / 2 - 155,
+                5,
                 this.height - PAGE_PADDING_BOTTOM + 5,
-                150, 20,
+                75, 20,
                 Component.translatable("controls.resetAll"),
                 (button) -> {
                     for(KeyMapping keymapping : this.options.keyMappings) {
@@ -237,6 +241,13 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     public KeyDetailsList getDetailsList() {
         return detailsList;
+    }
+
+    public void onBindingsChanged(){
+        if(this.detailsList != null){
+            detailsList.onBindingsUpdated();
+        }
+        defaultKeyBindsList.onBindingsUpdated();
     }
 
     private KeyBoardLayout createLayout1(){
@@ -378,13 +389,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         keyboardLayout.add(new KeyboardLayoutKey("key.mouse.5",15 + 30 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap) +5,true));
 
         return  new KeyBoardLayout(keyboardLayout, Component.literal("mouse"));
-    }
-
-    public void onBindingsChanged(){
-        if(this.detailsList != null){
-            detailsList.onBindingsUpdated();
-        }
-        defaultKeyBindsList.onBindingsUpdated();
     }
 
     private KeyBoardLayout createLayout3(){
@@ -532,13 +536,19 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                     layoutLeft + item.getX(),
                     layoutTop + item.getY(),
                     (x)->{
+
                         if(detailsList != null){
                             removeWidget(detailsList);
+
+                            if (detailsList.getSelectedKey().getKey().getValue() == item.getKey().getValue()) {
+                                detailsList = null;
+                                return;
+                            }
                         }
+
                         detailsList = addRenderableWidget(new KeyDetailsList(
                                 this,
                                 minecraft,
-                                options,
                                 item,
                                 detailsListLeft,
                                 detailsListTop,
@@ -546,8 +556,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                                 detailsListHeight
                         ));
 
-                    },
-                    (button, poseStack, mouseX, mouseY)->{}
+                    }
             );
 
             keyButtons.add(addRenderableWidget(btn));
@@ -557,13 +566,13 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
 
     @Override
-    public void render(PoseStack poseStack, int p_193992_, int p_193993_, float p_193994_) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float p_193994_) {
         this.renderBackground(poseStack);
 
         if(this.detailsList != null){
-            detailsList.render(poseStack, p_193992_, p_193993_, p_193994_);
+            detailsList.render(poseStack, mouseX, mouseY, p_193994_);
         }
-        this.defaultKeyBindsList.render(poseStack, p_193992_, p_193993_, p_193994_);
+        this.defaultKeyBindsList.render(poseStack, mouseX, mouseY, p_193994_);
 
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
 
@@ -578,7 +587,56 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                     .append(" " + (getActiveKeyboardLayoutIndex() + 1) + "/" + keyBoardLayouts.size() ));
         }
 
-        super.render(poseStack, p_193992_, p_193993_, p_193994_);
+        if(this.getDetailsList() == null){
+            renderNoSelectionInfo(poseStack, mouseX, mouseY, p_193994_);
+        }
+
+        getChildAt(mouseX,mouseY).ifPresent(x->{
+            if(x instanceof KeyButton keyButton){
+                List<Component> componentList = new ArrayList<>();
+                componentList.add(keyButton.getMessage());
+
+                var count = keyButton.getKeymappings().size();
+                if(count == 0){
+                    componentList.add(Component.literal( "No bindings").withStyle(ChatFormatting.DARK_GRAY));
+                }else{
+                    componentList.add(Component.literal(String.valueOf(count)).append(" binding" + (count == 1 ? "" : "s")).withStyle(ChatFormatting.DARK_GRAY));
+                }
+                if(keyButton.hasConflict()){
+                    componentList.add(Component.literal( "Has conflict").withStyle(ChatFormatting.GOLD));
+                }
+                renderComponentTooltip(poseStack,componentList,mouseX,mouseY);
+            }
+        });
+
+        if(detailsList != null){
+            detailsList.getChildAt(mouseX,mouseY).ifPresent(x->{
+                if(x instanceof KeyDetailsList.KeyInfoEntry keyInfoEntry){
+                    if(keyInfoEntry.getResetButton().isHoveredOrFocused()){
+                        renderTooltip(poseStack,Component.translatable("controls.reset"),mouseX,mouseY);
+                    } else if (keyInfoEntry.getChangeButton().isHoveredOrFocused()) {
+                        renderTooltip(poseStack,Component.literal("Change binding"),mouseX,mouseY);
+                    }
+                }
+            });
+        }
+        defaultKeyBindsList.getChildAt(mouseX,mouseY).ifPresent(x->{
+            if(x instanceof DefaultKeyBindsList.KeyEntry keyInfoEntry){
+                if(keyInfoEntry.getResetButton().isHoveredOrFocused()){
+                    renderTooltip(poseStack,Component.translatable("controls.reset"),mouseX,mouseY);
+                } else if (keyInfoEntry.getChangeButton().isHoveredOrFocused()) {
+                    renderTooltip(poseStack,Component.literal("Change binding"),mouseX,mouseY);
+                }
+            }
+        });
+
+        super.render(poseStack, mouseX, mouseY, p_193994_);
+    }
+
+
+    public void renderNoSelectionInfo(PoseStack poseStack, int p_193992_, int p_193993_, float p_193994_) {
+        minecraft.font.draw(poseStack, Component.literal("Select a key to show/edit bindings"),
+                detailsListLeft + 10, defaultListTop + 30 , Color.GRAY.getRGB());
     }
 
     private boolean hasNonDefaultBindings(){

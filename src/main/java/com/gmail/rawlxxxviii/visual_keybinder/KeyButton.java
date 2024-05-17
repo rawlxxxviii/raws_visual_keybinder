@@ -1,18 +1,20 @@
 package com.gmail.rawlxxxviii.visual_keybinder;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
+import java.util.List;
 
 public class KeyButton extends ImageButton {
 
     private final KeyboardLayoutKey keyboardLayoutKey;
     private final AlternativeKeybindScreen parentScreen;
 
-    public KeyButton(AlternativeKeybindScreen parentScreen, KeyboardLayoutKey keyboardLayoutKey, int x, int y, OnPress onPress, OnTooltip onTooltip) {
+    public KeyButton(AlternativeKeybindScreen parentScreen, KeyboardLayoutKey keyboardLayoutKey, int x, int y, OnPress onPress) {
 
         super (
             x, y,
@@ -21,8 +23,8 @@ public class KeyButton extends ImageButton {
             AlternativeKeybindScreen.KEY_BUTTON_HEIGHT,
             new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
             512, 512,
-            onPress,onTooltip,
-            Component.empty()
+            onPress,
+            keyboardLayoutKey.getKey().getDisplayName()
         );
 
 
@@ -39,12 +41,22 @@ public class KeyButton extends ImageButton {
         renderOverlay(p_94282_,p_94283_,p_94284_,p_94285_);
     }
 
+    public List<KeyMapping> getKeymappings(){
+        return parentScreen.getKeyMappings(keyboardLayoutKey);
+    }
+
+    public boolean isEmpty(){
+        return getKeymappings().isEmpty();
+    }
+
+    public boolean hasConflict(){
+        return KeyUtil.hasConflict(getKeymappings());
+    }
+
     private void renderOverlay(PoseStack poseStack, int p_94283_, int p_94284_, float p_94285_){
 
-        var keyMappings = parentScreen.getKeyMappings(keyboardLayoutKey);
-        var isEmpty = keyMappings.isEmpty();
-        var hasConflict = KeyUtil.hasConflict(keyMappings);
-
+        var isEmpty = isEmpty();
+        var hasConflict = hasConflict();
 
         var canvasX = keyboardLayoutKey.isWide()?120:0;
 
