@@ -317,7 +317,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.p",5 + 9 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.left.bracket",5 + 10 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.bracket",5 + 11 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.backslash",10 + 12 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.backslash",5 + 12 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
 
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.caps.lock",10 + -4 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.a",10 + 0 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
@@ -360,34 +360,35 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.left.control",15 + -3 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.left.alt",15 + 1 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.space",15 + 4 * (buttonWidth + buttonGap), 6 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.alt",15 + 7 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.control",15 + 11* (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.alt",15 + 5 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.control",15 + 9* (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.space",15 + 3 * (buttonWidth + buttonGap), 6 * (buttonHeight+buttonGap),true));
 
         // keypad
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.divide",15 + 24 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.multiply",15 + 25 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.subtract",15 + 26 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.7",15 + 23 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.8",15 + 24 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.9",15 + 25 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.add",15 + 26 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.4",15 + 23 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.5",15 + 24 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.6",15 + 25 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.1",15 + 23 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.2",15 + 24 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.3",15 + 25 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.0",15 + 23 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.decimal",15 + 24 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.enter",15 + 26 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.divide",+ 15 + 27 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.multiply",+ 15 + 31 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.subtract",+ 15 + 35 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.7",+ 15 + 23 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.8",+ 15 + 27 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.9",+ 15 + 31 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.add",+ 15 + 35 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.4",+ 15 + 23 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.5",+ 15 + 27 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.6",+ 15 + 31 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.1",15 + 23 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.2",+ 15 + 27 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.3",+ 15 + 31 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.0",+ 15 + 27 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.decimal",+ 15 + 31 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.enter",+ 15 + 35 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
 
         // mouse
-        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.left",15 + 28 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap) ,true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.middle",15 + 30 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) ,true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.right",15 + 32 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap) ,true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.4",15 + 29 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap) +5,true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.5",15 + 30 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap) +5,true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.left",15 + 39 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap) ,true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.middle",15 + 41 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) ,true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.right",15 + 43 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap) ,true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.5",15 + 40 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap) +5,true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.4",15 + 41 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap) +5,true));
 
         return  new KeyBoardLayout(keyboardLayout, Component.literal("Full keyboard and mouse"));
 
@@ -404,8 +405,8 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         keyboardLayout.add(new KeyboardLayoutKey("key.mouse.left",15 + 28 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap) ,true));
         keyboardLayout.add(new KeyboardLayoutKey("key.mouse.middle",15 + 30 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) ,true));
         keyboardLayout.add(new KeyboardLayoutKey("key.mouse.right",15 + 32 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap) ,true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.4",15 + 29 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap) +5,true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.5",15 + 30 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap) +5,true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.5",15 + 29 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap) +5,true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.mouse.4",15 + 30 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap) +5,true));
 
         return  new KeyBoardLayout(keyboardLayout, Component.literal("mouse"));
     }
@@ -505,24 +506,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.alt",15 + 7 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
         keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.control",15 + 11* (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
 
-        // keypad
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.divide",15 + 24 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.multiply",15 + 25 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.subtract",15 + 26 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.7",15 + 23 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.8",15 + 24 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.9",15 + 25 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.add",15 + 26 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.4",15 + 23 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.5",15 + 24 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.6",15 + 25 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.1",15 + 23 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.2",15 + 24 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.3",15 + 25 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.0",15 + 23 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.decimal",15 + 24 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.enter",15 + 26 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
-
         return  new KeyBoardLayout(keyboardLayout, Component.literal("Full keyboard "));
 
     }
@@ -534,114 +517,26 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         int buttonHeight = 16;
         int buttonGap = 0;
 
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f1", 0 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f2", 1 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f3", 2 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f4", 3 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f5", 5 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f6", 6 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f7", 7 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f8", 8 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f9", 10 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f10", 11 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f11", 12 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f12", 13 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap) - 5 ));
-
-//        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.tilde", -1 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.1", 0 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.2", 1 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.3", 2 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.4", 3 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.5", 4 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.6", 5 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.7", 6 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.8", 7 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.9", 8 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.0", 9 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.minus", 10 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.equal", 11 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.backspace", 12 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap), true));
-
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.tab",5 + -4 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.q",5 + 0 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.w",5 + 1 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.e",5 + 2 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.r",5 + 3 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.t",5 + 4 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.y",5 + 5 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.u",5 + 6 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.i",5 + 7 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.o",5 + 8 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.p",5 + 9 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.left.bracket",5 + 10 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.bracket",5 + 11 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.caps.lock",10 + -4 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.a",10 + 0 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.s",10 + 1 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.d",10 + 2 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.f",10 + 3 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.g",10 + 4 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.h",10 + 5 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.j",10 + 6 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.k",10 + 7 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.l",10 + 8 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.semicolon",10 + 9 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.apostrophe",10 + 10 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.backslash",10 + 11 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.enter",10 + 12 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
-
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.left.shift",15 + -4 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.z",15 + 0 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.x",15 + 1 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.c",15 + 2 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.v",15 + 3 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.b",15 + 4 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.n",15 + 5 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.m",15 + 6 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.comma",15 + 7 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.period",15 + 8 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.slash",15 + 9 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.shift",15 + 10 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
-
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.left",15 + 15 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.down",15 + 17 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right",15 + 19 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.up",15 + 17 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
-
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.home",15 + 15 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.end",15 + 19 * (buttonWidth + buttonGap), 0 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.insert",15 + 15 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.page.up",15 + 19 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.delete",15 + 15 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.page.down",15 + 19 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
-
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.left.control",15 + -3 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.left.alt",15 + 1 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.space",15 + 4 * (buttonWidth + buttonGap), 6 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.alt",15 + 7 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.right.control",15 + 11* (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
-
         // keypad
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.divide",15 + 24 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.multiply",15 + 25 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.subtract",15 + 26 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.7",15 + 23 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.8",15 + 24 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.9",15 + 25 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.add",15 + 26 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.4",15 + 23 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.5",15 + 24 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.6",15 + 25 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.1",15 + 23 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.2",15 + 24 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.3",15 + 25 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.0",15 + 23 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.decimal",15 + 24 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap)));
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.enter",15 + 26 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.divide",15 + 24 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.multiply",15 + 28 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.subtract",15 + 32 * (buttonWidth + buttonGap), 1 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.7",15 + 20 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.8",15 + 24 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.9",15 + 28 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.add",15 + 32 * (buttonWidth + buttonGap), 2 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.4",15 + 20 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.5",15 + 24 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.6",15 + 28 * (buttonWidth + buttonGap), 3 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.1",15 + 20 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.2",15 + 24 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.3",15 + 28 * (buttonWidth + buttonGap), 4 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.0",15 + 24 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.decimal",15 + 28 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
+        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.enter",15 + 32 * (buttonWidth + buttonGap), 5 * (buttonHeight+buttonGap),true));
 
-        keyboardLayout.add(new KeyboardLayoutKey("key.keyboard.keypad.enter",15 + 26 * (buttonWidth + buttonGap), 15 * (buttonHeight+buttonGap),true));
-        return  new KeyBoardLayout(keyboardLayout, Component.literal("TEST"));
+
+        return  new KeyBoardLayout(keyboardLayout, Component.literal("Keypad"));
 
     }
 
