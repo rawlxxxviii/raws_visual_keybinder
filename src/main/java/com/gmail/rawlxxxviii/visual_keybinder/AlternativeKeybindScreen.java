@@ -36,7 +36,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     private List<KeyBoardLayout> keyBoardLayouts = new ArrayList<>();
     private KeyBoardLayout activeKeyboardLayout;
-    private int activeKeyboardLayoutIndex = -1;
+    private int activeKeyboardLayoutIndex = 0;
     private List<KeyButton> keyButtons = new ArrayList<>();
 
     private static final int PAGE_PADDING_TOP = 30;
@@ -102,9 +102,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                 defaultListHeight
         ));
 
-        if(this.activeKeyboardLayout == null && !keyBoardLayouts.isEmpty()){
-            this.setActiveKeyboardLayout(0);
-        }
+        this.setActiveKeyboardLayout(activeKeyboardLayoutIndex);
 
         rotateLayoutButton = addRenderableWidget(new Button(
                 this.width - 150,
