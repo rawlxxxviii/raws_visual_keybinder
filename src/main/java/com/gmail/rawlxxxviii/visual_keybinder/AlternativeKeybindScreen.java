@@ -68,6 +68,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     public AlternativeKeybindScreen(Screen screen, Options options) {
         super(screen, options, Component.literal("Visual keybinder"));
 
+        getKeyboardLayouts();
     }
 
 
@@ -101,7 +102,9 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                 defaultListHeight
         ));
 
-        getKeyboardLayouts();
+        if(this.activeKeyboardLayout == null && !keyBoardLayouts.isEmpty()){
+            this.setActiveKeyboardLayout(0);
+        }
 
         rotateLayoutButton = addRenderableWidget(new Button(
                 this.width - 150,
@@ -145,8 +148,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         this.keyBoardLayouts.add(createLayout1());
         this.keyBoardLayouts.add(createLayout2());
         this.keyBoardLayouts.add(createLayout3());
-
-        this.setActiveKeyboardLayout(0);
 
     }
 
@@ -573,7 +574,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
 
         if(activeKeyboardLayout == null){
-            rotateLayoutButton.setMessage(Component.literal("Select layout"));
+            rotateLayoutButton.setMessage(Component.literal(keyBoardLayouts.isEmpty() ? "No layouts.." : "Select layout"));
         }else{
             rotateLayoutButton.setMessage(Component.literal(activeKeyboardLayout.getName().getString())
                     .append(" " + (getActiveKeyboardLayoutIndex() + 1) + "/" + keyBoardLayouts.size() ));

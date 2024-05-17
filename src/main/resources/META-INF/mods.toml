@@ -45,6 +45,8 @@ description='''
 
     Alternative keybinding screen.
 
+    Provides an extra screen for keybinding for easier keybinding management. Visualise your keyboard and mouse to easily see which buttons are available, which buttons have conflicts and which bindings are on a certain key or button.
+
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.visual_keybinder]] #optional
