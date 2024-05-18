@@ -9,19 +9,22 @@ public class KeyBoardLayout {
     private final List<KeyboardLayoutKey> keyboardLayoutKeys;
     private final Component name;
 
-    private final int minX;
-    private final int maxX;
-    private final int minY;
-    private final int maxY;
+    private int minX;
+    private int maxX;
+    private int minY;
+    private int maxY;
 
-    public KeyBoardLayout(List<KeyboardLayoutKey> keyboardLayout, Component name) {
-        this.keyboardLayoutKeys = keyboardLayout;
+    public KeyBoardLayout(Component name, List<KeyboardLayoutKey> keyboardLayoutKeys) {
+        this.keyboardLayoutKeys = keyboardLayoutKeys;
         this.name = name;
+        updateMinMax();
+    }
 
-        minX = keyboardLayout.stream().mapToInt(KeyboardLayoutKey::getX).min().orElse(0);
-        maxX = keyboardLayout.stream().mapToInt(x->x.getX() + (x.isWide() ? AlternativeKeybindScreen.WIDE_KEY_BUTTON_WIDTH : AlternativeKeybindScreen.KEY_BUTTON_WIDTH )).max().orElse(0);
-        minY = keyboardLayout.stream().mapToInt(KeyboardLayoutKey::getY).min().orElse(0);
-        maxY = keyboardLayout.stream().mapToInt(x->x.getY() + AlternativeKeybindScreen.KEY_BUTTON_HEIGHT).max().orElse(0);
+    private void updateMinMax(){
+        minX = keyboardLayoutKeys.stream().mapToInt(KeyboardLayoutKey::getX).min().orElse(0);
+        maxX = keyboardLayoutKeys.stream().mapToInt(x->x.getX() + (x.isWide() ? AlternativeKeybindScreen.WIDE_KEY_BUTTON_WIDTH : AlternativeKeybindScreen.KEY_BUTTON_WIDTH )).max().orElse(0);
+        minY = keyboardLayoutKeys.stream().mapToInt(KeyboardLayoutKey::getY).min().orElse(0);
+        maxY = keyboardLayoutKeys.stream().mapToInt(x->x.getY() + AlternativeKeybindScreen.KEY_BUTTON_HEIGHT).max().orElse(0);
     }
 
     public int getMinX(){
@@ -50,6 +53,11 @@ public class KeyBoardLayout {
     public List<KeyboardLayoutKey> getKeyboardLayoutKeys() {
         return keyboardLayoutKeys;
     }
+//
+//    public void addKey(KeyboardLayoutKey key){
+//        keyboardLayoutKeys.add(key);
+//        updateMinMax();
+//    }
 
     public Component getName() {
         return name;

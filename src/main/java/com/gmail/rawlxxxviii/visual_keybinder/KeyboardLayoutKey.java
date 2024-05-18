@@ -10,11 +10,11 @@ public class KeyboardLayoutKey {
     private final int y;
     private final boolean wide;
 
-    KeyboardLayoutKey(String keyName, int x, int y){
+    public KeyboardLayoutKey(String keyName, int x, int y){
         this(keyName,x,y, false);
     }
 
-    KeyboardLayoutKey(String keyName, int x, int y, boolean wide){
+    public KeyboardLayoutKey(String keyName, int x, int y, boolean wide){
         key = InputConstants.getKey(keyName);
         this.x = x;
         this.y = y;
