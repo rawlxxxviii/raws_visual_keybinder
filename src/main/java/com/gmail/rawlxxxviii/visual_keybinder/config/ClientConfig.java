@@ -271,7 +271,7 @@ public class ClientConfig {
         int buttonHeight = 16;
 
         List<String> list = new ArrayList<>();
-        var layoutName = "mouse";
+        var layoutName = "Mouse";
 
         // mouse
         addItemToStringList(list, layoutName, "key.mouse.left",15 + 28 * (buttonWidth ), 1 * (buttonHeight) ,true);

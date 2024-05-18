@@ -141,8 +141,12 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                 })
         );
 
-        if(detailsList != null){ // redraw on screen resize
-            addRenderableWidget(detailsList);
+        if(detailsList != null){
+
+            var a = detailsList.getSelectedKey();
+
+            setDetailsList(a);
+
         }
 
     }
@@ -326,15 +330,17 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                             }
                         }
 
-                        detailsList = addRenderableWidget(new KeyDetailsList(
-                                this,
-                                minecraft,
-                                item,
-                                detailsListLeft,
-                                detailsListTop,
-                                detailsListWidth,
-                                detailsListHeight
-                        ));
+                        setDetailsList(item);
+
+//                        detailsList = addRenderableWidget(new KeyDetailsList(
+//                                this,
+//                                minecraft,
+//                                item,
+//                                detailsListLeft,
+//                                detailsListTop,
+//                                detailsListWidth,
+//                                detailsListHeight
+//                        ));
 
                     }
             );
@@ -343,7 +349,17 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         });
     }
 
-
+    public void setDetailsList(KeyboardLayoutKey keyboardLayoutKey) {
+        detailsList = addRenderableWidget(new KeyDetailsList(
+                this,
+                minecraft,
+                keyboardLayoutKey,
+                detailsListLeft,
+                detailsListTop,
+                detailsListWidth,
+                detailsListHeight
+        ));
+    }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float p_193994_) {
