@@ -390,28 +390,40 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
             renderNoSelectionInfo(poseStack, mouseX, mouseY, p_193994_);
         }
 
-        keyButtons.forEach(keyButton -> {
+        if(ClientConfig.displayLayoutButtonTooltips.get()){
+            keyButtons.forEach(keyButton -> {
+                if(keyButton.isHoveredOrFocused()){
+                    List<Component> componentList = new ArrayList<>();
+                    componentList.add(keyButton.getMessage());
 
-            if(keyButton.isHoveredOrFocused()){
-                List<Component> componentList = new ArrayList<>();
-                componentList.add(keyButton.getMessage());
+                    var count = keyButton.getKeymappings().size();
+                    if(count == 0){
+                        componentList.add(Component.literal( "No bindings").withStyle(ChatFormatting.DARK_GRAY));
+                    }else{
+                        componentList.add(Component.literal(String.valueOf(count)).append(" binding" + (count == 1 ? "" : "s")).withStyle(ChatFormatting.DARK_GRAY));
+                    }
+                    if(keyButton.hasConflict()){
+                        componentList.add(Component.literal( "Has conflict").withStyle(ChatFormatting.GOLD));
+                    }
+                    renderComponentTooltip(poseStack,componentList,mouseX,mouseY);
+                }
+            });
+        }
 
-                var count = keyButton.getKeymappings().size();
-                if(count == 0){
-                    componentList.add(Component.literal( "No bindings").withStyle(ChatFormatting.DARK_GRAY));
-                }else{
-                    componentList.add(Component.literal(String.valueOf(count)).append(" binding" + (count == 1 ? "" : "s")).withStyle(ChatFormatting.DARK_GRAY));
-                }
-                if(keyButton.hasConflict()){
-                    componentList.add(Component.literal( "Has conflict").withStyle(ChatFormatting.GOLD));
-                }
-                renderComponentTooltip(poseStack,componentList,mouseX,mouseY);
+        if(ClientConfig.displayChangeAndResetButtonTooltips.get()){
+            if(detailsList != null){
+                detailsList.getChildAt(mouseX,mouseY).ifPresent(x->{
+                    if(x instanceof KeyDetailsList.KeyInfoEntry keyInfoEntry){
+                        if(keyInfoEntry.getResetButton().isHoveredOrFocused()){
+                            renderTooltip(poseStack,Component.translatable("controls.reset"),mouseX,mouseY);
+                        } else if (keyInfoEntry.getChangeButton().isHoveredOrFocused()) {
+                            renderTooltip(poseStack,Component.literal("Change binding"),mouseX,mouseY);
+                        }
+                    }
+                });
             }
-        });
-
-        if(detailsList != null){
-            detailsList.getChildAt(mouseX,mouseY).ifPresent(x->{
-                if(x instanceof KeyDetailsList.KeyInfoEntry keyInfoEntry){
+            defaultKeyBindsList.getChildAt(mouseX,mouseY).ifPresent(x->{
+                if(x instanceof DefaultKeyBindsList.KeyEntry keyInfoEntry){
                     if(keyInfoEntry.getResetButton().isHoveredOrFocused()){
                         renderTooltip(poseStack,Component.translatable("controls.reset"),mouseX,mouseY);
                     } else if (keyInfoEntry.getChangeButton().isHoveredOrFocused()) {
@@ -420,15 +432,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                 }
             });
         }
-        defaultKeyBindsList.getChildAt(mouseX,mouseY).ifPresent(x->{
-            if(x instanceof DefaultKeyBindsList.KeyEntry keyInfoEntry){
-                if(keyInfoEntry.getResetButton().isHoveredOrFocused()){
-                    renderTooltip(poseStack,Component.translatable("controls.reset"),mouseX,mouseY);
-                } else if (keyInfoEntry.getChangeButton().isHoveredOrFocused()) {
-                    renderTooltip(poseStack,Component.literal("Change binding"),mouseX,mouseY);
-                }
-            }
-        });
 
         super.render(poseStack, mouseX, mouseY, p_193994_);
     }

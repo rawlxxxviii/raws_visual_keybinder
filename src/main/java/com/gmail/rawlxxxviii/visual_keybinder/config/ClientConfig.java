@@ -6,12 +6,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ClientConfig {
     public static final ForgeConfigSpec GENERAL_SPEC;
 
+    public static ForgeConfigSpec.BooleanValue displayConflictContext;
+    public static ForgeConfigSpec.BooleanValue displayLayoutButtonTooltips;
+    public static ForgeConfigSpec.BooleanValue displayChangeAndResetButtonTooltips;
     public static ForgeConfigSpec.ConfigValue<List<? extends String>> keyboardLayouts;
 
 
@@ -23,7 +24,6 @@ public class ClientConfig {
 
     private static void setupConfig(ForgeConfigSpec.Builder builder) {
 
-
         builder.push("Button layouts");
         keyboardLayouts = builder
                 .comment("Use this to create your own layouts. Multiple layouts can be defined. You can change the order of the list how you prefer and the first layout defined here will be the default layout. This file can be deleted to restore to default.")
@@ -33,6 +33,22 @@ public class ClientConfig {
 
                 )
         ;
+
+        builder.push("Preferences");
+        displayConflictContext = builder
+                .comment("Display whether or not a binding is for GUI, in game or both.")
+                .define( "display_conflict_context", false)
+        ;
+        displayLayoutButtonTooltips = builder
+                .comment("Should a tooltip be displayed when the mouse is over a button.")
+                .define( "display_layout_button_tooltip", true)
+        ;
+        displayChangeAndResetButtonTooltips = builder
+                .comment("Should a tooltip be displayed for the change and reset button.")
+                .define( "display_button_tooltip", true)
+        ;
+
+
     }
 
     private static List<String> createList(){

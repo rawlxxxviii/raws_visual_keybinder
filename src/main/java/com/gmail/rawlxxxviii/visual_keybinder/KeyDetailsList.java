@@ -1,6 +1,7 @@
 package com.gmail.rawlxxxviii.visual_keybinder;
 
 
+import com.gmail.rawlxxxviii.visual_keybinder.config.ClientConfig;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
@@ -398,7 +399,7 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
             minecraft.font.draw(poseStack, Component.translatable(key.getName()), getLeft() + 5, (float)(p_193925_ + p_193928_ / 2), 16777215);
-            if(getWidth() > 170 ){
+            if(ClientConfig.displayConflictContext.get() && getWidth() > 170 ){
                 if(key.getKeyConflictContext() == KeyConflictContext.GUI){
                     minecraft.font.draw(poseStack, Component.literal("In GUI"), getRight()-75, (float)(p_193925_ + p_193928_ / 2 ), Color.DARK_GRAY.getRGB());
                 } else if (key.getKeyConflictContext() == KeyConflictContext.IN_GAME) {
