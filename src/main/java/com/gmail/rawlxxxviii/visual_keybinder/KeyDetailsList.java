@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -14,7 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.client.settings.KeyModifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -50,17 +48,20 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         clearEntries();
 
         var keyMappings = parentScreen.getKeyMappings(selectedKey);
+        var hasConflicts = KeyUtil.hasConflict(keyMappings);
 
+        this.addEntry(new DetailsListTitleEntry(hasConflicts));
 
         if(keyMappings.isEmpty()){
             this.addEntry(new EmptyEntry());
-            this.addEntry(new TitleEntry(Component.literal("- Unused -"), Color.DARK_GRAY.getRGB()));
+            this.addEntry(new TitleEntry( Component.literal("No bindings"), Color.GRAY.getRGB()));
         }
 
         String c = null;
         for (int i = 0; i < keyMappings.size(); i++) {
             var keyMapping = keyMappings.get(i);
 
+            var isConflicting = KeyUtil.hasConflict(keyMappings, i);
 
             String category = keyMapping.getCategory();
             if (!category.equals(c)) {
@@ -68,9 +69,10 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
                 this.addEntry(new TitleEntry(Component.translatable(category),AlternativeKeybindScreen.CATEGORY_COLOR));
             }
 
-            addEntry( new KeyEntry( keyMapping, KeyUtil.hasConflict(keyMappings, keyMapping, i)) );
-            addEntry( new KeyInfoEntry( keyMapping, KeyUtil.hasConflict(keyMappings, keyMapping, i)) );
+            addEntry( new KeyEntry( keyMapping, isConflicting) );
+            addEntry( new KeyInfoEntry( keyMapping, isConflicting) );
         }
+        addEntry(new EmptyEntry());
     }
 
     public void onBindingsUpdated(){
@@ -78,6 +80,19 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         setScrollAmount(getScrollAmount());
     }
 
+
+    @Override
+    protected void renderBackground(PoseStack poseStack) {
+
+        fillGradient(poseStack,
+                getLeft(),
+                getTop(),
+                getRight(),
+                getBottom(),
+                AlternativeKeybindScreen.LIST_BACKGROUND_COLOR,
+                AlternativeKeybindScreen.LIST_BACKGROUND_COLOR_2
+        );
+    }
 
     @Override
     public int getRowWidth() {
@@ -169,9 +184,110 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public void render(PoseStack p_193888_, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
+        public void render(PoseStack p_193888_, int p_193889_, int y, int p_193891_, int p_193892_, int height, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
-            minecraft.font.draw(p_193888_, this.name, getLeft()  , p_193890_ + p_193893_ - 4, color);
+            minecraft.font.draw(p_193888_, this.name, getLeft() + 5 , y + height - 4, color);
+            disableScissor();
+        }
+
+        @Override
+        public List<? extends GuiEventListener> children() {
+            return List.of();
+        }
+
+        @Override
+        public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {
+            return super.getChildAt(p_94730_, p_94731_);
+        }
+
+        @Override
+        public void mouseMoved(double p_94758_, double p_94759_) {
+            super.mouseMoved(p_94758_, p_94759_);
+        }
+
+        @Override
+        public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
+            return super.mouseClicked(p_94695_, p_94696_, p_94697_);
+        }
+
+        @Override
+        public boolean mouseReleased(double p_94722_, double p_94723_, int p_94724_) {
+            return super.mouseReleased(p_94722_, p_94723_, p_94724_);
+        }
+
+        @Override
+        public boolean mouseDragged(double p_94699_, double p_94700_, int p_94701_, double p_94702_, double p_94703_) {
+            return super.mouseDragged(p_94699_, p_94700_, p_94701_, p_94702_, p_94703_);
+        }
+
+        @Override
+        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
+            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        }
+
+        @Override
+        public boolean keyPressed(int p_94710_, int p_94711_, int p_94712_) {
+            return super.keyPressed(p_94710_, p_94711_, p_94712_);
+        }
+
+        @Override
+        public boolean keyReleased(int p_94715_, int p_94716_, int p_94717_) {
+            return super.keyReleased(p_94715_, p_94716_, p_94717_);
+        }
+
+        @Override
+        public boolean charTyped(char p_94683_, int p_94684_) {
+            return super.charTyped(p_94683_, p_94684_);
+        }
+
+        @Override
+        public void setInitialFocus(@Nullable GuiEventListener p_94719_) {
+            super.setInitialFocus(p_94719_);
+        }
+
+        @Override
+        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
+            super.magicalSpecialHackyFocus(p_94726_);
+        }
+
+        @Override
+        public boolean changeFocus(boolean p_94728_) {
+            return super.changeFocus(p_94728_);
+        }
+
+        @Override
+        public List<? extends NarratableEntry> narratables() {
+            return List.of();
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public class DetailsListTitleEntry extends KeyDetailsList.Entry {
+
+        private final boolean hasConflicts;
+
+        public DetailsListTitleEntry(boolean hasConflicts) {
+            this.hasConflicts = hasConflicts;
+        }
+
+        @Override
+        public void render(PoseStack poseStack, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
+            enableScissor(getLeft(),getTop(),getRight(), getBottom());
+
+            fill(poseStack,
+                    getLeft(),
+                    getRowTop(0) - 3,
+                    getRight(),
+                    getRowTop(0) + itemHeight,
+                    AlternativeKeybindScreen.LIST_TITLE_BACKGROUND_COLOR
+            );
+
+            minecraft.font.draw(poseStack,
+                    KeyDetailsList.this.getSelectedKey().getKey().getDisplayName(),
+                    getLeft() + 5 , p_193890_ + 5,
+                    hasConflicts ? AlternativeKeybindScreen.CONFLICT_COLOR :Color.white.getRGB()
+            );
+
             disableScissor();
         }
 
@@ -281,13 +397,15 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
-            minecraft.font.draw(poseStack, Component.translatable(key.getName()), getLeft(), (float)(p_193925_ + p_193928_ / 2), 16777215);
-            if(key.getKeyConflictContext() == KeyConflictContext.GUI){
-                minecraft.font.draw(poseStack, Component.literal("In GUI"), getRight()-75, (float)(p_193925_ + p_193928_ / 2 ), Color.GRAY.getRGB());
-            } else if (key.getKeyConflictContext() == KeyConflictContext.IN_GAME) {
-                minecraft.font.draw(poseStack, Component.literal("In game"), getRight()-75, (float)(p_193925_ + p_193928_ / 2 ), Color.GRAY.getRGB());
-            }else{
-                minecraft.font.draw(poseStack, Component.literal("In game and GUI"), getRight()-105, (float)(p_193925_ + p_193928_ / 2 ), Color.GRAY.getRGB());
+            minecraft.font.draw(poseStack, Component.translatable(key.getName()), getLeft() + 5, (float)(p_193925_ + p_193928_ / 2), 16777215);
+            if(getWidth() > 170 ){
+                if(key.getKeyConflictContext() == KeyConflictContext.GUI){
+                    minecraft.font.draw(poseStack, Component.literal("In GUI"), getRight()-75, (float)(p_193925_ + p_193928_ / 2 ), Color.DARK_GRAY.getRGB());
+                } else if (key.getKeyConflictContext() == KeyConflictContext.IN_GAME) {
+                    minecraft.font.draw(poseStack, Component.literal("In game"), getRight()-75, (float)(p_193925_ + p_193928_ / 2 ), Color.DARK_GRAY.getRGB());
+                }else{
+                    minecraft.font.draw(poseStack, Component.literal("In game and GUI"), getRight()-105, (float)(p_193925_ + p_193928_ / 2 ), Color.DARK_GRAY.getRGB());
+                }
             }
 
             disableScissor();
@@ -411,19 +529,21 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
+            this.changeButton.x = getLeft() + 5;
+            this.changeButton.setWidth( Math.max(40, Math.min(120, (int) ((float)getWidth() *.4F) )) );
+            this.changeButton.y = p_193925_;
+            this.changeButton.setFGColor(isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:Color.white.getRGB());
+            this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? Component.literal("> ... <") : this.key.getTranslatedKeyMessage());
+            this.changeButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            this.resetButton.x = getLeft() + 10 + 110 + 5;
+            this.resetButton.x = this.changeButton.x + this.changeButton.getWidth() + 3;
+            this.resetButton.setWidth( Math.max(40, Math.min(100, (int) ((float)getWidth() *.35F) )) );
             this.resetButton.y = p_193925_;
             this.resetButton.active = !this.key.isDefault();
             this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : KeyUtil.hasDefaultConflict(parentScreen.getAllKeyMappings(), key) ? AlternativeKeybindScreen.CONFLICT_COLOR:AlternativeKeybindScreen.RESET_COLOR);
             this.resetButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
 
-            this.changeButton.x = getLeft() + 10;
-            this.changeButton.y = p_193925_;
-            this.changeButton.setFGColor(isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:Color.white.getRGB());
-            this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? Component.literal("> ... <") : this.key.getTranslatedKeyMessage());
-            this.changeButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
             disableScissor();
         }

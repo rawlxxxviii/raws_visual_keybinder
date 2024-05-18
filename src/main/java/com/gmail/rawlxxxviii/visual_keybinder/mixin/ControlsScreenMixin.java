@@ -1,12 +1,15 @@
 package com.gmail.rawlxxxviii.visual_keybinder.mixin;
 
 import com.gmail.rawlxxxviii.visual_keybinder.AlternativeKeybindScreen;
+import com.gmail.rawlxxxviii.visual_keybinder.VisualKeybinderMod;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.ControlsScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,13 +25,28 @@ public abstract class ControlsScreenMixin extends OptionsSubScreen {
     @Inject(method = "init", at = @At("RETURN"))
     protected void initInject(CallbackInfo ci){
 
+//        this.addRenderableWidget
+//            (new Button(
+//                    this.width / 2 - 155 + 160 + 150,
+//                    this.height / 6 - 12,
+//                    150, 20,
+//                    Component.literal("Visual keybinder"),
+//                    (p_97538_) -> this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options)))
+//        );
         this.addRenderableWidget
-            (new Button(
-                    this.width / 2 - 155 + 160 + 150,
-                    this.height / 6 - 12,
-                    150, 20,
-                    Component.literal("Alternative"),
-                    (p_97538_) -> this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options)))
+            (new ImageButton(
+                    this.width / 2 + 150 + 10, this.height / 6 - 12,
+                    27, 20,
+                    0, 56,
+                    20,
+                    new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
+                    512,512,
+                    (p_97538_) -> this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options)),
+                    (button, posestack,x,y)->{
+                        renderTooltip(posestack, Component.literal("Visual Keybinder") ,x,y);
+                    },
+                    Component.literal("Visual keybinder")
+            )
         );
 
     }

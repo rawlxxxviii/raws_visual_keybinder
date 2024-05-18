@@ -37,10 +37,16 @@ public class KeyUtil {
         return false;
     }
 
-    public static boolean hasConflict(List<KeyMapping> keyMappings, KeyMapping item, int skipIndex){
+    public static boolean hasConflict(List<KeyMapping> keyMappings, int itemIndex){
 
+        if( itemIndex >= keyMappings.size()){
+            return false;
+        }
+        
+        var item = keyMappings.get(itemIndex);
+        
         for (int i = 0; i < keyMappings.size(); i++) {
-            if(i == skipIndex){
+            if(i == itemIndex){
                 continue;
             }
             if(keyMappings.get(i).same(item)){

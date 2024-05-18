@@ -26,6 +26,9 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     public static final int CONFLICT_COLOR = new Color(243, 164, 39).getRGB();
     public static final int RESET_COLOR = new Color(161, 200, 123).getRGB();
     public static final int UNBOUND_COLOR = new Color(142, 149, 154).getRGB();
+    public static final int LIST_BACKGROUND_COLOR = new Color(0, 0, 0, 30).getRGB();
+    public static final int LIST_BACKGROUND_COLOR_2 = new Color(0, 0, 0, 50).getRGB();
+    public static final int LIST_TITLE_BACKGROUND_COLOR = new Color(0, 0, 0).getRGB();
 
     public static final int KEY_BUTTON_WIDTH = 16;
     public static final int WIDE_KEY_BUTTON_WIDTH = 60;
@@ -44,9 +47,10 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     private static final int PAGE_PADDING_TOP = 30;
     private static final int PAGE_PADDING_BOTTOM = 30;
-    private static final int PAGE_PADDING_RIGHT = 10;
-    private static final int PAGE_PADDING_LEFT = 10;
-    private static final int PAGE_MID_GAP = 20;
+    private static final int PAGE_PADDING_RIGHT = 5;
+    private static final int PAGE_PADDING_LEFT = 5;
+    private static final int PAGE_MID_GAP_HORIZONTAL = 5;
+    private static final int PAGE_MID_GAP_VERTICAL = 5;
 
 
     private int defaultListWidth = 30;
@@ -80,23 +84,21 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     protected void init() {
 
 
-
-
-        layoutHeight = (int)((height - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM) * 0.5);
-        detailsListHeight = (height - layoutHeight - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM);
+        layoutHeight = (int)((height - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM - PAGE_MID_GAP_VERTICAL) * 0.45);
+        detailsListHeight = (height - layoutHeight - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM - PAGE_MID_GAP_VERTICAL);
         defaultListHeight = detailsListHeight;
 
         layoutTop = PAGE_PADDING_TOP;
-        defaultListTop = PAGE_PADDING_TOP + layoutHeight;
-        detailsListTop = PAGE_PADDING_TOP + layoutHeight;
+        defaultListTop = PAGE_PADDING_TOP + layoutHeight + PAGE_MID_GAP_VERTICAL;
+        detailsListTop = PAGE_PADDING_TOP + layoutHeight + PAGE_MID_GAP_VERTICAL;
 
         detailsListWidth = (int)(width * 0.45  - PAGE_PADDING_LEFT - PAGE_PADDING_RIGHT);
-        defaultListWidth = width - detailsListWidth - PAGE_PADDING_LEFT - PAGE_PADDING_RIGHT - PAGE_MID_GAP;
+        defaultListWidth = width - detailsListWidth - PAGE_PADDING_LEFT - PAGE_PADDING_RIGHT - PAGE_MID_GAP_HORIZONTAL;
 
         layoutLeft = PAGE_PADDING_LEFT;
         layoutWidth = width - PAGE_PADDING_RIGHT - layoutLeft;
         detailsListLeft = PAGE_PADDING_LEFT;
-        defaultListLeft = detailsListLeft + detailsListWidth + PAGE_MID_GAP;
+        defaultListLeft = detailsListLeft + detailsListWidth + PAGE_MID_GAP_HORIZONTAL;
 
 
         this.defaultKeyBindsList = addWidget(new DefaultKeyBindsList(
@@ -433,7 +435,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
 
     public void renderNoSelectionInfo(PoseStack poseStack, int p_193992_, int p_193993_, float p_193994_) {
-        minecraft.font.draw(poseStack, Component.literal("Select a key to show/edit bindings"),
+        minecraft.font.draw(poseStack, Component.literal("Select a key to view/edit bindings"),
                 detailsListLeft + 10, defaultListTop + 30 , Color.GRAY.getRGB());
     }
 

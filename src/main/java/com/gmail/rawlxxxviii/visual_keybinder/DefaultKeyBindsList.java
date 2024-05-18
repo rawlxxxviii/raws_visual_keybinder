@@ -59,9 +59,24 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
             }
 
             Component component = Component.translatable(keyMapping.getName());
-
-            this.addEntry(new KeyEntry(keyMapping, component, KeyUtil.hasConflict(Arrays.stream(keyMappings).toList(), keyMapping, i)));
+            this.addEntry(new KeyEntry(keyMapping, component, KeyUtil.hasConflict(Arrays.stream(keyMappings).toList(), i)));
         }
+        this.addEntry(new EmptyEntry());
+
+    }
+
+
+    @Override
+    protected void renderBackground(PoseStack poseStack) {
+
+        fillGradient(poseStack,
+                getLeft(),
+                getTop(),
+                getRight(),
+                getBottom(),
+                AlternativeKeybindScreen.LIST_BACKGROUND_COLOR,
+                AlternativeKeybindScreen.LIST_BACKGROUND_COLOR_2
+                );
     }
 
     @Override
@@ -95,7 +110,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         @Override
         public void render(@NotNull PoseStack poseStack, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
-            minecraft.font.draw(poseStack, this.name, getLeft()  , p_193890_ + p_193893_ - 10, AlternativeKeybindScreen.CATEGORY_COLOR);
+            minecraft.font.draw(poseStack, this.name, getLeft() + 5 , p_193890_ + p_193893_ - 10, AlternativeKeybindScreen.CATEGORY_COLOR);
             disableScissor();
         }
 
@@ -232,23 +247,27 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
             return resetButton;
         }
 
+
         @Override
-        public void render(PoseStack p_193923_, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
+        public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
             enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
 
-            minecraft.font.draw(p_193923_, this.name, getLeft(), p_193925_ + p_193928_ - 10, 16777215);
-            this.resetButton.x = p_193926_ + 190 + 20;
+            minecraft.font.draw(poseStack, this.name, getLeft() + 5, p_193925_ + p_193928_ - 10, 16777215);
+
+            this.changeButton.x = p_193926_ + (int)((float)getWidth() * .43F);
+            this.changeButton.y = p_193925_;
+            this.changeButton.setWidth( Math.max(40, Math.min(120, (int) ((float)getWidth() *.27F) )) );
+            this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? Component.literal("> ... <") : this.key.getTranslatedKeyMessage());
+            this.changeButton.setFGColor(key.isUnbound() ? AlternativeKeybindScreen.UNBOUND_COLOR : isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
+            this.changeButton.render(poseStack, p_193929_, p_193930_, p_193932_);
+
+            this.resetButton.x = this.changeButton.x + this.changeButton.getWidth() + 2;
+            this.resetButton.setWidth( Math.max(40, Math.min(120, (int) ((float)getWidth() *.23F) )) );
             this.resetButton.y = p_193925_;
             this.resetButton.active = !this.key.isDefault();
             this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : KeyUtil.hasDefaultConflict(parentScreen.getAllKeyMappings(), key) ? AlternativeKeybindScreen.CONFLICT_COLOR:AlternativeKeybindScreen.RESET_COLOR);
-            this.resetButton.render(p_193923_, p_193929_, p_193930_, p_193932_);
-
-            this.changeButton.x = p_193926_ + 105;
-            this.changeButton.y = p_193925_;
-            this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? Component.literal("> ... <") : this.key.getTranslatedKeyMessage());
-            this.changeButton.setFGColor(key.isUnbound() ? AlternativeKeybindScreen.UNBOUND_COLOR : isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
-            this.changeButton.render(p_193923_, p_193929_, p_193930_, p_193932_);
+            this.resetButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
             disableScissor();
 
