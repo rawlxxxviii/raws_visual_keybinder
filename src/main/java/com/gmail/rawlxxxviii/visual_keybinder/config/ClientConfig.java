@@ -24,19 +24,23 @@ public class ClientConfig {
 
     private static void setupConfig(ForgeConfigSpec.Builder builder) {
 
-        builder.push("Button layouts");
+        builder.comment("Use this to create your own layouts. Multiple layouts can be defined. A standard button is 16px and a wide button is 60px. The order is defined by the occurrence of the name of the layout. This file can be deleted in order to restore to default.");
+        builder.push("Layouts");
         keyboardLayouts = builder
-                .comment("Use this to create your own layouts. Multiple layouts can be defined. You can change the order of the list how you prefer and the first layout defined here will be the default layout. This file can be deleted to restore to default.")
-                .defineList( "button_layouts", 
+                .comment("format:")
+                .comment("layout_name;key_name;position_x;position_y;wide/standard")
+                .comment("example:")
+                .comment("Full keyboard and mouse;key.keyboard.5;64;16;standard;")
+                .defineList( "button_layouts",
                         createList(),
                          entry -> true
-
                 )
         ;
+        builder.pop();
 
         builder.push("Preferences");
         displayConflictContext = builder
-                .comment("Display whether or not a binding is for GUI, in game or both.")
+                .comment("Display whether a binding is for GUI, in game or both.")
                 .define( "display_conflict_context", false)
         ;
         displayLayoutButtonTooltips = builder
@@ -48,6 +52,7 @@ public class ClientConfig {
                 .define( "display_button_tooltip", true)
         ;
 
+        builder.pop();
 
     }
 
@@ -68,7 +73,7 @@ public class ClientConfig {
                 keyName + ";" +
                 x + ";" +
                 y + ";" +
-                (isWide ? "wide" : "standard") + ";"
+                (isWide ? "wide" : "standard")
         );
     }
 

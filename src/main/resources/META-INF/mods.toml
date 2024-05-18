@@ -21,7 +21,7 @@ modId="visual_keybinder" #mandatory
 # see the associated build.gradle script for how to populate this completely automatically during a build
 version="${file.jarVersion}" #mandatory
  # A display name for the mod
-displayName="Raws' Visual Keybinder" #mandatory
+displayName="Raw's Visual Keybinder" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -67,4 +67,4 @@ description='''
 # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="[1.19.2,1.20)"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
