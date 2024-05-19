@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -14,9 +15,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +28,12 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
 
     private final AlternativeKeybindScreen parentScreen;
     private final KeyboardLayoutKey selectedKey;
+    protected final Options options;
 
-    public KeyDetailsList(AlternativeKeybindScreen parentScreen, Minecraft minecraft, KeyboardLayoutKey selectedKey, int left, int top, int width, int height) {
+    public KeyDetailsList(AlternativeKeybindScreen parentScreen, Minecraft minecraft, Options options, KeyboardLayoutKey selectedKey, int left, int top, int width, int height) {
 
         super(minecraft, width, height, top, height + top, 20);
+        this.options = options;
 
         this.setRenderTopAndBottom(false);
         this.setRenderBackground(false);
@@ -48,21 +53,22 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
     private void buildEndtries(){
         clearEntries();
 
+        KeyMapping[] allKeyMappings = ArrayUtils.clone(options.keyMappings);
+
         var keyMappings = parentScreen.getKeyMappings(selectedKey);
         var hasConflicts = KeyUtil.hasConflict(keyMappings);
 
         this.addEntry(new DetailsListTitleEntry(hasConflicts));
 
-        if(keyMappings.isEmpty()){
+        if(keyMappings.length == 0){
             this.addEntry(new EmptyEntry());
             this.addEntry(new TitleEntry( Component.literal("No bindings"), Color.GRAY.getRGB()));
         }
 
         String c = null;
-        for (int i = 0; i < keyMappings.size(); i++) {
-            var keyMapping = keyMappings.get(i);
+        for (int i = 0; i < keyMappings.length; i++) {
+            var keyMapping = keyMappings[i];
 
-            var isConflicting = KeyUtil.hasConflict(keyMappings, i);
 
             String category = keyMapping.getCategory();
             if (!category.equals(c)) {
@@ -70,8 +76,11 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
                 this.addEntry(new TitleEntry(Component.translatable(category),AlternativeKeybindScreen.CATEGORY_COLOR));
             }
 
+            var isConflicting = KeyUtil.hasConflict(keyMappings, i);
+            var isDefaultConflicting = KeyUtil.hasDefaultConflict(allKeyMappings, keyMapping);
+
             addEntry( new KeyEntry( keyMapping, isConflicting) );
-            addEntry( new KeyInfoEntry( keyMapping, isConflicting) );
+            addEntry( new KeyInfoEntry( keyMapping, isConflicting, isDefaultConflicting) );
         }
         addEntry(new EmptyEntry());
     }
@@ -491,11 +500,14 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         private final Button changeButton;
         private final Button resetButton;
         private final boolean isConflicting;
+        private final boolean isDefaultConflicting;
 
 
-        KeyInfoEntry(final KeyMapping key, boolean isConflicting) {
+        KeyInfoEntry(final KeyMapping key, boolean isConflicting, boolean isDefaultConflicting) {
             this.key = key;
             this.isConflicting = isConflicting;
+            this.isDefaultConflicting = isDefaultConflicting;
+
             this.changeButton = new Button(
                     0, 0,
                     110 , 20,
@@ -509,7 +521,7 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
                 Component.literal("(").append(key.getDefaultKey().getDisplayName().getString()).append(")"),
                 (p_193935_) -> {
                     this.key.setToDefault();
-                    minecraft.options.setKey(key, key.getDefaultKey());
+                    options.setKey(key, key.getDefaultKey());
                     KeyMapping.resetMapping();
                     parentScreen.onBindingsChanged();
                 });
@@ -541,7 +553,7 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
             this.resetButton.setWidth( Math.max(40, Math.min(100, (int) ((float)getWidth() *.35F) )) );
             this.resetButton.y = p_193925_;
             this.resetButton.active = !this.key.isDefault();
-            this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : KeyUtil.hasDefaultConflict(parentScreen.getAllKeyMappings(), key) ? AlternativeKeybindScreen.CONFLICT_COLOR:AlternativeKeybindScreen.RESET_COLOR);
+            this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : isDefaultConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:AlternativeKeybindScreen.RESET_COLOR);
             this.resetButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
 

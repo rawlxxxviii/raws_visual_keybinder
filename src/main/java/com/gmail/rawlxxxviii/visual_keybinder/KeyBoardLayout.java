@@ -53,11 +53,6 @@ public class KeyBoardLayout {
     public List<KeyboardLayoutKey> getKeyboardLayoutKeys() {
         return keyboardLayoutKeys;
     }
-//
-//    public void addKey(KeyboardLayoutKey key){
-//        keyboardLayoutKeys.add(key);
-//        updateMinMax();
-//    }
 
     public Component getName() {
         return name;

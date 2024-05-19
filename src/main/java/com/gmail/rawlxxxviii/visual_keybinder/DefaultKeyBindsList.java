@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -23,12 +24,14 @@ import java.util.Optional;
 
 public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKeyBindsList.Entry> {
     private final AlternativeKeybindScreen parentScreen;
-    int maxNameWidth;
+    protected final Options options;
 
-    public DefaultKeyBindsList(AlternativeKeybindScreen parentScreen, Minecraft minecraft, int left, int top, int width, int height) {
+
+    public DefaultKeyBindsList(AlternativeKeybindScreen parentScreen, Minecraft minecraft, Options options, int left, int top, int width, int height) {
         super(minecraft, width, height, top, height + top, 20);
 
         this.parentScreen = parentScreen;
+        this.options = options;
 
         this.setRenderTopAndBottom(false);
         this.setRenderBackground(false);
@@ -43,7 +46,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
     private void buildEntries(){
         clearEntries();
 
-        KeyMapping[] keyMappings = ArrayUtils.clone(minecraft.options.keyMappings);
+        KeyMapping[] keyMappings = ArrayUtils.clone(options.keyMappings);
         Arrays.sort(keyMappings);
 
         String c = null;
@@ -57,9 +60,8 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
                 c = category;
                 this.addEntry(new CategoryEntry(Component.translatable(category)));
             }
-
             Component component = Component.translatable(keyMapping.getName());
-            this.addEntry(new KeyEntry(keyMapping, component, KeyUtil.hasConflict(Arrays.stream(keyMappings).toList(), i)));
+            this.addEntry(new KeyEntry(keyMapping, component, KeyUtil.hasConflict(keyMappings, i),KeyUtil.hasDefaultConflict(keyMappings, keyMapping)));
         }
         this.addEntry(new EmptyEntry());
 
@@ -214,11 +216,13 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         private final Button changeButton;
         private final Button resetButton;
         private final boolean isConflicting;
+        private final boolean isDefaultConflicting;
 
-        KeyEntry(final KeyMapping p_193916_, final Component p_193917_, boolean isConflicting) {
+        KeyEntry(final KeyMapping p_193916_, final Component p_193917_, boolean isConflicting, boolean isDefaultConflicting) {
             this.key = p_193916_;
             this.name = p_193917_;
             this.isConflicting = isConflicting;
+            this.isDefaultConflicting = isDefaultConflicting;
             this.changeButton = new Button(0, 0, 100 , 20, p_193917_,
                 (p_193939_) -> {
                     DefaultKeyBindsList.this.parentScreen.setKeyMappingToChange(p_193916_);
@@ -228,7 +232,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
                     Component.literal("(").append(key.getDefaultKey().getDisplayName().getString()).append(")"),
                     (p_193935_) -> {
                         this.key.setToDefault();
-                        minecraft.options.setKey(p_193916_, p_193916_.getDefaultKey());
+                        options.setKey(p_193916_, p_193916_.getDefaultKey());
                         KeyMapping.resetMapping();
                         DefaultKeyBindsList.this.parentScreen.onBindingsChanged();
                     }
@@ -266,7 +270,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
             this.resetButton.setWidth( Math.max(40, Math.min(120, (int) ((float)getWidth() *.23F) )) );
             this.resetButton.y = p_193925_;
             this.resetButton.active = !this.key.isDefault();
-            this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : KeyUtil.hasDefaultConflict(parentScreen.getAllKeyMappings(), key) ? AlternativeKeybindScreen.CONFLICT_COLOR:AlternativeKeybindScreen.RESET_COLOR);
+            this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : isDefaultConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:AlternativeKeybindScreen.RESET_COLOR);
             this.resetButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
             disableScissor();

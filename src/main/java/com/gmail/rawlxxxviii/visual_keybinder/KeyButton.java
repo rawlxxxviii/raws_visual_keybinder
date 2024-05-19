@@ -124,12 +124,12 @@ public class KeyButton extends ImageButton {
 
     }
 
-    public List<KeyMapping> getKeymappings(){
+    public KeyMapping[] getKeymappings(){
         return parentScreen.getKeyMappings(keyboardLayoutKey);
     }
 
     public boolean isEmpty(){
-        return getKeymappings().isEmpty();
+        return getKeymappings().length < 1;
     }
 
     public boolean hasConflict(){

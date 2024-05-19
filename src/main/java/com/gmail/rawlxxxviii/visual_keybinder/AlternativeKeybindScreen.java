@@ -103,11 +103,13 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
         this.defaultKeyBindsList = addWidget(new DefaultKeyBindsList(
                 this, this.minecraft,
+                options,
                 defaultListLeft,
                 defaultListTop,
                 defaultListWidth,
                 defaultListHeight
         ));
+
 
         this.setActiveKeyboardLayout(activeKeyboardLayoutIndex);
 
@@ -179,12 +181,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         this.keyBoardLayouts.addAll(
             ClientConfig.getKeyboardLayoutsFromConfig()
         );
-//
-//        this.keyBoardLayouts.add(createLayout1());
-//        this.keyBoardLayouts.add(createLayout2());
-//        this.keyBoardLayouts.add(createLayout3());
-//        this.keyBoardLayouts.add(createLayout4());
-
     }
 
     public KeyBoardLayout getActiveKeyboardLayout() {
@@ -241,7 +237,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                 net.minecraftforge.client.settings.KeyModifier.isKeyCodeModifier(pressedKey)
         ) {
             this.keyMappingToChange.setKeyModifierAndCode(KeyModifier.NONE, InputConstants.getKey(p_193987_, p_193988_));
-            this.options.setKey(this.keyMappingToChange, pressedKey);
+            options.setKey(this.keyMappingToChange, pressedKey);
             this.keyMappingToChange = null;
             KeyMapping.resetMapping();
 
@@ -286,16 +282,16 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     }
 
 
-    public List<KeyMapping> getAllKeyMappings(){
-        return Arrays.stream(ArrayUtils.clone(options.keyMappings)).toList();
+    public KeyMapping[] getAllKeyMappings(){
+        return ArrayUtils.clone(options.keyMappings);
     }
 
-    public List<KeyMapping> getKeyMappings(KeyboardLayoutKey key){
+    public KeyMapping[] getKeyMappings(KeyboardLayoutKey key){
         return Arrays.stream(ArrayUtils.clone(options.keyMappings)).filter(x->
                 x.getKey().getValue() == key.getKey().getValue()
                 ||
                 x.getKeyModifier().matches(key.getKey())
-        ).toList();
+        ).toArray(KeyMapping[]::new);
     }
 
     private void createLayoutButtons(KeyBoardLayout keyboardLayout){
@@ -334,16 +330,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
                         setDetailsList(item);
 
-//                        detailsList = addRenderableWidget(new KeyDetailsList(
-//                                this,
-//                                minecraft,
-//                                item,
-//                                detailsListLeft,
-//                                detailsListTop,
-//                                detailsListWidth,
-//                                detailsListHeight
-//                        ));
-
                     }
             );
 
@@ -355,6 +341,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         detailsList = addRenderableWidget(new KeyDetailsList(
                 this,
                 minecraft,
+                options,
                 keyboardLayoutKey,
                 detailsListLeft,
                 detailsListTop,
@@ -396,7 +383,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                     List<Component> componentList = new ArrayList<>();
                     componentList.add(keyButton.getMessage());
 
-                    var count = keyButton.getKeymappings().size();
+                    var count = keyButton.getKeymappings().length;
                     if(count == 0){
                         componentList.add(Component.literal( "No bindings").withStyle(ChatFormatting.DARK_GRAY));
                     }else{

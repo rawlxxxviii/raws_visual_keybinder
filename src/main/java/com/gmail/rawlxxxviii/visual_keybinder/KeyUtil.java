@@ -4,19 +4,20 @@ import java.util.List;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 
 public class KeyUtil {
 
-    public static boolean hasConflict(List<KeyMapping> keyMappings){
+    public static boolean hasConflict(KeyMapping[] keyMappings){
 
-        for (int i = 0; i < keyMappings.size(); i++) {
+        for (int i = 0; i < keyMappings.length; i++) {
 
-            for (int j = 0; j < keyMappings.size(); j++) {
+            for (int j = 0; j < keyMappings.length; j++) {
                 if(i == j){
                     continue;
                 }
-                if(keyMappings.get(i).same(keyMappings.get(j))){
+                if(keyMappings[i].same(keyMappings[j])){
                     return true;
                 }
             }
@@ -25,11 +26,14 @@ public class KeyUtil {
         return false;
     }
 
-    public static boolean hasDefaultConflict(List<KeyMapping> keyMappings, KeyMapping item){
 
-        var copy = new KeyMapping(item.getName(),item.getKeyConflictContext(),item.getDefaultKeyModifier(), item.getDefaultKey(),item.getCategory());
-        for (int i = 0; i < keyMappings.size(); i++) {
-            if(keyMappings.get(i).same(copy)){
+    public static boolean hasDefaultConflict(KeyMapping[] keyMappings, KeyMapping item){
+
+        for (KeyMapping keyMapping : keyMappings) {
+            if (keyMapping.getName().equals(item.getName())) {
+                continue;
+            }
+            if (isDefaultConflicting(keyMapping, item.getKeyConflictContext(), item.getDefaultKey(), item.getDefaultKeyModifier())) {
                 return true;
             }
         }
@@ -37,19 +41,36 @@ public class KeyUtil {
         return false;
     }
 
-    public static boolean hasConflict(List<KeyMapping> keyMappings, int itemIndex){
+    private static boolean isDefaultConflicting(KeyMapping keyMappingA, IKeyConflictContext keyConflictContextB, InputConstants.Key keyB, KeyModifier keyModifierB){
 
-        if( itemIndex >= keyMappings.size()){
+        if (keyMappingA.getKeyConflictContext().conflicts(keyConflictContextB) || keyConflictContextB.conflicts(keyMappingA.getKeyConflictContext())) {
+            net.minecraftforge.client.settings.KeyModifier keyModifier = keyMappingA.getKeyModifier();
+            if (keyModifier.matches(keyB) || keyModifierB.matches(keyMappingA.getKey())) {
+                return true;
+            } else if (keyMappingA.getKey().equals(keyB)) {
+                // IN_GAME key contexts have a conflict when at least one modifier is NONE.
+                // For example: If you hold shift to crouch, you can still press E to open your inventory. This means that a Shift+E hotkey is in conflict with E.
+                // GUI and other key contexts do not have this limitation.
+                return keyModifier == keyModifierB ||
+                        (keyMappingA.getKeyConflictContext().conflicts(net.minecraftforge.client.settings.KeyConflictContext.IN_GAME) &&
+                                (keyModifier == net.minecraftforge.client.settings.KeyModifier.NONE || keyModifierB == net.minecraftforge.client.settings.KeyModifier.NONE));
+            }
+        }
+        return keyMappingA.getKey().equals(keyB);
+    }
+
+    public static boolean hasConflict(KeyMapping[] keyMappings, int itemIndex){
+
+        if( itemIndex >= keyMappings.length){
             return false;
         }
-        
-        var item = keyMappings.get(itemIndex);
-        
-        for (int i = 0; i < keyMappings.size(); i++) {
+        var item = keyMappings[itemIndex];
+
+        for (int i = 0; i < keyMappings.length; i++) {
             if(i == itemIndex){
                 continue;
             }
-            if(keyMappings.get(i).same(item)){
+            if(keyMappings[i].same(item)){
                 return true;
             }
         }

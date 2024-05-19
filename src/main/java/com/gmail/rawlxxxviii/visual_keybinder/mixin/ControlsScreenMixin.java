@@ -25,14 +25,6 @@ public abstract class ControlsScreenMixin extends OptionsSubScreen {
     @Inject(method = "init", at = @At("RETURN"))
     protected void initInject(CallbackInfo ci){
 
-//        this.addRenderableWidget
-//            (new Button(
-//                    this.width / 2 - 155 + 160 + 150,
-//                    this.height / 6 - 12,
-//                    150, 20,
-//                    Component.literal("Visual keybinder"),
-//                    (p_97538_) -> this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options)))
-//        );
         this.addRenderableWidget
             (new ImageButton(
                     this.width / 2 + 150 + 10, this.height / 6 - 12,

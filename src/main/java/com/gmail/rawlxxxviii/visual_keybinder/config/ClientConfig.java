@@ -114,42 +114,6 @@ public class ClientConfig {
             ));
         });
 
-//        keyboardLayouts.get().forEach(item->{
-//
-//            var splittedString = item.split(";");
-//            if(splittedString.length != 5){
-//                return;
-//            }
-//
-//            var itemLayoutName = splittedString[0];
-//            var itemKeyName = splittedString[1];
-//            var itemX = Integer.parseInt(splittedString[2]);
-//            var itemY = Integer.parseInt(splittedString[3]);
-//            boolean isWide = Objects.equals(splittedString[4], "wide");
-//
-//            KeyboardLayoutKey keyToAdd = new KeyboardLayoutKey(
-//                        itemKeyName,
-//                        itemX,
-//                        itemY,
-//                        isWide
-//                    );
-//
-//            resultList.stream()
-//                    .filter(x-> Objects.equals(x.getName().getString(), itemLayoutName))
-//                    .findFirst()
-//                    .ifPresentOrElse(
-//                            x->
-//                                x.addKey(keyToAdd),
-//                            ()->{
-//                                var list = new ArrayList<KeyboardLayoutKey>();
-//                                list.add(keyToAdd);
-//                                resultList.add( new KeyBoardLayout(list,Component.literal(itemLayoutName) ));
-//                            }
-//                    );
-//
-//
-//        });
-
         List<KeyBoardLayout> resultList = new ArrayList<KeyBoardLayout>();
 
         map.forEach(
