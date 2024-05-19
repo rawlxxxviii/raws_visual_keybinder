@@ -27,9 +27,9 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     public static final int RESET_COLOR = new Color(161, 200, 123).getRGB();
     public static final int UNBOUND_COLOR = new Color(142, 149, 154).getRGB();
     public static final int DANGER_COLOR = new Color(174, 26, 7).getRGB();
-    public static final int LIST_BACKGROUND_COLOR = new Color(143, 62, 62, 199).getRGB();
+    public static final int LIST_BACKGROUND_COLOR = new Color(0, 0, 0, 48).getRGB();
     public static final int LIST_BACKGROUND_COLOR_2 = new Color(0, 0, 0, 50).getRGB();
-    public static final int LIST_TITLE_BACKGROUND_COLOR = new Color(0, 0, 0, 58).getRGB();
+    public static final int LIST_TITLE_BACKGROUND_COLOR = new Color(0, 0, 0, 158).getRGB();
 
     public static final int KEY_BUTTON_WIDTH = 16;
     public static final int WIDE_KEY_BUTTON_WIDTH = 60;
@@ -48,11 +48,11 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     private List<KeyButton> keyButtons = new ArrayList<>();
 
     private static final int PAGE_PADDING_TOP = 30;
-    private static final int PAGE_PADDING_BOTTOM = 30;
+    private static final int PAGE_PADDING_BOTTOM = 35;
     private static final int PAGE_PADDING_RIGHT = 5;
     private static final int PAGE_PADDING_LEFT = 5;
     private static final int PAGE_MID_GAP_HORIZONTAL = 5;
-    private static final int PAGE_MID_GAP_VERTICAL = 5;
+    private static final int PAGE_MID_GAP_VERTICAL = 10;
 
 
     private int defaultListWidth = 30;
@@ -90,9 +90,17 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         detailsListHeight = (height - layoutHeight - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM - PAGE_MID_GAP_VERTICAL);
         defaultListHeight = detailsListHeight;
 
-        layoutTop = PAGE_PADDING_TOP;
-        defaultListTop = PAGE_PADDING_TOP + layoutHeight + PAGE_MID_GAP_VERTICAL;
-        detailsListTop = PAGE_PADDING_TOP + layoutHeight + PAGE_MID_GAP_VERTICAL;
+        if(ClientConfig.positionLayoutInBotton.get()){
+            layoutTop = PAGE_PADDING_TOP + detailsListHeight + PAGE_MID_GAP_VERTICAL;
+            defaultListTop = PAGE_PADDING_TOP;
+            detailsListTop = PAGE_PADDING_TOP;
+        }else{
+            layoutTop = PAGE_PADDING_TOP;
+            defaultListTop = PAGE_PADDING_TOP + layoutHeight + PAGE_MID_GAP_VERTICAL;
+            detailsListTop = PAGE_PADDING_TOP + layoutHeight + PAGE_MID_GAP_VERTICAL;
+
+        }
+
 
         detailsListWidth = (int)(width * 0.45  - PAGE_PADDING_LEFT - PAGE_PADDING_RIGHT);
         defaultListWidth = width - detailsListWidth - PAGE_PADDING_LEFT - PAGE_PADDING_RIGHT - PAGE_MID_GAP_HORIZONTAL;
@@ -118,7 +126,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
         rotateLayoutButton = addRenderableWidget(new Button(
                 this.width - 155,
-                + 5,
+                5,
                 150, 20,
                 Component.empty(),
                 (button) -> setActiveKeyboardLayout(getActiveKeyboardLayoutIndex()+1)
@@ -126,16 +134,16 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         );
 
         addRenderableWidget(new Button(
-                this.width / 2 - 75,
-                this.height - PAGE_PADDING_BOTTOM + 5,
+                5,
+                this.height - 25,
                 150, 20, CommonComponents.GUI_DONE,
                 (button) -> this.minecraft.setScreen(this.lastScreen)
         ));
 
         resetButton = this.addRenderableWidget(new Button(
-                5, 5,
-                60, 20,
-                Component.translatable("controls.resetAll"),
+                80, 5,
+                70, 20,
+                Component.translatable("controls.resetAll").withStyle(ChatFormatting.GRAY),
                 (button) -> {
                     for(KeyMapping keymapping : this.options.keyMappings) {
                         keymapping.setToDefault();
@@ -147,9 +155,9 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         );
 
         unbindAllButton = this.addRenderableWidget(new Button(
-                65, 5,
+                5, 5,
                 70, 20,
-                Component.literal("Unbind all"),
+                Component.literal("Unbind all").withStyle(ChatFormatting.GRAY),
                 (button) -> {
                     for(KeyMapping keymapping : this.options.keyMappings) {
                         keymapping.setKeyModifierAndCode(KeyModifier.NONE,InputConstants.UNKNOWN);
@@ -331,9 +339,8 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                     (x)->{
 
                         if(detailsList != null){
-                            removeWidget(detailsList);
-
                             if (detailsList.getSelectedKey().getKey().getValue() == item.getKey().getValue()) {
+                                removeWidget(detailsList);
                                 detailsList = null;
                                 return;
                             }
@@ -349,7 +356,10 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     }
 
     public void setDetailsList(KeyboardLayoutKey keyboardLayoutKey) {
-        detailsList = addRenderableWidget(new KeyDetailsList(
+        if(detailsList != null){
+            removeWidget(detailsList);
+        }
+        detailsList = addWidget(new KeyDetailsList(
                 this,
                 minecraft,
                 options,
@@ -363,28 +373,27 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float p_193994_) {
-//        this.renderBackground(poseStack);
         this.renderDirtBackground(0);
 
         if(this.detailsList != null){
-            detailsList.render(poseStack, mouseX, mouseY, p_193994_);
+           detailsList.render(poseStack, mouseX, mouseY, p_193994_);
         }
+
         this.defaultKeyBindsList.render(poseStack, mouseX, mouseY, p_193994_);
 
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
 
         resetButton.active = hasNonDefaultBindings();
         unbindAllButton.active = hasBoundBindings();
-        unbindAllButton.setFGColor(unbindAllButton.active ? DANGER_COLOR : Color.GRAY.getRGB());
-        unbindAllButton.render(poseStack, mouseX, mouseY, p_193994_);
 
         if(activeKeyboardLayout == null){
             rotateLayoutButton.setMessage(Component.literal(keyBoardLayouts.isEmpty() ? "No layouts.." : "Select layout"));
         }else{
             rotateLayoutButton.setMessage(Component.literal(activeKeyboardLayout.getName().getString())
                     .append(" " + (getActiveKeyboardLayoutIndex() + 1) + "/" + keyBoardLayouts.size() ));
-
         }
+        rotateLayoutButton.y = ClientConfig.positionLayoutInBotton.get() ? height - 25 : 5;
+        rotateLayoutButton.render(poseStack, mouseX, mouseY, p_193994_);
 
         if(this.getDetailsList() == null){
             renderNoSelectionInfo(poseStack, mouseX, mouseY, p_193994_);

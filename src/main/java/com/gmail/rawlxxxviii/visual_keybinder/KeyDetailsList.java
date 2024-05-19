@@ -61,7 +61,6 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         this.addEntry(new DetailsListTitleEntry(hasConflicts));
 
         if(keyMappings.length == 0){
-            this.addEntry(new EmptyEntry());
             this.addEntry(new TitleEntry( Component.literal("No bindings"), Color.GRAY.getRGB()));
         }
 
@@ -283,7 +282,7 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
 
             fill(poseStack,
                     getLeft(),
-                    getRowTop(0) - 3,
+                    getRowTop(0) - 4,
                     getRight(),
                     getRowTop(0) + itemHeight,
                     AlternativeKeybindScreen.LIST_TITLE_BACKGROUND_COLOR
