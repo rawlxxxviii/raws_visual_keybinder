@@ -59,18 +59,13 @@ public class KeyUtil {
         return keyMappingA.getKey().equals(keyB);
     }
 
-    public static boolean hasConflict(KeyMapping[] keyMappings, int itemIndex){
+    public static boolean hasConflict(KeyMapping[] keyMappings, KeyMapping item){
 
-        if( itemIndex >= keyMappings.length){
-            return false;
-        }
-        var item = keyMappings[itemIndex];
-
-        for (int i = 0; i < keyMappings.length; i++) {
-            if(i == itemIndex){
+        for (KeyMapping keyMapping : keyMappings) {
+            if (keyMapping.getName().equals(item.getName())) {
                 continue;
             }
-            if(keyMappings[i].same(item)){
+            if (keyMapping.same(item)) {
                 return true;
             }
         }

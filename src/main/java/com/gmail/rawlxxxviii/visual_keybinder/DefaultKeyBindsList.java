@@ -50,18 +50,17 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         Arrays.sort(keyMappings);
 
         String c = null;
-        for (int i = 0; i < keyMappings.length; i++) {
-            var keyMapping = keyMappings[i];
+        for (KeyMapping keyMapping : keyMappings) {
             String category = keyMapping.getCategory();
             if (!category.equals(c)) {
-                if(c != null){
+                if (c != null) {
                     this.addEntry(new EmptyEntry());
                 }
                 c = category;
                 this.addEntry(new CategoryEntry(Component.translatable(category)));
             }
             Component component = Component.translatable(keyMapping.getName());
-            this.addEntry(new KeyEntry(keyMapping, component, KeyUtil.hasConflict(keyMappings, i),KeyUtil.hasDefaultConflict(keyMappings, keyMapping)));
+            this.addEntry(new KeyEntry(keyMapping, component, KeyUtil.hasConflict(keyMappings, keyMapping), KeyUtil.hasDefaultConflict(keyMappings, keyMapping)));
         }
         this.addEntry(new EmptyEntry());
 

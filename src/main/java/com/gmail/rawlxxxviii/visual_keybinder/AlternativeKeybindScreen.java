@@ -26,9 +26,10 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     public static final int CONFLICT_COLOR = new Color(243, 164, 39).getRGB();
     public static final int RESET_COLOR = new Color(161, 200, 123).getRGB();
     public static final int UNBOUND_COLOR = new Color(142, 149, 154).getRGB();
-    public static final int LIST_BACKGROUND_COLOR = new Color(0, 0, 0, 30).getRGB();
+    public static final int DANGER_COLOR = new Color(174, 26, 7).getRGB();
+    public static final int LIST_BACKGROUND_COLOR = new Color(143, 62, 62, 199).getRGB();
     public static final int LIST_BACKGROUND_COLOR_2 = new Color(0, 0, 0, 50).getRGB();
-    public static final int LIST_TITLE_BACKGROUND_COLOR = new Color(0, 0, 0).getRGB();
+    public static final int LIST_TITLE_BACKGROUND_COLOR = new Color(0, 0, 0, 58).getRGB();
 
     public static final int KEY_BUTTON_WIDTH = 16;
     public static final int WIDE_KEY_BUTTON_WIDTH = 60;
@@ -39,6 +40,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     private Button rotateLayoutButton;
     private Button resetButton;
+    private Button unbindAllButton;
 
     private List<KeyBoardLayout> keyBoardLayouts = new ArrayList<>();
     private KeyBoardLayout activeKeyboardLayout;
@@ -131,9 +133,8 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         ));
 
         resetButton = this.addRenderableWidget(new Button(
-                5,
-                this.height - PAGE_PADDING_BOTTOM + 5,
-                75, 20,
+                5, 5,
+                60, 20,
                 Component.translatable("controls.resetAll"),
                 (button) -> {
                     for(KeyMapping keymapping : this.options.keyMappings) {
@@ -145,15 +146,25 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                 })
         );
 
+        unbindAllButton = this.addRenderableWidget(new Button(
+                65, 5,
+                70, 20,
+                Component.literal("Unbind all"),
+                (button) -> {
+                    for(KeyMapping keymapping : this.options.keyMappings) {
+                        keymapping.setKeyModifierAndCode(KeyModifier.NONE,InputConstants.UNKNOWN);
+                    }
+                    KeyMapping.resetMapping();
+                    onBindingsChanged();
+                })
+        );
+
         if(detailsList != null){
-
-            var a = detailsList.getSelectedKey();
-
-            setDetailsList(a);
-
+            setDetailsList(detailsList.getSelectedKey());
         }
 
     }
+
 
     public int getLayoutLeft() {
         return layoutLeft;
@@ -352,7 +363,8 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float p_193994_) {
-        this.renderBackground(poseStack);
+//        this.renderBackground(poseStack);
+        this.renderDirtBackground(0);
 
         if(this.detailsList != null){
             detailsList.render(poseStack, mouseX, mouseY, p_193994_);
@@ -362,8 +374,9 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
 
         resetButton.active = hasNonDefaultBindings();
-
-
+        unbindAllButton.active = hasBoundBindings();
+        unbindAllButton.setFGColor(unbindAllButton.active ? DANGER_COLOR : Color.GRAY.getRGB());
+        unbindAllButton.render(poseStack, mouseX, mouseY, p_193994_);
 
         if(activeKeyboardLayout == null){
             rotateLayoutButton.setMessage(Component.literal(keyBoardLayouts.isEmpty() ? "No layouts.." : "Select layout"));
@@ -383,14 +396,16 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                     List<Component> componentList = new ArrayList<>();
                     componentList.add(keyButton.getMessage());
 
-                    var count = keyButton.getKeymappings().length;
-                    if(count == 0){
+                    var keyMappings = keyButton.getKeymappings();
+
+                    if(keyMappings.length == 0){
                         componentList.add(Component.literal( "No bindings").withStyle(ChatFormatting.DARK_GRAY));
                     }else{
-                        componentList.add(Component.literal(String.valueOf(count)).append(" binding" + (count == 1 ? "" : "s")).withStyle(ChatFormatting.DARK_GRAY));
-                    }
-                    if(keyButton.hasConflict()){
-                        componentList.add(Component.literal( "Has conflict").withStyle(ChatFormatting.GOLD));
+                        componentList.add(Component.literal(""));
+                        for (var keymapping : keyMappings){
+                            componentList.add(Component.literal(" - ").append(Component.translatable(keymapping.getName()))
+                                    .withStyle(KeyUtil.hasConflict(keyMappings, keymapping) ? ChatFormatting.GOLD: ChatFormatting.GRAY));
+                        }
                     }
                     renderComponentTooltip(poseStack,componentList,mouseX,mouseY);
                 }
@@ -432,6 +447,14 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     private boolean hasNonDefaultBindings(){
         for(KeyMapping keymapping : this.options.keyMappings) {
             if (!keymapping.isDefault()) {
+                return  true;
+            }
+        }
+        return false;
+    }
+    private boolean hasBoundBindings(){
+        for(KeyMapping keymapping : this.options.keyMappings) {
+            if (!keymapping.isUnbound()) {
                 return  true;
             }
         }

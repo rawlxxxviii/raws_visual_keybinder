@@ -66,21 +66,18 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         String c = null;
-        for (int i = 0; i < keyMappings.length; i++) {
-            var keyMapping = keyMappings[i];
-
-
+        for (KeyMapping keyMapping : keyMappings) {
             String category = keyMapping.getCategory();
             if (!category.equals(c)) {
                 c = category;
-                this.addEntry(new TitleEntry(Component.translatable(category),AlternativeKeybindScreen.CATEGORY_COLOR));
+                this.addEntry(new TitleEntry(Component.translatable(category), AlternativeKeybindScreen.CATEGORY_COLOR));
             }
 
-            var isConflicting = KeyUtil.hasConflict(keyMappings, i);
+            var isConflicting = KeyUtil.hasConflict(keyMappings, keyMapping);
             var isDefaultConflicting = KeyUtil.hasDefaultConflict(allKeyMappings, keyMapping);
 
-            addEntry( new KeyEntry( keyMapping, isConflicting) );
-            addEntry( new KeyInfoEntry( keyMapping, isConflicting, isDefaultConflicting) );
+            addEntry(new KeyEntry(keyMapping, isConflicting));
+            addEntry(new KeyInfoEntry(keyMapping, isConflicting, isDefaultConflicting));
         }
         addEntry(new EmptyEntry());
     }
