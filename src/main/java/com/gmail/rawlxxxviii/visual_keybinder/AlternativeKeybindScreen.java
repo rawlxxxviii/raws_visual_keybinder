@@ -26,9 +26,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     public static final int CONFLICT_COLOR = new Color(243, 164, 39).getRGB();
     public static final int RESET_COLOR = new Color(161, 200, 123).getRGB();
     public static final int UNBOUND_COLOR = new Color(142, 149, 154).getRGB();
-    public static final int DANGER_COLOR = new Color(174, 26, 7).getRGB();
-    public static final int LIST_BACKGROUND_COLOR = new Color(0, 0, 0, 48).getRGB();
-    public static final int LIST_BACKGROUND_COLOR_2 = new Color(0, 0, 0, 50).getRGB();
     public static final int LIST_TITLE_BACKGROUND_COLOR = new Color(0, 0, 0, 158).getRGB();
 
     public static final int KEY_BUTTON_WIDTH = 16;
@@ -374,6 +371,12 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float p_193994_) {
         this.renderDirtBackground(0);
+
+        fill(poseStack,
+                0, 0,
+                width,height,
+                new Color(0,0,0,80).getRGB()
+        );
 
         if(this.detailsList != null){
            detailsList.render(poseStack, mouseX, mouseY, p_193994_);

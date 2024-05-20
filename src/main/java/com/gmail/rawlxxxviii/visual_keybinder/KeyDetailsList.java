@@ -36,7 +36,6 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         this.options = options;
 
         this.setRenderTopAndBottom(false);
-        this.setRenderBackground(false);
         this.height = height;
 
         this.x0 = left;
@@ -84,20 +83,6 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
     public void onBindingsUpdated(){
         buildEndtries();
         setScrollAmount(getScrollAmount());
-    }
-
-
-    @Override
-    protected void renderBackground(PoseStack poseStack) {
-
-        fillGradient(poseStack,
-                getLeft(),
-                getTop(),
-                getRight(),
-                getBottom(),
-                AlternativeKeybindScreen.LIST_BACKGROUND_COLOR,
-                AlternativeKeybindScreen.LIST_BACKGROUND_COLOR_2
-        );
     }
 
     @Override

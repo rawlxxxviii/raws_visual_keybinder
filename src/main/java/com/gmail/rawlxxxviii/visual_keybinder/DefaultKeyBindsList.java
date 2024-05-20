@@ -34,7 +34,6 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         this.options = options;
 
         this.setRenderTopAndBottom(false);
-        this.setRenderBackground(false);
         this.x0 = left;
         this.x1 = width + this.x0;
 
@@ -64,20 +63,6 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
         this.addEntry(new EmptyEntry());
 
-    }
-
-
-    @Override
-    protected void renderBackground(PoseStack poseStack) {
-
-        fillGradient(poseStack,
-                getLeft(),
-                getTop(),
-                getRight(),
-                getBottom(),
-                AlternativeKeybindScreen.LIST_BACKGROUND_COLOR,
-                AlternativeKeybindScreen.LIST_BACKGROUND_COLOR_2
-                );
     }
 
     @Override
