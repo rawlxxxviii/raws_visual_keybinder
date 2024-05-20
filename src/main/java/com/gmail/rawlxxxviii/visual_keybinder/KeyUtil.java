@@ -43,6 +43,10 @@ public class KeyUtil {
 
     private static boolean isDefaultConflicting(KeyMapping keyMappingA, IKeyConflictContext keyConflictContextB, InputConstants.Key keyB, KeyModifier keyModifierB){
 
+        if(keyMappingA.isUnbound() || keyB.equals(InputConstants.UNKNOWN)) {
+            return false;
+        }
+
         if (keyMappingA.getKeyConflictContext().conflicts(keyConflictContextB) || keyConflictContextB.conflicts(keyMappingA.getKeyConflictContext())) {
             net.minecraftforge.client.settings.KeyModifier keyModifier = keyMappingA.getKeyModifier();
             if (keyModifier.matches(keyB) || keyModifierB.matches(keyMappingA.getKey())) {
@@ -63,6 +67,9 @@ public class KeyUtil {
 
         for (KeyMapping keyMapping : keyMappings) {
             if (keyMapping.getName().equals(item.getName())) {
+                continue;
+            }
+            if(keyMapping.isUnbound() || item.isUnbound()) {
                 continue;
             }
             if (keyMapping.same(item)) {
