@@ -10,6 +10,8 @@ import java.util.*;
 public class ClientConfig {
     public static final ForgeConfigSpec GENERAL_SPEC;
 
+    public static ForgeConfigSpec.IntValue menuButtonOffsetX;
+    public static ForgeConfigSpec.IntValue menuButtonOffsetY;
     public static ForgeConfigSpec.BooleanValue positionLayoutInBotton;
     public static ForgeConfigSpec.BooleanValue displayConflictContext;
     public static ForgeConfigSpec.BooleanValue displayLayoutButtonTooltips;
@@ -55,6 +57,15 @@ public class ClientConfig {
         positionLayoutInBotton = builder
                 .comment("Position the layout in the bottom half of the screen.")
                 .define( "position_layout_in_bottom", true)
+        ;
+
+        menuButtonOffsetX = builder
+                .comment("Reposition the menu button horizontally.")
+                .defineInRange( "menu_button_offset_x", 0,-10000,10000)
+        ;
+        menuButtonOffsetY = builder
+                .comment("Reposition the menu button vertically.")
+                .defineInRange( "menu_button_offset_y", 0,-10000,10000)
         ;
 
         builder.pop();

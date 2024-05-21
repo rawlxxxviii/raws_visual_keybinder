@@ -372,10 +372,11 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     public void render(PoseStack poseStack, int mouseX, int mouseY, float p_193994_) {
         this.renderDirtBackground(0);
 
-        fill(poseStack,
-                0, 0,
+        fillGradient(poseStack,
+                0, height - 30,
                 width,height,
-                new Color(0,0,0,80).getRGB()
+                new Color(0,0,0,120).getRGB(),
+                new Color(0,0,0,120).getRGB()
         );
 
         if(this.detailsList != null){

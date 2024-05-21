@@ -2,6 +2,7 @@ package com.gmail.rawlxxxviii.visual_keybinder.mixin;
 
 import com.gmail.rawlxxxviii.visual_keybinder.AlternativeKeybindScreen;
 import com.gmail.rawlxxxviii.visual_keybinder.VisualKeybinderMod;
+import com.gmail.rawlxxxviii.visual_keybinder.config.ClientConfig;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
@@ -27,7 +28,9 @@ public abstract class ControlsScreenMixin extends OptionsSubScreen {
 
         this.addRenderableWidget
             (new ImageButton(
-                    this.width / 2 + 150 + 10, this.height / 6 - 12,
+                    this.width / 2 + 150 + 10 + ClientConfig.menuButtonOffsetX.get(),
+                    this.height / 6 - 12 + ClientConfig.menuButtonOffsetY.get(),
+
                     27, 20,
                     0, 56,
                     20,
