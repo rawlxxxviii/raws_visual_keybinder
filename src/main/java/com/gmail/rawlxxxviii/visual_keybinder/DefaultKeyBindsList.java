@@ -10,7 +10,6 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.ArrayUtils;
@@ -18,14 +17,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
 
 public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKeyBindsList.Entry> {
     private final AlternativeKeybindScreen parentScreen;
     protected final Options options;
 
+    private String categoryFilter = "";
+    private String keyMappingFilter = "";
 
     public DefaultKeyBindsList(AlternativeKeybindScreen parentScreen, Minecraft minecraft, Options options, int left, int top, int width, int height) {
         super(minecraft, width, height, top, height + top, 20);
@@ -37,32 +37,102 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         this.x0 = left;
         this.x1 = width + this.x0;
 
-
         buildEntries();
 
+    }
+
+
+    public void setCategoryFilter(String value){
+        categoryFilter = value;
+        buildEntries();
+    }
+
+    public void setKeyMappingFilter(String value){
+        keyMappingFilter = value;
+        buildEntries();
+    }
+
+    private boolean isFilterMatch(String value, String filter){
+        return value.toLowerCase().contains(filter.toLowerCase());
+    }
+
+    private boolean hasFilterMatch(List<String> list, String filter){
+
+        for (String s : list) {
+            if (isFilterMatch(s, filter)) {
+                return true;
+            }
+        }
+
+        return  false;
     }
 
     private void buildEntries(){
         clearEntries();
 
-        KeyMapping[] keyMappings = ArrayUtils.clone(options.keyMappings);
-        Arrays.sort(keyMappings);
+        KeyMapping[] allKeyMappings = ArrayUtils.clone(options.keyMappings);
+        Arrays.sort(allKeyMappings);
 
-        String c = null;
-        for (KeyMapping keyMapping : keyMappings) {
+        Map<String, List<KeyMapping>> categoryMappingsGroup = new HashMap<>();
+
+
+        for (KeyMapping keyMapping : allKeyMappings) {
             String category = keyMapping.getCategory();
-            if (!category.equals(c)) {
-                if (c != null) {
-                    this.addEntry(new EmptyEntry());
-                }
-                c = category;
-                this.addEntry(new CategoryEntry(Component.translatable(category)));
-            }
-            Component component = Component.translatable(keyMapping.getName());
-            this.addEntry(new KeyEntry(keyMapping, component, KeyUtil.hasConflict(keyMappings, keyMapping), KeyUtil.hasDefaultConflict(keyMappings, keyMapping)));
-        }
-        this.addEntry(new EmptyEntry());
 
+            if(!categoryMappingsGroup.containsKey(category)){
+                categoryMappingsGroup.put(category, new ArrayList<>());
+            }
+            categoryMappingsGroup
+                .get(category)
+                .add(keyMapping);
+        }
+
+        categoryMappingsGroup.forEach((category, keyMappings) -> {
+            if(!categoryFilter.isEmpty() && !isFilterMatch(Component.translatable(category).getString(), categoryFilter)){
+                return;
+            }
+
+            if(
+                !keyMappingFilter.isEmpty()
+                &&
+                !hasFilterMatch(
+                    keyMappings.stream().map(x->Component.translatable(x.getName()).getString()).toList(),
+                    keyMappingFilter
+                )
+            ){
+                return;
+            }
+
+            this.addEntry(new CategoryEntry(Component.translatable(category)));
+
+            for (KeyMapping keyMapping : keyMappings) {
+
+                if(
+                    keyMappingFilter.isEmpty()
+                    ||
+                    isFilterMatch(Component.translatable(keyMapping.getName()).getString(),keyMappingFilter)
+                ){
+                    this.addEntry(
+                            new KeyEntry(
+                                    keyMapping,
+                                    Component.translatable(keyMapping.getName()),
+                                    KeyUtil.hasConflict(allKeyMappings, keyMapping),
+                                    KeyUtil.hasDefaultConflict(allKeyMappings,
+                                    keyMapping)
+                            )
+                    );
+                }
+            }
+
+            this.addEntry(new EmptyEntry());
+
+        });
+
+        if(children().isEmpty()){
+            this.addEntry(new DefaultKeyBindsList.TitleEntry( Component.literal("No results"), Color.DARK_GRAY.getRGB()));
+        }
+
+        setScrollAmount(getScrollAmount());
     }
 
     @Override
@@ -72,7 +142,6 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
 
     public void onBindingsUpdated(){
         buildEntries();
-        setScrollAmount(getScrollAmount());
     }
 
     @Override
@@ -84,6 +153,94 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
     public abstract static class Entry extends ContainerObjectSelectionList.Entry<DefaultKeyBindsList.Entry> {
     }
 
+
+    @OnlyIn(Dist.CLIENT)
+    public class TitleEntry extends DefaultKeyBindsList.Entry {
+        final Component name;
+        private final int color;
+
+        public TitleEntry(Component p_193886_, int color) {
+            this.name = p_193886_;
+            this.color = color;
+        }
+
+        @Override
+        public void render(PoseStack p_193888_, int p_193889_, int y, int p_193891_, int p_193892_, int height, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
+            enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            minecraft.font.draw(p_193888_, this.name, getLeft() + 5 , y + height - 4, color);
+            disableScissor();
+        }
+
+        @Override
+        public List<? extends GuiEventListener> children() {
+            return List.of();
+        }
+
+        @Override
+        public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {
+            return super.getChildAt(p_94730_, p_94731_);
+        }
+
+        @Override
+        public void mouseMoved(double p_94758_, double p_94759_) {
+            super.mouseMoved(p_94758_, p_94759_);
+        }
+
+        @Override
+        public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
+            return super.mouseClicked(p_94695_, p_94696_, p_94697_);
+        }
+
+        @Override
+        public boolean mouseReleased(double p_94722_, double p_94723_, int p_94724_) {
+            return super.mouseReleased(p_94722_, p_94723_, p_94724_);
+        }
+
+        @Override
+        public boolean mouseDragged(double p_94699_, double p_94700_, int p_94701_, double p_94702_, double p_94703_) {
+            return super.mouseDragged(p_94699_, p_94700_, p_94701_, p_94702_, p_94703_);
+        }
+
+        @Override
+        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
+            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        }
+
+        @Override
+        public boolean keyPressed(int p_94710_, int p_94711_, int p_94712_) {
+            return super.keyPressed(p_94710_, p_94711_, p_94712_);
+        }
+
+        @Override
+        public boolean keyReleased(int p_94715_, int p_94716_, int p_94717_) {
+            return super.keyReleased(p_94715_, p_94716_, p_94717_);
+        }
+
+        @Override
+        public boolean charTyped(char p_94683_, int p_94684_) {
+            return super.charTyped(p_94683_, p_94684_);
+        }
+
+        @Override
+        public void setInitialFocus(@Nullable GuiEventListener p_94719_) {
+            super.setInitialFocus(p_94719_);
+        }
+
+        @Override
+        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
+            super.magicalSpecialHackyFocus(p_94726_);
+        }
+
+        @Override
+        public boolean changeFocus(boolean p_94728_) {
+            return super.changeFocus(p_94728_);
+        }
+
+        @Override
+        public List<? extends NarratableEntry> narratables() {
+            return List.of();
+        }
+    }
 
     @OnlyIn(Dist.CLIENT)
     public class CategoryEntry extends DefaultKeyBindsList.Entry {

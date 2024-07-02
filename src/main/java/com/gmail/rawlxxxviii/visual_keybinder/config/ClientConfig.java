@@ -12,7 +12,6 @@ public class ClientConfig {
 
     public static ForgeConfigSpec.IntValue menuButtonOffsetX;
     public static ForgeConfigSpec.IntValue menuButtonOffsetY;
-    public static ForgeConfigSpec.BooleanValue positionLayoutInBotton;
     public static ForgeConfigSpec.BooleanValue displayConflictContext;
     public static ForgeConfigSpec.BooleanValue displayLayoutButtonTooltips;
     public static ForgeConfigSpec.BooleanValue displayChangeAndResetButtonTooltips;
@@ -53,10 +52,6 @@ public class ClientConfig {
         displayChangeAndResetButtonTooltips = builder
                 .comment("Should a tooltip be displayed for the change and reset button.")
                 .define( "display_button_tooltip", true)
-        ;
-        positionLayoutInBotton = builder
-                .comment("Position the layout in the bottom half of the screen.")
-                .define( "position_layout_in_bottom", true)
         ;
 
         menuButtonOffsetX = builder

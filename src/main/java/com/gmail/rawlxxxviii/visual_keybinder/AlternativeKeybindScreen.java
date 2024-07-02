@@ -7,6 +7,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -14,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.settings.KeyModifier;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,12 +42,16 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     private Button resetButton;
     private Button unbindAllButton;
 
-    private List<KeyBoardLayout> keyBoardLayouts = new ArrayList<>();
+    private EditBox keyMappingNameFilterEditBox;
+    private EditBox keyMappingCategoryFilterEditBox;
+
+    private List<KeyBoardLayout> keyboardLayouts = new ArrayList<>();
     private KeyBoardLayout activeKeyboardLayout;
     private int activeKeyboardLayoutIndex = 0;
     private List<KeyButton> keyButtons = new ArrayList<>();
 
     private static final int PAGE_PADDING_TOP = 30;
+    private static final int FILTERS_HEIGHT = 25;
     private static final int PAGE_PADDING_BOTTOM = 35;
     private static final int PAGE_PADDING_RIGHT = 5;
     private static final int PAGE_PADDING_LEFT = 5;
@@ -85,18 +92,11 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
         layoutHeight = (int)((height - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM - PAGE_MID_GAP_VERTICAL) * 0.45);
         detailsListHeight = (height - layoutHeight - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM - PAGE_MID_GAP_VERTICAL);
-        defaultListHeight = detailsListHeight;
+        defaultListHeight = detailsListHeight - FILTERS_HEIGHT;
 
-        if(ClientConfig.positionLayoutInBotton.get()){
-            layoutTop = PAGE_PADDING_TOP + detailsListHeight + PAGE_MID_GAP_VERTICAL;
-            defaultListTop = PAGE_PADDING_TOP;
-            detailsListTop = PAGE_PADDING_TOP;
-        }else{
-            layoutTop = PAGE_PADDING_TOP;
-            defaultListTop = PAGE_PADDING_TOP + layoutHeight + PAGE_MID_GAP_VERTICAL;
-            detailsListTop = PAGE_PADDING_TOP + layoutHeight + PAGE_MID_GAP_VERTICAL;
-
-        }
+        layoutTop = PAGE_PADDING_TOP + detailsListHeight + PAGE_MID_GAP_VERTICAL;
+        defaultListTop = PAGE_PADDING_TOP + FILTERS_HEIGHT;
+        detailsListTop = PAGE_PADDING_TOP;
 
 
         detailsListWidth = (int)(width * 0.45  - PAGE_PADDING_LEFT - PAGE_PADDING_RIGHT);
@@ -168,6 +168,39 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
             setDetailsList(detailsList.getSelectedKey());
         }
 
+        keyMappingNameFilterEditBox = addWidget(
+                new FilterEditBox(
+                        font,
+                        defaultListLeft,
+                        defaultListTop - FILTERS_HEIGHT,
+                        (defaultListWidth / 2) - 5,
+                        20,
+                        Component.literal("Name filter")
+                )
+        );
+
+        keyMappingCategoryFilterEditBox = addWidget(
+                new FilterEditBox(
+                        font,
+                        defaultListLeft + (defaultListWidth / 2),
+                        defaultListTop - FILTERS_HEIGHT,
+                        defaultListWidth / 2,
+                        20,
+                        Component.literal("Category filter")
+                )
+        );
+        keyMappingCategoryFilterEditBox.setTextColor(CATEGORY_COLOR);
+
+
+        keyMappingCategoryFilterEditBox.setResponder(defaultKeyBindsList::setCategoryFilter);
+        keyMappingNameFilterEditBox.setResponder(defaultKeyBindsList::setKeyMappingFilter);
+
+    }
+
+    @Override
+    public void tick(){
+        keyMappingCategoryFilterEditBox.tick();
+        keyMappingNameFilterEditBox.tick();
     }
 
 
@@ -193,8 +226,8 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     private void getKeyboardLayouts(){
 
-        this.keyBoardLayouts.clear();
-        this.keyBoardLayouts.addAll(
+        this.keyboardLayouts.clear();
+        this.keyboardLayouts.addAll(
             ClientConfig.getKeyboardLayoutsFromConfig()
         );
     }
@@ -204,17 +237,17 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     }
 
     public void setActiveKeyboardLayout(int index) {
-        if(keyBoardLayouts.isEmpty()){
+        if(keyboardLayouts.isEmpty()){
             this.activeKeyboardLayout = null;
             activeKeyboardLayoutIndex = index;
             return;
         }
-        if(index >= keyBoardLayouts.size()){
+        if(index >= keyboardLayouts.size()){
             index = 0;
         } else if (index < 0) {
-            index = keyBoardLayouts.size() - 1;
+            index = keyboardLayouts.size() - 1;
         }
-        activeKeyboardLayout = keyBoardLayouts.get(index);
+        activeKeyboardLayout = keyboardLayouts.get(index);
         activeKeyboardLayoutIndex = index;
         createLayoutButtons(this.activeKeyboardLayout);
 
@@ -242,7 +275,12 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
             onBindingsChanged();
             return true;
         } else {
-            return super.keyPressed(p_193987_, p_193988_, p_193989_);
+            try {
+                // seems to cause NullPointerException on tabbing when last item
+                return super.keyPressed(p_193987_, p_193988_, p_193989_);
+            }catch (Exception ex){
+                return false;
+            }
         }
     }
 
@@ -278,6 +316,15 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         }
     }
 
+    @Override
+    public void setFocused(@Nullable GuiEventListener p_94677_) {
+        var currentFocused = getFocused();
+        if(currentFocused instanceof EditBox editBox && !currentFocused.equals(p_94677_)){
+            editBox.setFocus(false);
+        }
+        super.setFocused(p_94677_);
+    }
+
     public KeyMapping getKeyMappingToChange() {
         return keyMappingToChange;
     }
@@ -297,10 +344,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         defaultKeyBindsList.onBindingsUpdated();
     }
 
-
-    public KeyMapping[] getAllKeyMappings(){
-        return ArrayUtils.clone(options.keyMappings);
-    }
 
     public KeyMapping[] getKeyMappings(KeyboardLayoutKey key){
         return Arrays.stream(ArrayUtils.clone(options.keyMappings)).filter(x->
@@ -391,12 +434,12 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         unbindAllButton.active = hasBoundBindings();
 
         if(activeKeyboardLayout == null){
-            rotateLayoutButton.setMessage(Component.literal(keyBoardLayouts.isEmpty() ? "No layouts.." : "Select layout"));
+            rotateLayoutButton.setMessage(Component.literal(keyboardLayouts.isEmpty() ? "No layouts.." : "Select layout"));
         }else{
             rotateLayoutButton.setMessage(Component.literal(activeKeyboardLayout.getName().getString())
-                    .append(" " + (getActiveKeyboardLayoutIndex() + 1) + "/" + keyBoardLayouts.size() ));
+                    .append(" " + (getActiveKeyboardLayoutIndex() + 1) + "/" + keyboardLayouts.size() ));
         }
-        rotateLayoutButton.y = ClientConfig.positionLayoutInBotton.get() ? height - 25 : 5;
+        rotateLayoutButton.y = height - 25;
         rotateLayoutButton.render(poseStack, mouseX, mouseY, p_193994_);
 
         if(this.getDetailsList() == null){
@@ -446,6 +489,29 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
                     }
                 }
             });
+        }
+
+        this.keyMappingNameFilterEditBox.render(poseStack, mouseX, mouseY, p_193994_);
+        if(this.keyMappingNameFilterEditBox.getValue().isEmpty()){
+            drawString(
+                    poseStack,
+                    font,
+                    Component.literal("Filter name"),
+                    defaultListLeft + 4,
+                    PAGE_PADDING_TOP + 6,
+                    Color.darkGray.getRGB()
+            );
+        }
+        this.keyMappingCategoryFilterEditBox.render(poseStack, mouseX, mouseY, p_193994_);
+        if(this.keyMappingCategoryFilterEditBox.getValue().isEmpty()){
+            drawString(
+                    poseStack,
+                    font,
+                    Component.literal("Filter category "),
+                    defaultListLeft + (defaultListWidth / 2) + 4,
+                    PAGE_PADDING_TOP + 6,
+                    Color.darkGray.getRGB()
+            );
         }
 
         super.render(poseStack, mouseX, mouseY, p_193994_);
