@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -26,6 +27,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     public static final int CATEGORY_COLOR =
             new Color(143, 178, 236).getRGB();
+    public static final int DANGER_COLOR = new Color(230, 96, 96).getRGB();
     public static final int CONFLICT_COLOR = new Color(243, 164, 39).getRGB();
     public static final int RESET_COLOR = new Color(161, 200, 123).getRGB();
     public static final int UNBOUND_COLOR = new Color(142, 149, 154).getRGB();
@@ -39,8 +41,6 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
 
     private Button rotateLayoutButton;
-    private Button resetButton;
-    private Button unbindAllButton;
 
     private EditBox keyMappingNameFilterEditBox;
     private EditBox keyMappingCategoryFilterEditBox;
@@ -121,47 +121,35 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         this.setActiveKeyboardLayout(activeKeyboardLayoutIndex);
 
 
-        rotateLayoutButton = addRenderableWidget(new Button(
-                this.width - 155,
-                5,
-                150, 20,
-                Component.empty(),
-                (button) -> setActiveKeyboardLayout(getActiveKeyboardLayoutIndex()+1)
-            )
-        );
 
         addRenderableWidget(new Button(
-                5,
+                width / 2 - 50,
                 this.height - 25,
-                150, 20, CommonComponents.GUI_DONE,
+                100,
+                20, CommonComponents.GUI_DONE,
                 (button) -> this.minecraft.setScreen(this.lastScreen)
         ));
 
-        resetButton = this.addRenderableWidget(new Button(
-                80, 5,
-                70, 20,
-                Component.translatable("controls.resetAll").withStyle(ChatFormatting.GRAY),
-                (button) -> {
-                    for(KeyMapping keymapping : this.options.keyMappings) {
-                        keymapping.setToDefault();
-                    }
 
-                    KeyMapping.resetMapping();
-                    onBindingsChanged();
+        addRenderableWidget(new Button(
+                5,
+                height - 25,
+                70,
+                20,
+                Component.literal("Presets").withStyle(ChatFormatting.WHITE),
+                (button) -> {
+                    Minecraft.getInstance().setScreen(new PresetsScreen(this, options));
                 })
         );
 
-        unbindAllButton = this.addRenderableWidget(new Button(
-                5, 5,
-                70, 20,
-                Component.literal("Unbind all").withStyle(ChatFormatting.GRAY),
-                (button) -> {
-                    for(KeyMapping keymapping : this.options.keyMappings) {
-                        keymapping.setKeyModifierAndCode(KeyModifier.NONE,InputConstants.UNKNOWN);
-                    }
-                    KeyMapping.resetMapping();
-                    onBindingsChanged();
-                })
+        rotateLayoutButton = addRenderableWidget(new Button(
+                    this.width - 155,
+                    this.height - 25,
+                    150,
+                    20,
+                    Component.empty(),
+                    (button) -> setActiveKeyboardLayout(getActiveKeyboardLayoutIndex()+1)
+                )
         );
 
         if(detailsList != null){
@@ -430,16 +418,12 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
 
-        resetButton.active = hasNonDefaultBindings();
-        unbindAllButton.active = hasBoundBindings();
-
         if(activeKeyboardLayout == null){
             rotateLayoutButton.setMessage(Component.literal(keyboardLayouts.isEmpty() ? "No layouts.." : "Select layout"));
         }else{
             rotateLayoutButton.setMessage(Component.literal(activeKeyboardLayout.getName().getString())
                     .append(" " + (getActiveKeyboardLayoutIndex() + 1) + "/" + keyboardLayouts.size() ));
         }
-        rotateLayoutButton.y = height - 25;
         rotateLayoutButton.render(poseStack, mouseX, mouseY, p_193994_);
 
         if(this.getDetailsList() == null){
