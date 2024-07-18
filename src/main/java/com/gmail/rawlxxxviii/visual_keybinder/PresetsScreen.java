@@ -20,9 +20,6 @@ import java.util.List;
 
 public class PresetsScreen extends OptionsSubScreen {
 
-    private List<Button> presetLoadButtons = new ArrayList<>();
-    private List<Button> presetSaveButtons = new ArrayList<>();
-
 
     private EditBox newPresetNameEditBox;
     private Button saveNewPresetButton;
@@ -110,6 +107,12 @@ public class PresetsScreen extends OptionsSubScreen {
     public void loadPreset(String name){
         // if !exists create
             // else if overwrite if !readonly
+
+        try {
+            FileUtil.loadPreset(options, name);
+        }catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
 
         KeyMapping.resetMapping();
         rebuildWidgets();
