@@ -214,11 +214,15 @@ public class PresetsScreen extends OptionsSubScreen {
             }
 
             if(
-                keyModifier != keymapping.getKeyModifier()
-                ||
                 !key.equals(keymapping.getKey())
             ){
-                return  false;
+                if(
+                    !key.equals(InputConstants.UNKNOWN)
+                        &&
+                    keyModifier != keymapping.getKeyModifier()
+                ){
+                    return false;
+                }
             }
 
 
