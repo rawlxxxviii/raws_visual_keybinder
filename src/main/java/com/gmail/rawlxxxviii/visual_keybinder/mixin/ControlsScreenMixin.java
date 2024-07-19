@@ -1,10 +1,9 @@
 package com.gmail.rawlxxxviii.visual_keybinder.mixin;
 
-import com.gmail.rawlxxxviii.visual_keybinder.AlternativeKeybindScreen;
+import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
 import com.gmail.rawlxxxviii.visual_keybinder.VisualKeybinderMod;
 import com.gmail.rawlxxxviii.visual_keybinder.config.ClientConfig;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;

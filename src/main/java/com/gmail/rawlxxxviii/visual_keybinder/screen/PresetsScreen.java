@@ -1,5 +1,8 @@
-package com.gmail.rawlxxxviii.visual_keybinder;
+package com.gmail.rawlxxxviii.visual_keybinder.screen;
 
+import com.gmail.rawlxxxviii.visual_keybinder.ui_list.KeyPresetOptionsList;
+import com.gmail.rawlxxxviii.visual_keybinder.KeybindingPreset;
+import com.gmail.rawlxxxviii.visual_keybinder.util.FileUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
@@ -15,7 +18,6 @@ import net.minecraftforge.client.settings.KeyModifier;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class PresetsScreen extends OptionsSubScreen {
 
@@ -23,7 +25,7 @@ public class PresetsScreen extends OptionsSubScreen {
     private EditBox newPresetNameEditBox;
     private Button saveNewPresetButton;
 
-    private KeyPresetOptionsList KeyPresetOptionsList;
+    private com.gmail.rawlxxxviii.visual_keybinder.ui_list.KeyPresetOptionsList KeyPresetOptionsList;
 
     public PresetsScreen(Screen screen, Options options) {
         super(screen, options, Component.literal("Keybinding presets"));
@@ -123,18 +125,20 @@ public class PresetsScreen extends OptionsSubScreen {
     public void unbindAll(){
         for(KeyMapping keymapping : this.options.keyMappings) {
             keymapping.setKeyModifierAndCode(KeyModifier.NONE,InputConstants.UNKNOWN);
+            this.options.setKey(keymapping, InputConstants.UNKNOWN);
         }
-        KeyMapping.resetMapping();
         options.save();
+        KeyMapping.resetMapping();
         rebuildWidgets();
     }
 
     public void resetAll(){
         for(KeyMapping keymapping : this.options.keyMappings) {
             keymapping.setToDefault();
+            options.setKey(keymapping, keymapping.getDefaultKey());
         }
-        KeyMapping.resetMapping();
         options.save();
+        KeyMapping.resetMapping();
         rebuildWidgets();
     }
 

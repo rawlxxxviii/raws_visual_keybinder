@@ -1,6 +1,4 @@
-package com.gmail.rawlxxxviii.visual_keybinder;
-
-import java.util.List;
+package com.gmail.rawlxxxviii.visual_keybinder.util;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;

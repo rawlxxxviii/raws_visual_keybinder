@@ -1,5 +1,6 @@
 package com.gmail.rawlxxxviii.visual_keybinder;
 
+import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;

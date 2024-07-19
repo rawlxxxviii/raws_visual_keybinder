@@ -1,5 +1,7 @@
-package com.gmail.rawlxxxviii.visual_keybinder;
+package com.gmail.rawlxxxviii.visual_keybinder.ui_list;
 
+import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
+import com.gmail.rawlxxxviii.visual_keybinder.util.KeyUtil;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;

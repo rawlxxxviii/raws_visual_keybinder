@@ -1,7 +1,10 @@
-package com.gmail.rawlxxxviii.visual_keybinder;
+package com.gmail.rawlxxxviii.visual_keybinder.ui_list;
 
 
+import com.gmail.rawlxxxviii.visual_keybinder.KeyboardLayoutKey;
 import com.gmail.rawlxxxviii.visual_keybinder.config.ClientConfig;
+import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
+import com.gmail.rawlxxxviii.visual_keybinder.util.KeyUtil;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
@@ -19,7 +22,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

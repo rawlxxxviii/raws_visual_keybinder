@@ -1,13 +1,13 @@
 package com.gmail.rawlxxxviii.visual_keybinder;
 
+import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
+import com.gmail.rawlxxxviii.visual_keybinder.util.KeyUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
-import java.util.List;
 
 public class KeyButton extends ImageButton {
 

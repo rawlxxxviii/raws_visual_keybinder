@@ -1,6 +1,10 @@
-package com.gmail.rawlxxxviii.visual_keybinder;
+package com.gmail.rawlxxxviii.visual_keybinder.screen;
 
+import com.gmail.rawlxxxviii.visual_keybinder.*;
 import com.gmail.rawlxxxviii.visual_keybinder.config.ClientConfig;
+import com.gmail.rawlxxxviii.visual_keybinder.ui_list.DefaultKeyBindsList;
+import com.gmail.rawlxxxviii.visual_keybinder.ui_list.KeyDetailsList;
+import com.gmail.rawlxxxviii.visual_keybinder.util.KeyUtil;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;

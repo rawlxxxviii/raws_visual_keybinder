@@ -1,5 +1,6 @@
-package com.gmail.rawlxxxviii.visual_keybinder;
+package com.gmail.rawlxxxviii.visual_keybinder.util;
 
+import com.gmail.rawlxxxviii.visual_keybinder.KeybindingPreset;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
@@ -21,7 +22,7 @@ public class FileUtil {
     private static final String FOLDER_LOCATION = "keybinding presets";
     private static final String PRESET_EXTENSION = ".preset.txt";
     private static final String IS_INITIALIZED_FILE_NAME = "initialized.dat";
-    private static final String LOAD_ON_STARTUP_FILE_NAME = "load preset on first time startup.txt";
+    private static final String LOAD_ON_STARTUP_FILE_NAME = "preset_to_load_on_first_startup.txt";
     private static final String LOAD_ON_STARTUP_FILE_CONTENT = "// Fill in the name of the preset on the next line, without '.preset.txt'. It will only be loaded if initialized is not present.";
 
 
@@ -171,9 +172,9 @@ public class FileUtil {
 
         }
 
+        options.save();
         KeyMapping.resetMapping();
 
-        options.save();
 
     }
 
