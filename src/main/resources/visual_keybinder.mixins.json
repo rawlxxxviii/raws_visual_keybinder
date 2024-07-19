@@ -12,6 +12,7 @@
     "ControlsScreenMixin"
   ],
   "client": [
+    "OptionsMixin"
   ],
   "minVersion": "0.8"
 }

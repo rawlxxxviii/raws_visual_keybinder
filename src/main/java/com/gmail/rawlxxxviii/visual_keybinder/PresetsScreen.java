@@ -110,8 +110,6 @@ public class PresetsScreen extends OptionsSubScreen {
     }
 
     public void loadPreset(String name){
-        // if !exists create
-            // else if overwrite if !readonly
 
         try {
             FileUtil.loadPreset(options, name);
@@ -119,7 +117,6 @@ public class PresetsScreen extends OptionsSubScreen {
             throw new RuntimeException(ex);
         }
 
-        KeyMapping.resetMapping();
         rebuildWidgets();
     }
 
@@ -128,6 +125,7 @@ public class PresetsScreen extends OptionsSubScreen {
             keymapping.setKeyModifierAndCode(KeyModifier.NONE,InputConstants.UNKNOWN);
         }
         KeyMapping.resetMapping();
+        options.save();
         rebuildWidgets();
     }
 
@@ -136,6 +134,7 @@ public class PresetsScreen extends OptionsSubScreen {
             keymapping.setToDefault();
         }
         KeyMapping.resetMapping();
+        options.save();
         rebuildWidgets();
     }
 
@@ -222,25 +221,6 @@ public class PresetsScreen extends OptionsSubScreen {
         }
         return true;
 
-
-    }
-
-    public void set__(){
-
-//        for(KeyMapping keymapping : this.options.keyMappings) {
-//            String s = keymapping.saveString() + (keymapping.getKeyModifier() != net.minecraftforge.client.settings.KeyModifier.NONE ? ":" + keymapping.getKeyModifier() : "");
-//
-//            String s1 = p_168428_.process("key_" + keymapping.getName(), s);
-//            if (!s.equals(s1)) {
-//                if (s1.indexOf(':') != -1) {
-//                    String[] pts = s1.split(":");
-//                    keymapping.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.valueFromString(pts[1]), InputConstants.getKey(pts[0]));
-//                } else
-//                {
-//                    keymapping.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.NONE, InputConstants.getKey(s1));
-//                }
-//            }
-//        }
 
     }
 
