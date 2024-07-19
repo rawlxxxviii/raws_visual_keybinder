@@ -15,8 +15,7 @@ import net.minecraftforge.client.settings.KeyModifier;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PresetsScreen extends OptionsSubScreen {
 
@@ -83,6 +82,12 @@ public class PresetsScreen extends OptionsSubScreen {
     }
 
     public void savePreset(String name){
+
+        name = FileUtil.sanitizeString(name);
+
+        if(name.isBlank()){
+            return;
+        }
 
         try {
             FileUtil.savePreset(options, name);
@@ -172,6 +177,53 @@ public class PresetsScreen extends OptionsSubScreen {
         super.render(poseStack, mouseX, mouseY, p_193994_);
     }
 
+    public boolean isPresetActive(KeybindingPreset keybindingPreset){
+
+        if(options.keyMappings.length != keybindingPreset.getLines().size()){
+            return false;
+        }
+
+        for(var keymapping : options.keyMappings){
+
+            KeyModifier keyModifier = null;
+            InputConstants.Key key = null;
+
+            String mappingName = keymapping.getName();
+
+            var list = keybindingPreset.getLines().stream().filter(x -> x.startsWith(mappingName + ":")).toList();
+            if(list.isEmpty()){
+                return false;
+            }
+
+            var presetValue = list.get(0).substring(mappingName.length() + 1 );
+
+            if (presetValue.indexOf(':') != -1) {
+                String[] pts = presetValue.split(":");
+
+                keyModifier = KeyModifier.valueFromString(pts[1]);
+                key = InputConstants.getKey(pts[0]);
+
+
+            } else {
+
+                keyModifier = KeyModifier.NONE;
+                key = InputConstants.getKey(presetValue);
+            }
+
+            if(
+                keyModifier != keymapping.getKeyModifier()
+                ||
+                !key.equals(keymapping.getKey())
+            ){
+                return  false;
+            }
+
+
+        }
+        return true;
+
+
+    }
 
     public void set__(){
 

@@ -23,4 +23,7 @@ public class KeybindingPreset {
         return readOnly;
     }
 
+    public List<String> getLines() {
+        return lines;
+    }
 }

@@ -37,12 +37,12 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
 
         this.parentScreen = parentScreen;
 
-        buildEndtries();
+        buildEntries();
 
     }
 
 
-    private void buildEndtries(){
+    private void buildEntries(){
         clearEntries();
 
         var presets = FileUtil.getPresets();
@@ -51,7 +51,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         for (var a : presets){
-            addEntry(new PresetEntry(a));
+            addEntry(new PresetEntry(a, parentScreen.isPresetActive(a)));
         }
 
         addEntry( new EmptyEntry() );
@@ -60,7 +60,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
     }
 
     public void onBindingsUpdated(){
-        buildEndtries();
+        buildEntries();
         setScrollAmount(getScrollAmount());
     }
 
@@ -145,10 +145,11 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         private final Button saveButton;
         private final Button loadButton;
         private final Button deleteButton;
+        private final boolean isPresetActive;
 
-
-        PresetEntry(KeybindingPreset keybindingPreset) {
+        PresetEntry(KeybindingPreset keybindingPreset, boolean isPresetActive) {
             this.keybindingPreset = keybindingPreset;
+            this.isPresetActive = isPresetActive;
 
             int buttonWidth = 50;
 
@@ -170,6 +171,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
                     parentScreen.loadPreset(keybindingPreset.getName());
                 }
             );
+            this.loadButton.active = !isPresetActive;
+
 
             this.deleteButton = new Button(
                     getRight() - buttonWidth - 5, 0,
@@ -203,7 +206,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
                     Component.literal(this.keybindingPreset.getName()),
                     getRowLeft() + 5,
                     getRowTop(p_193924_) + 6,
-                    Color.white.getRGB());
+                    isPresetActive ? AlternativeKeybindScreen.ACTIVE_COLOR : Color.white.getRGB());
 
             this.saveButton.y = p_193925_;
             this.saveButton.render(poseStack, p_193929_, p_193930_, p_193932_);
@@ -319,7 +322,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
                     Component.literal("Unbind all keybindings"),
                     getRowLeft() + 5,
                     getRowTop(p_193924_) + 6,
-                    Color.LIGHT_GRAY.getRGB());
+                    parentScreen.hasBoundBindings() ? Color.LIGHT_GRAY.getRGB() : AlternativeKeybindScreen.ACTIVE_COLOR
+            );
 
             this.button.y = p_193925_;
             this.button.render(poseStack, p_193929_, p_193930_, p_193932_);
@@ -510,7 +514,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
                     Component.literal("Reset to defaults"),
                     getRowLeft() + 5,
                     getRowTop(p_193924_) + 6,
-                    Color.LIGHT_GRAY.getRGB());
+                     parentScreen.hasNonDefaultBindings() ? Color.LIGHT_GRAY.getRGB() : AlternativeKeybindScreen.ACTIVE_COLOR
+            );
 
             this.button.y = p_193925_;
             this.button.render(poseStack, p_193929_, p_193930_, p_193932_);

@@ -75,6 +75,11 @@ public class FileUtil {
 
 
     }
+
+    public static String sanitizeString(String input){
+        return input.replaceAll("[^a-zA-Z0-9._]+", "_");
+    }
+
     public static void loadPreset(Options options, String name) throws IOException {
 
         var allNames = getFileList().stream().filter(x->x.equals(name));

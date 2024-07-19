@@ -27,6 +27,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     public static final int CATEGORY_COLOR =
             new Color(143, 178, 236).getRGB();
+    public static final int ACTIVE_COLOR = new Color(31, 176, 255).getRGB();
     public static final int DANGER_COLOR = new Color(230, 96, 96).getRGB();
     public static final int CONFLICT_COLOR = new Color(243, 164, 39).getRGB();
     public static final int RESET_COLOR = new Color(161, 200, 123).getRGB();
