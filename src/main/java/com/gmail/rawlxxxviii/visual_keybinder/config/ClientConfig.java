@@ -74,6 +74,7 @@ public class ClientConfig {
         list.addAll(layout2());
         list.addAll(layout3());
         list.addAll(layout4());
+        list.addAll(layout5());
 
         return list;
     }
@@ -157,7 +158,7 @@ public class ClientConfig {
         addItemToStringList(list, layoutName, "key.keyboard.f11", 12 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
         addItemToStringList(list, layoutName, "key.keyboard.f12", 13 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
 
-//        addItemToStringList(list, layoutName, "key.keyboard.tilde", -1 * (buttonWidth ), 1 * (buttonHeight),false);
+        addItemToStringList(list, layoutName, "key.keyboard.grave.accent", -1 * (buttonWidth ), 1 * (buttonHeight),false);
         addItemToStringList(list, layoutName, "key.keyboard.1", 0 * (buttonWidth ), 1 * (buttonHeight),false);
         addItemToStringList(list, layoutName, "key.keyboard.2", 1 * (buttonWidth ), 1 * (buttonHeight),false);
         addItemToStringList(list, layoutName, "key.keyboard.3", 2 * (buttonWidth ), 1 * (buttonHeight),false);
@@ -299,7 +300,7 @@ public class ClientConfig {
         addItemToStringList(list, layoutName, "key.keyboard.f11", 12 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
         addItemToStringList(list, layoutName, "key.keyboard.f12", 13 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
 
-//        addItemToStringList(list, layoutName, "key.keyboard.tilde", -1 * (buttonWidth ), 1 * (buttonHeight),false);
+        addItemToStringList(list, layoutName, "key.keyboard.grave.accent", -1 * (buttonWidth ), 1 * (buttonHeight),false);
         addItemToStringList(list, layoutName, "key.keyboard.1", 0 * (buttonWidth ), 1 * (buttonHeight),false);
         addItemToStringList(list, layoutName, "key.keyboard.2", 1 * (buttonWidth ), 1 * (buttonHeight),false);
         addItemToStringList(list, layoutName, "key.keyboard.3", 2 * (buttonWidth ), 1 * (buttonHeight),false);
@@ -401,6 +402,41 @@ public class ClientConfig {
         addItemToStringList(list, layoutName, "key.keyboard.keypad.0",15 + 24 * (buttonWidth ), 5 * (buttonHeight),true);
         addItemToStringList(list, layoutName, "key.keyboard.keypad.decimal",15 + 28 * (buttonWidth ), 5 * (buttonHeight),true);
         addItemToStringList(list, layoutName, "key.keyboard.keypad.enter",15 + 32 * (buttonWidth ), 5 * (buttonHeight),true);
+
+        return list;
+    }
+
+    private static List<String> layout5(){
+        int buttonWidth = 16;
+        int buttonHeight = 16;
+
+        List<String> list = new ArrayList<>();
+        var layoutName = "Function keys";
+
+        addItemToStringList(list, layoutName, "key.keyboard.f1", 0 * (buttonWidth ), 0 * (buttonHeight) - 5, false );
+        addItemToStringList(list, layoutName, "key.keyboard.f2", 1 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f3", 2 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f4", 3 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f5", 5 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f6", 6 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f7", 7 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f8", 8 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f9", 10 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f10", 11 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f11", 12 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f12", 13 * (buttonWidth ), 0 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f13", 0 * (buttonWidth ), 1 * (buttonHeight) - 5, false );
+        addItemToStringList(list, layoutName, "key.keyboard.f14", 1 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f15", 2 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f16", 3 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f17", 5 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f18", 6 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f19", 7 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f20", 8 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f21", 10 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f22", 11 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f23", 12 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
+        addItemToStringList(list, layoutName, "key.keyboard.f24", 13 * (buttonWidth ), 1 * (buttonHeight) - 5 , false);
 
         return list;
     }
