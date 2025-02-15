@@ -28,7 +28,7 @@ public class FileUtil {
 
     public static boolean createInitializedFile(){
         try {
-            return new File(String.valueOf(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + "\\" + IS_INITIALIZED_FILE_NAME ))).createNewFile();
+            return new File(String.valueOf(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + File.separator + IS_INITIALIZED_FILE_NAME ))).createNewFile();
         }catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -36,7 +36,7 @@ public class FileUtil {
     }
 
     public static boolean isInitializedFileCreated(){
-        return new File(String.valueOf(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + "\\" + IS_INITIALIZED_FILE_NAME ))).isFile();
+        return new File(String.valueOf(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + File.separator + IS_INITIALIZED_FILE_NAME ))).isFile();
     }
 
     public static void loadInitialPreset(Options options){
@@ -44,11 +44,11 @@ public class FileUtil {
         try {
             enforceDirectory();
 
-            var file = new File(String.valueOf(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + "\\" + LOAD_ON_STARTUP_FILE_NAME)));
+            var file = new File(String.valueOf(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + File.separator + LOAD_ON_STARTUP_FILE_NAME)));
             if(// create file if not exist
                 !file.exists() || !file.isFile()
             ){
-                FileWriter writer = new FileWriter(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + "\\" + LOAD_ON_STARTUP_FILE_NAME).toString());
+                FileWriter writer = new FileWriter(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + File.separator + LOAD_ON_STARTUP_FILE_NAME).toString());
                 writer.append(LOAD_ON_STARTUP_FILE_CONTENT);
                 writer.append("\n");
                 writer.close();
@@ -124,7 +124,7 @@ public class FileUtil {
 
         }
 
-        FileWriter writer = new FileWriter(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + "\\" + name + PRESET_EXTENSION).toString());
+        FileWriter writer = new FileWriter(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + File.separator + name + PRESET_EXTENSION).toString());
         for (var keymapping : options.keyMappings){
             String mappingName = keymapping.getName();
             String key = keymapping.saveString() + (keymapping.getKeyModifier() != net.minecraftforge.client.settings.KeyModifier.NONE ? ":" + keymapping.getKeyModifier() : "");
@@ -186,7 +186,7 @@ public class FileUtil {
             return;
         }
 
-        Files.delete(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + "\\" + name + PRESET_EXTENSION));
+        Files.delete(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + File.separator + name + PRESET_EXTENSION));
     }
 
     public static List<String> getFileList() throws IOException {
@@ -207,7 +207,7 @@ public class FileUtil {
 
     public static List<String> getAllLines(String fileName) throws IOException {
         return
-            Files.readAllLines(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + "\\" + fileName));
+            Files.readAllLines(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + File.separator + fileName));
 
     }
 
