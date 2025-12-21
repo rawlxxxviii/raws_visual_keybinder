@@ -7,7 +7,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -15,10 +14,11 @@ import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.client.settings.KeyModifier;
 
 import javax.annotation.Nullable;
-import java.awt.*;
+import java.awt.Color;
 
 public class PresetsScreen extends OptionsSubScreen {
 
@@ -29,7 +29,7 @@ public class PresetsScreen extends OptionsSubScreen {
     private com.gmail.rawlxxxviii.visual_keybinder.ui_list.KeyPresetOptionsList KeyPresetOptionsList;
 
     public PresetsScreen(Screen screen, Options options) {
-        super(screen, options, Component.literal("Keybinding presets"));
+        super(screen, options, new TextComponent("Keybinding presets"));
     }
 
     @Override
@@ -44,12 +44,12 @@ public class PresetsScreen extends OptionsSubScreen {
         int uiBottom = uiTop + uiHeight;
 
         addRenderableWidget(
-                new Button.Builder(CommonComponents.GUI_DONE,
+                new Button(
+                    width / 2 - 75,this.height - 25,
+                    150, 20,
+                    CommonComponents.GUI_DONE,
                         (button) -> onClose()
                 )
-                .pos(width / 2 - 75,this.height - 25)
-                .size(150, 20)
-                .build()
         );
 
 
@@ -60,18 +60,18 @@ public class PresetsScreen extends OptionsSubScreen {
                         uiTop,
                         uiWidth - 100 - 10,
                         20,
-                        Component.literal("new preset name")
+                        new TextComponent("new preset name")
                 )
         );
 
         saveNewPresetButton = addRenderableWidget(
-                new Button.Builder(
-                        Component.literal("Save preset"),
+                new Button(
+                        newPresetNameEditBox.x + newPresetNameEditBox.getWidth() + 10,
+                        uiTop,
+                        100, 20,
+                        new TextComponent("Save preset"),
                         (button) -> savePreset(newPresetNameEditBox.getValue())
                 )
-                .pos(newPresetNameEditBox.getX() + newPresetNameEditBox.getWidth() + 10, uiTop)
-                .size(100, 20)
-                .build()
         );
 
 
@@ -102,7 +102,6 @@ public class PresetsScreen extends OptionsSubScreen {
             throw new RuntimeException(ex);
         }
 
-        rebuildWidgets();
     }
 
     public void deletePreset(String name){
@@ -113,7 +112,6 @@ public class PresetsScreen extends OptionsSubScreen {
             throw new RuntimeException(ex);
         }
 
-        rebuildWidgets();
     }
 
     public void loadPreset(String name){
@@ -124,7 +122,6 @@ public class PresetsScreen extends OptionsSubScreen {
             throw new RuntimeException(ex);
         }
 
-        rebuildWidgets();
     }
 
     public void unbindAll(){
@@ -134,7 +131,6 @@ public class PresetsScreen extends OptionsSubScreen {
         }
         options.save();
         KeyMapping.resetMapping();
-        rebuildWidgets();
     }
 
     public void resetAll(){
@@ -144,7 +140,6 @@ public class PresetsScreen extends OptionsSubScreen {
         }
         options.save();
         KeyMapping.resetMapping();
-        rebuildWidgets();
     }
 
     @Override
@@ -156,33 +151,34 @@ public class PresetsScreen extends OptionsSubScreen {
     public void setFocused(@Nullable GuiEventListener p_94677_) {
         var currentFocused = getFocused();
         if(currentFocused instanceof EditBox editBox && !currentFocused.equals(p_94677_)){
-            editBox.setFocused(false);
+            editBox.setFocus(false);
         }
         super.setFocused(p_94677_);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_193994_) {
-        this.renderDirtBackground(guiGraphics);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float p_193994_) {
+        this.renderDirtBackground(0);
 
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 16, 16777215);
+        drawCenteredString(poseStack, this.font, this.title, this.width / 2, 16, 16777215);
 
-        saveNewPresetButton.render(guiGraphics, mouseX, mouseY, p_193994_);
-        newPresetNameEditBox.render(guiGraphics, mouseX, mouseY, p_193994_);
+        saveNewPresetButton.render(poseStack, mouseX, mouseY, p_193994_);
+        newPresetNameEditBox.render(poseStack, mouseX, mouseY, p_193994_);
 
         if(this.newPresetNameEditBox.getValue().isEmpty()){
-            guiGraphics.drawString(
+            drawString(
+                    poseStack,
                     font,
-                    Component.literal("Preset name"),
-                    newPresetNameEditBox.getX() + 4,
-                    newPresetNameEditBox.getY() + 6,
+                    new TextComponent("Preset name"),
+                    newPresetNameEditBox.x + 4,
+                    newPresetNameEditBox.y + 6,
                     Color.darkGray.getRGB()
             );
         }
 
-        KeyPresetOptionsList.render(guiGraphics, mouseX, mouseY, p_193994_);
+        KeyPresetOptionsList.render(poseStack, mouseX, mouseY, p_193994_);
 
-        super.render(guiGraphics, mouseX, mouseY, p_193994_);
+        super.render(poseStack, mouseX, mouseY, p_193994_);
     }
 
     public boolean isPresetActive(KeybindingPreset keybindingPreset){

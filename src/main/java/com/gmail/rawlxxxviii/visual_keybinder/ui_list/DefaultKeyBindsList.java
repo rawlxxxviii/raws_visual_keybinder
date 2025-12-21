@@ -1,25 +1,28 @@
 package com.gmail.rawlxxxviii.visual_keybinder.ui_list;
 
 import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
+import com.gmail.rawlxxxviii.visual_keybinder.util.GuiUtil;
 import com.gmail.rawlxxxviii.visual_keybinder.util.KeyUtil;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.*;
 import java.util.List;
 
@@ -91,7 +94,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         categoryMappingsGroup.forEach((category, keyMappings) -> {
-            if(!categoryFilter.isEmpty() && !isFilterMatch(Component.translatable(category).getString(), categoryFilter)){
+            if(!categoryFilter.isEmpty() && !isFilterMatch(new TranslatableComponent(category).getString(), categoryFilter)){
                 return;
             }
 
@@ -99,26 +102,26 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
                 !keyMappingFilter.isEmpty()
                 &&
                 !hasFilterMatch(
-                    keyMappings.stream().map(x->Component.translatable(x.getName()).getString()).toList(),
+                    keyMappings.stream().map(x->new TranslatableComponent(x.getName()).getString()).toList(),
                     keyMappingFilter
                 )
             ){
                 return;
             }
 
-            this.addEntry(new CategoryEntry(Component.translatable(category)));
+            this.addEntry(new CategoryEntry(new TranslatableComponent(category)));
 
             for (KeyMapping keyMapping : keyMappings) {
 
                 if(
                     keyMappingFilter.isEmpty()
                     ||
-                    isFilterMatch(Component.translatable(keyMapping.getName()).getString(),keyMappingFilter)
+                    isFilterMatch(new TranslatableComponent(keyMapping.getName()).getString(),keyMappingFilter)
                 ){
                     this.addEntry(
                             new KeyEntry(
                                     keyMapping,
-                                    Component.translatable(keyMapping.getName()),
+                                    new TranslatableComponent(keyMapping.getName()),
                                     KeyUtil.hasConflict(allKeyMappings, keyMapping),
                                     KeyUtil.hasDefaultConflict(allKeyMappings,
                                     keyMapping)
@@ -132,7 +135,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         });
 
         if(children().isEmpty()){
-            this.addEntry(new DefaultKeyBindsList.TitleEntry( Component.literal("No results"), Color.DARK_GRAY.getRGB()));
+            this.addEntry(new DefaultKeyBindsList.TitleEntry( new TextComponent("No results"), Color.DARK_GRAY.getRGB()));
         }
 
         setScrollAmount(getScrollAmount());
@@ -168,10 +171,10 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int p_193889_, int y, int p_193891_, int p_193892_, int height, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
-            guiGraphics.drawString(minecraft.font, this.name, getLeft() + 5 , y + height - 4, color);
-            guiGraphics.disableScissor();
+        public void render(PoseStack poseStack, int p_193889_, int y, int p_193891_, int p_193892_, int height, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
+            GuiUtil.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            drawString(poseStack, minecraft.font, this.name, getLeft() + 5 , y + height - 4, color);
+            RenderSystem.disableScissor();
         }
 
         @Override
@@ -244,10 +247,10 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         @Override
-        public void render(@NotNull GuiGraphics guiGraphics, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
-            guiGraphics.drawString(minecraft.font, this.name, getLeft() + 5 , p_193890_ + p_193893_ - 10, AlternativeKeybindScreen.CATEGORY_COLOR);
-            guiGraphics.disableScissor();
+        public void render(@NotNull PoseStack poseStack, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
+            GuiUtil.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            drawString(poseStack, minecraft.font, this.name, getLeft() + 5 , p_193890_ + p_193893_ - 10, AlternativeKeybindScreen.CATEGORY_COLOR);
+            RenderSystem.disableScissor();
         }
 
         @Override
@@ -323,7 +326,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         @Override
-        public void render(@NotNull GuiGraphics p_193888_, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
+        public void render(@NotNull PoseStack p_193888_, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
 
         }
 
@@ -347,26 +350,24 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
             this.name = p_193917_;
             this.isConflicting = isConflicting;
             this.isDefaultConflicting = isDefaultConflicting;
-            this.changeButton = new Button.Builder(
+            this.changeButton = new Button(
+                    0, 0,
+                    100, 20,
                     p_193917_,
                     (p_193939_) -> DefaultKeyBindsList.this.parentScreen.setKeyMappingToChange(p_193916_)
-                )
-                .pos(0,0)
-                .size(100,20)
-                .build();
+                );
 
-            this.resetButton = new Button.Builder(
-                    Component.literal("(").append(key.getDefaultKey().getDisplayName().getString()).append(")"),
+            this.resetButton = new Button(
+                    0, 0,
+                    90, 20,
+                    new TextComponent("(").append(key.getDefaultKey().getDisplayName().getString()).append(")"),
                     (p_193935_) -> {
                         this.key.setToDefault();
                         options.setKey(p_193916_, p_193916_.getDefaultKey());
                         KeyMapping.resetMapping();
                         DefaultKeyBindsList.this.parentScreen.onBindingsChanged();
                     }
-                )
-                .pos(0,0)
-                .size(90,20)
-                .build();
+                );
         }
 
         public boolean isConflicting() {
@@ -383,27 +384,27 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
 
 
         @Override
-        public void render(@NotNull GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+        public void render(@NotNull PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
+            GuiUtil.enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
 
-            guiGraphics.drawString(minecraft.font, this.name, getLeft() + 5, p_193925_ + p_193928_ - 10, 16777215);
+            drawString(poseStack, minecraft.font, this.name, getLeft() + 5, p_193925_ + p_193928_ - 10, 16777215);
 
-            this.changeButton.setX( p_193926_ + (int)((float)getWidth() * .43F));
-            this.changeButton.setY( p_193925_);
+            this.changeButton.x = p_193926_ + (int)((float)getWidth() * .43F);
+            this.changeButton.y = p_193925_;
             this.changeButton.setWidth( Math.max(40, Math.min(120, (int) ((float)getWidth() *.27F) )) );
-            this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? Component.literal("> ... <") : this.key.getTranslatedKeyMessage());
+            this.changeButton.setMessage(parentScreen.getKeyMappingToChange() == key ? new TextComponent("> ... <") : this.key.getTranslatedKeyMessage());
             this.changeButton.setFGColor(key.isUnbound() ? AlternativeKeybindScreen.UNBOUND_COLOR : isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:16777215);
-            this.changeButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.changeButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            this.resetButton.setX( this.changeButton.getX() + this.changeButton.getWidth() + 2);
+            this.resetButton.x = this.changeButton.x + this.changeButton.getWidth() + 2;
             this.resetButton.setWidth( Math.max(40, Math.min(120, (int) ((float)getWidth() *.23F) )) );
-            this.resetButton.setY( p_193925_);
+            this.resetButton.y = p_193925_;
             this.resetButton.active = !this.key.isDefault();
             this.resetButton.setFGColor( key.isDefault() ? Color.gray.getRGB() : isDefaultConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:AlternativeKeybindScreen.RESET_COLOR);
-            this.resetButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.resetButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            guiGraphics.disableScissor();
+            RenderSystem.disableScissor();
 
         }
 

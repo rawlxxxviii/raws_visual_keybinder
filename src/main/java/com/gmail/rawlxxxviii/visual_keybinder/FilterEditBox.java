@@ -16,7 +16,7 @@ public class FilterEditBox extends EditBox {
         if(p_94127_ == 0){
             return super.mouseClicked(p_94125_, p_94126_, p_94127_);
         } else if (p_94127_ == 1) {
-            if(p_94125_ >= (double)getX() && p_94125_ < (double)(getX() + width) && p_94126_ >= (double)getY() && p_94126_ < (double)(getY() + height)){
+            if(p_94125_ >= (double)x && p_94125_ < (double)(x + width) && p_94126_ >= (double)y && p_94126_ < (double)(y + height)){
                 setValue("");
                 return true;
             }

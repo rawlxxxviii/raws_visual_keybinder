@@ -6,11 +6,11 @@ import com.gmail.rawlxxxviii.visual_keybinder.config.ClientConfig;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.controls.ControlsScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,11 +36,11 @@ public abstract class ControlsScreenMixin extends OptionsSubScreen {
                 new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
                 512,512,
                 (p_97538_) -> this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options)),
-
-                Component.literal("Visual keybinder")
+                (btn, posestack,x,y)-> {
+                    renderTooltip(posestack, new TextComponent("Visual Keybinder") ,x,y);
+                },
+                new TextComponent("Visual keybinder")
         );
-        button.setTooltip(Tooltip.create(button.getMessage()));
-
         this.addRenderableWidget
             (button);
 

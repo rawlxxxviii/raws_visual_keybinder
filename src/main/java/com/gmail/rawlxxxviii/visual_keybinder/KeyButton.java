@@ -4,7 +4,6 @@ import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
 import com.gmail.rawlxxxviii.visual_keybinder.util.KeyUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.resources.ResourceLocation;
 
@@ -37,7 +36,7 @@ public class KeyButton extends ImageButton {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_93660_) {
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float p_93660_) {
         if (!this.visible) {return;}
 
         float scale = getScale();
@@ -45,17 +44,17 @@ public class KeyButton extends ImageButton {
 
         this.isHovered = checkIsMouseOver(mouseX,mouseY);
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(
+        poseStack.pushPose();
+        poseStack.translate(
                 getDiffX(),
                 getDiffY(),
                 1);
-        guiGraphics.pose().scale(scale,scale,1);
+        poseStack.scale(scale,scale,1);
 
-        renderWidget(guiGraphics,mouseX,mouseY,p_93660_);
-        renderOverlay(guiGraphics,mouseX,mouseY,p_93660_);
+        renderButton(poseStack,mouseX,mouseY,p_93660_);
+        renderOverlay(poseStack,mouseX,mouseY,p_93660_);
 
-        guiGraphics.pose().popPose();
+        poseStack.popPose();
 
     }
 
@@ -109,10 +108,10 @@ public class KeyButton extends ImageButton {
         var diffY = getDiffY();
 
         return
-                mouseX >= this.getX() * scale + diffX
-                        && mouseY >= this.getY() * scale + diffY
-                        && mouseX < (this.getX() + this.width) * scale + diffX
-                        && mouseY < (this.getY() + this.height) * scale + diffY
+                mouseX >= this.x * scale + diffX
+                        && mouseY >= this.y * scale + diffY
+                        && mouseX < (this.x + this.width) * scale + diffX
+                        && mouseY < (this.y + this.height) * scale + diffY
                 ;
     }
 
@@ -133,7 +132,7 @@ public class KeyButton extends ImageButton {
         return KeyUtil.hasConflict(getKeymappings());
     }
 
-    private void renderOverlay(GuiGraphics guiGraphics, int p_94283_, int p_94284_, float p_94285_){
+    private void renderOverlay(PoseStack poseStack, int p_94283_, int p_94284_, float p_94285_){
 
         var isEmpty = isEmpty();
         var hasConflict = hasConflict();
@@ -141,9 +140,9 @@ public class KeyButton extends ImageButton {
         var canvasX = keyboardLayoutKey.isWide()?120:0;
 
 //        //usage
-        guiGraphics.blit(
-                new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
-                getX(), getY(),
+            blit(
+                poseStack,
+                x, y,
 
                 isEmpty ? canvasX + 3*width : hasConflict ? canvasX + width : canvasX + 2*width,
                 (this.isHoveredOrFocused()? AlternativeKeybindScreen.KEY_BUTTON_HEIGHT : 0),
@@ -154,9 +153,9 @@ public class KeyButton extends ImageButton {
 
         // selected
         if(this.parentScreen.getDetailsList()!=null && this.parentScreen.getDetailsList().getSelectedKey().getKey().getValue() == keyboardLayoutKey.getKey().getValue()){
-            guiGraphics.blit(
-                    new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
-                    getX(), getY(),
+            blit(
+                    poseStack,
+                    x, y,
                     canvasX + 4*width,0,
                     this.width, this.height,
                     512,512
@@ -164,11 +163,12 @@ public class KeyButton extends ImageButton {
         }
 
         // key
-        guiGraphics.drawCenteredString(
+        drawCenteredString(
+                poseStack,
                 parentScreen.getMinecraft().font,
                 keyboardLayoutKey.getKey().getDisplayName(),
-                getX() + this.width / 2,
-                getY() + (this.height - 8) / 2,
+                x + this.width / 2,
+                y + (this.height - 8) / 2,
                 isEmpty ? Color.gray.getRGB() : hasConflict? AlternativeKeybindScreen.CONFLICT_COLOR : Color.WHITE.getRGB()
         );
     }

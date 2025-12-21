@@ -2,7 +2,7 @@ package com.gmail.rawlxxxviii.visual_keybinder.config;
 
 import com.gmail.rawlxxxviii.visual_keybinder.KeyBoardLayout;
 import com.gmail.rawlxxxviii.visual_keybinder.KeyboardLayoutKey;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.*;
@@ -130,7 +130,7 @@ public class ClientConfig {
 
         map.forEach(
                 (a,b)->{
-                    resultList.add( new KeyBoardLayout(Component.literal(a),b));
+                    resultList.add( new KeyBoardLayout(new TextComponent(a),b));
                 }
         );
 
