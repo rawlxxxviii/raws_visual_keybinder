@@ -5,21 +5,23 @@ import com.gmail.rawlxxxviii.visual_keybinder.KeybindingPreset;
 import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
 import com.gmail.rawlxxxviii.visual_keybinder.screen.PresetsScreen;
 import com.gmail.rawlxxxviii.visual_keybinder.util.FileUtil;
+import com.gmail.rawlxxxviii.visual_keybinder.util.GuiUtil;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.Optional;
 
@@ -147,28 +149,27 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
 
             int buttonWidth = 50;
 
-            this.saveButton = new Button.Builder(Component.literal("Save"),
-                    (p_193939_) -> parentScreen.savePreset(keybindingPreset.getName()))
-                    .pos(getRight() - (buttonWidth + 5) * 3 , 0)
-                    .size(buttonWidth , 20)
-                    .build();
+            this.saveButton = new Button(
+                    getRight() - (buttonWidth + 5) * 3 , 0,
+                    buttonWidth , 20,
+                    new TextComponent("Save"),
+                    (p_193939_) -> parentScreen.savePreset(keybindingPreset.getName()));
             this.saveButton.active = !keybindingPreset.isReadOnly();
 
-            this.loadButton = new Button.Builder(Component.literal("Load"),
-                    (p_193939_) -> parentScreen.loadPreset(keybindingPreset.getName()))
-                    .pos(getRight() - (buttonWidth + 5) * 2, 0)
-                    .size(buttonWidth , 20)
-                    .build();
+            this.loadButton = new Button(
+                    getRight() - (buttonWidth + 5) * 2, 0,
+                    buttonWidth , 20,
+                    new TextComponent("Load"),
+                    (p_193939_) -> parentScreen.loadPreset(keybindingPreset.getName()));
             this.loadButton.active = !isPresetActive;
 
 
-            this.deleteButton = new Button.Builder(
-                    Component.literal("Delete"),
+            this.deleteButton = new Button(
+                    getRight() - buttonWidth - 5, 0,
+                    buttonWidth, 20,
+                    new TextComponent("Delete"),
                     (p_193935_) -> parentScreen.deletePreset(keybindingPreset.getName())
                 )
-                .pos(getRight() - buttonWidth - 5, 0)
-                .size(buttonWidth, 20)
-                .build()
             ;
             this.deleteButton.active = !keybindingPreset.isReadOnly();
         }
@@ -185,27 +186,27 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
             return ImmutableList.of(this.saveButton, this.loadButton, this.deleteButton);
         }
 
-        public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+        public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
+            GuiUtil.enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
-            guiGraphics.drawString(
+            drawString(poseStack, 
                     parentScreen.getMinecraft().font,
-                    Component.literal(this.keybindingPreset.getName()),
+                    new TextComponent(this.keybindingPreset.getName()),
                     getRowLeft() + 5,
                     getRowTop(p_193924_) + 6,
                     isPresetActive ? AlternativeKeybindScreen.ACTIVE_COLOR : Color.white.getRGB());
 
-            this.saveButton.setY(p_193925_);
-            this.saveButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.saveButton.y = (p_193925_);
+            this.saveButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            this.loadButton.setY(p_193925_ );
-            this.loadButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.loadButton.y =(p_193925_ );
+            this.loadButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            this.deleteButton.setY(p_193925_ );
+            this.deleteButton.y = (p_193925_ );
             this.deleteButton.setFGColor( this.deleteButton.active ? AlternativeKeybindScreen.DANGER_COLOR : Color.GRAY.getRGB());
-            this.deleteButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.deleteButton.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            guiGraphics.disableScissor();
+            RenderSystem.disableScissor();
         }
 
 
@@ -274,13 +275,12 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         UnbindAllEntry() {
 
             int buttonWidth = 50;
-            this.button = new Button.Builder(
-                    Component.literal("Unbind"),
+            this.button = new Button(
+                    getRight() - (buttonWidth + 5) * 3 , 0,
+                    100, 20,
+                    new TextComponent("Unbind"),
                     (p_193939_) -> parentScreen.unbindAll()
-            )
-            .pos(getRight() - (buttonWidth + 5) * 3 , 0)
-            .size(100,20)
-            .build();
+            );
             this.button.active = parentScreen.hasBoundBindings();
 
         }
@@ -289,21 +289,21 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
             return ImmutableList.of(this.button);
         }
 
-        public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+        public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
+            GuiUtil.enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
-            guiGraphics.drawString(
+            drawString(poseStack, 
                     parentScreen.getMinecraft().font,
-                    Component.literal("Unbind all keybindings"),
+                    new TextComponent("Unbind all keybindings"),
                     getRowLeft() + 5,
                     getRowTop(p_193924_) + 6,
                     parentScreen.hasBoundBindings() ? Color.LIGHT_GRAY.getRGB() : AlternativeKeybindScreen.ACTIVE_COLOR
             );
 
-            this.button.setY(p_193925_);
-            this.button.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.button.y = (p_193925_);
+            this.button.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            guiGraphics.disableScissor();
+            RenderSystem.disableScissor();
         }
 
 
@@ -374,7 +374,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
             return ImmutableList.of();
         }
 
-        public void render(GuiGraphics poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
+        public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
 
         }
 
@@ -443,13 +443,12 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         ResetAllEntry() {
 
             int buttonWidth = 50;
-            this.button = new Button.Builder(
-                    Component.literal("Reset"),
+            this.button = new Button(
+                    getRight() - (buttonWidth + 5) * 3 , 0,
+                    100 , 20,
+                    new TextComponent("Reset"),
                     (p_193939_) ->parentScreen.resetAll()
             )
-            .pos(getRight() - (buttonWidth + 5) * 3 , 0)
-            .size(100 , 20)
-            .build()
             ;
 
             this.button.active = parentScreen.hasNonDefaultBindings();
@@ -460,21 +459,21 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
             return ImmutableList.of(this.button);
         }
 
-        public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+        public void render(PoseStack poseStack, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
+            GuiUtil.enableScissor(getLeft(),getTop(),getRight(), getBottom());
 
-            guiGraphics.drawString(
+            drawString(poseStack, 
                     parentScreen.getMinecraft().font,
-                    Component.literal("Reset to defaults"),
+                    new TextComponent("Reset to defaults"),
                     getRowLeft() + 5,
                     getRowTop(p_193924_) + 6,
                      parentScreen.hasNonDefaultBindings() ? Color.LIGHT_GRAY.getRGB() : AlternativeKeybindScreen.ACTIVE_COLOR
             );
 
-            this.button.setY(p_193925_);
-            this.button.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.button.y = (p_193925_);
+            this.button.render(poseStack, p_193929_, p_193930_, p_193932_);
 
-            guiGraphics.disableScissor();
+            RenderSystem.disableScissor();
         }
 
 

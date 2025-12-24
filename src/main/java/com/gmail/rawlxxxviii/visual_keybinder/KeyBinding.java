@@ -3,11 +3,12 @@ package com.gmail.rawlxxxviii.visual_keybinder;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.lwjgl.glfw.GLFW;
 
@@ -24,13 +25,13 @@ public class KeyBinding {
     }
 
 
-    private static KeyMapping createKeyMapping (RegisterKeyMappingsEvent event, KeyMapping keyMapping){
-        event.register(keyMapping);
+    private static KeyMapping createKeyMapping (KeyMapping keyMapping){
+        ClientRegistry.registerKeyBinding(keyMapping);
         return keyMapping;
     }
 
-    public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
-        OPEN_SCREEN = createKeyMapping(event,
+    public static void registerKeyBindings(FMLClientSetupEvent event) {
+        OPEN_SCREEN = createKeyMapping(
                 new KeyMapping(
                         "key.raws_visual_keybinder.open_screen",
                         KeyConflictContext.IN_GAME,
