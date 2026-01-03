@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -104,6 +105,7 @@ public class FileUtil {
                 presetList.add(new KeybindingPreset(name,isReadOnly,lines));
 
             }
+            presetList.sort(Comparator.comparing(KeybindingPreset::getName));
             return presetList;
 
         }catch (Exception ex){
