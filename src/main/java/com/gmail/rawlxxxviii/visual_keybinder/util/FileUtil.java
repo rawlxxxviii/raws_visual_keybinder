@@ -139,7 +139,7 @@ public class FileUtil {
     }
 
     public static String sanitizeString(String input){
-        return input.replaceAll("[^a-zA-Z0-9._]+", "_");
+        return input.replaceAll("[^a-zA-Z0-9._\\s]+", "_");
     }
 
     public static void loadPreset(Options options, String name) throws IOException {
