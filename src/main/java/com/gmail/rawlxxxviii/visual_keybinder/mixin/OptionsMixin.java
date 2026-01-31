@@ -1,5 +1,6 @@
 package com.gmail.rawlxxxviii.visual_keybinder.mixin;
 
+import com.gmail.rawlxxxviii.visual_keybinder.config.ClientConfig;
 import com.gmail.rawlxxxviii.visual_keybinder.util.FileUtil;
 import net.minecraft.client.Options;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +17,15 @@ public abstract class OptionsMixin {
     protected void initInject(CallbackInfo ci){
 
 
+        if(FileUtil.getLayoutFileList().isEmpty()){
+            FileUtil.createDefaultLayouts();
+        }
         FileUtil.loadInitialPreset( (Options) (Object) this );
+
+        if(!FileUtil.isInitializedFileCreated()){
+            FileUtil.createInitializedFile();
+
+        }
     }
 
     
