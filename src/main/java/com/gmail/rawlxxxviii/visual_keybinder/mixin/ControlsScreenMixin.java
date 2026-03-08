@@ -7,9 +7,9 @@ import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.controls.ControlsScreen;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.client.gui.screens.options.controls.ControlsScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,19 +26,19 @@ public abstract class ControlsScreenMixin extends OptionsSubScreen {
 
     @Inject(method = "init", at = @At("RETURN"))
     protected void initInject(CallbackInfo ci){
-        var button = new ImageButton(
-                this.width / 2 + 150 + 10 + ClientConfig.menuButtonOffsetX.get(),
-                this.height / 6 - 12 + ClientConfig.menuButtonOffsetY.get(),
+        var button = Button.builder(
+                        Component.literal("VK"),
+                        (btn) -> this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options))
+                )
+                .bounds(
+                        this.width / 2 + 150 + 10 + ClientConfig.menuButtonOffsetX.get(),
+                        this.height / 6 - 12 + ClientConfig.menuButtonOffsetY.get(),
+                        27, 20
+                )
+                .tooltip(Tooltip.create(Component.literal("Visual keybinder")))
+                .build();
 
-                27, 20,
-                0, 56,
-                20,
-                new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
-                512,512,
-                (p_97538_) -> this.minecraft.setScreen(new AlternativeKeybindScreen(this, this.options)),
-
-                Component.literal("Visual keybinder")
-        );
+        this.addRenderableWidget(button);
         button.setTooltip(Tooltip.create(button.getMessage()));
 
         this.addRenderableWidget

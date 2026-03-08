@@ -1,0 +1,59 @@
+# This is an example neoforge.mods.toml file. It contains the data relating to the loading mods.
+# There are several mandatory fields (#mandatory), and many more that are optional (#optional).
+# The overall format is standard TOML format, v0.5.0.
+
+# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml
+modLoader="javafml" #mandatory
+
+# A version range to match for said mod loader
+loaderVersion="[4,)" #mandatory
+
+# The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
+license="All Rights Reserved"
+
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]] #mandatory
+
+# The modid of the mod
+modId="visual_keybinder" #mandatory
+
+# The version number of the mod
+version="1.21.1-0.1.12" #mandatory
+
+# A display name for the mod
+displayName="Raw's Visual Keybinder" #mandatory
+
+# The authors of the mod, displayed in the mod UI (optional)
+authors="rawlxxxviii, (Ported by bubin7766)"
+
+# Display Test controls the display for your mod in the server connection screen
+# IGNORE_ALL_VERSION means that your mod will not cause a red X if it's present on the client or the server.
+displayTest="IGNORE_ALL_VERSION" #optional
+
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Alternative keybinding screen.
+Provides an extra screen for keybinding for easier keybinding management. Visualise your keyboard and mouse to easily see which buttons are available, which buttons have conflicts and which bindings are on a certain key or button.
+'''
+
+# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+[[dependencies.visual_keybinder]] #optional
+# the modid of the dependency
+modId="neoforge" #mandatory
+# The type of the dependency. Can be one of "required", "optional", "incompatible" or "discouraged"
+type="required" #mandatory
+# The version range of the dependency
+versionRange="[21.1,)" #mandatory
+# An ordering relationship for the dependency.
+ordering="NONE"
+# Side this dependency is applied on - BOTH, CLIENT, or SERVER
+side="CLIENT"
+
+# Here's another dependency
+[[dependencies.visual_keybinder]]
+modId="minecraft"
+type="required"
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange="[1.21.1,1.22)"
+ordering="NONE"
+side="CLIENT"

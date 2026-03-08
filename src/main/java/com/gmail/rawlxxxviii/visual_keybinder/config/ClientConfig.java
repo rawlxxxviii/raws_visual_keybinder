@@ -3,28 +3,28 @@ package com.gmail.rawlxxxviii.visual_keybinder.config;
 import com.gmail.rawlxxxviii.visual_keybinder.KeyBoardLayout;
 import com.gmail.rawlxxxviii.visual_keybinder.KeyboardLayoutKey;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.*;
 
 public class ClientConfig {
-    public static final ForgeConfigSpec GENERAL_SPEC;
+    public static final ModConfigSpec GENERAL_SPEC;
 
-    public static ForgeConfigSpec.IntValue menuButtonOffsetX;
-    public static ForgeConfigSpec.IntValue menuButtonOffsetY;
-    public static ForgeConfigSpec.BooleanValue displayConflictContext;
-    public static ForgeConfigSpec.BooleanValue displayLayoutButtonTooltips;
-    public static ForgeConfigSpec.BooleanValue displayChangeAndResetButtonTooltips;
-    public static ForgeConfigSpec.ConfigValue<List<? extends String>> keyboardLayouts;
+    public static ModConfigSpec.IntValue menuButtonOffsetX;
+    public static ModConfigSpec.IntValue menuButtonOffsetY;
+    public static ModConfigSpec.BooleanValue displayConflictContext;
+    public static ModConfigSpec.BooleanValue displayLayoutButtonTooltips;
+    public static ModConfigSpec.BooleanValue displayChangeAndResetButtonTooltips;
+    public static ModConfigSpec.ConfigValue<List<? extends String>> keyboardLayouts;
 
 
     static {
-        ForgeConfigSpec.Builder configBuilder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder configBuilder = new ModConfigSpec.Builder();
         setupConfig(configBuilder);
         GENERAL_SPEC = configBuilder.build();
     }
 
-    private static void setupConfig(ForgeConfigSpec.Builder builder) {
+    private static void setupConfig(ModConfigSpec.Builder builder) {
 
         builder.comment("Use this to create your own layouts. Multiple layouts can be defined. A standard button is 16px and a wide button is 60px. The order is defined by the occurrence of the name of the layout. This file can be deleted in order to restore to default.");
         builder.push("Layouts");

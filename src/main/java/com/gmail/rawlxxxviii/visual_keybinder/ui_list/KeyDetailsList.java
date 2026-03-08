@@ -16,9 +16,9 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.settings.KeyConflictContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,17 +32,17 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
     private final AlternativeKeybindScreen parentScreen;
     private final KeyboardLayoutKey selectedKey;
     protected final Options options;
+    private final int left;
 
     public KeyDetailsList(AlternativeKeybindScreen parentScreen, Minecraft minecraft, Options options, KeyboardLayoutKey selectedKey, int left, int top, int width, int height) {
 
-        super(minecraft, width, height, top, height + top, 20);
+        super(minecraft, width, height, top, 20);
         this.options = options;
 
-        this.setRenderTopAndBottom(false);
         this.height = height;
+        this.left = left;
 
-        this.x0 = left;
-        this.x1 = width + this.x0;
+        this.setX(left);
 
         this.parentScreen = parentScreen;
         this.selectedKey = selectedKey;
@@ -89,6 +89,11 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
     }
 
     @Override
+    public int getX() {
+        return this.left;
+    }
+
+    @Override
     public int getRowWidth() {
         return width;
     }
@@ -99,7 +104,7 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
 
     @Override
     protected int getScrollbarPosition() {
-        return this.width + this.x0 - 6;
+        return this.width + this.getX() - 6;
     }
 
     @Override
@@ -128,8 +133,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
     }
 
     @Override
-    public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-        return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
@@ -148,8 +153,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
     }
 
     @Override
-    public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-        super.magicalSpecialHackyFocus(p_94726_);
+    public void setFocused(@Nullable GuiEventListener p_94726_) {
+        super.setFocused(true);
     }
 
 
@@ -169,8 +174,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
 
         @Override
         public void render(GuiGraphics guiGraphics, int p_193889_, int y, int p_193891_, int p_193892_, int height, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
-            guiGraphics.drawString(minecraft.font, this.name, getLeft() + 5 , y + height - 4, color);
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
+            guiGraphics.drawString(minecraft.font, this.name, getX() + 5 , y + height - 4, color);
             guiGraphics.disableScissor();
         }
 
@@ -205,8 +210,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -225,8 +230,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
 
         @Override
@@ -246,10 +251,10 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
 
         @Override
         public void render(GuiGraphics guiGraphics, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
             guiGraphics.fill(
-                    getLeft(),
+                    getX(),
                     getRowTop(0) - 4,
                     getRight(),
                     getRowTop(0) + itemHeight,
@@ -258,7 +263,7 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
 
             guiGraphics.drawString(minecraft.font,
                     KeyDetailsList.this.getSelectedKey().getKey().getDisplayName(),
-                    getLeft() + 5 , p_193890_ + 5,
+                    getX() + 5 , p_193890_ + 5,
                     hasConflicts ? AlternativeKeybindScreen.CONFLICT_COLOR :Color.white.getRGB()
             );
 
@@ -296,8 +301,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -316,8 +321,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
 
         @Override
@@ -359,9 +364,9 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
-            guiGraphics.drawString(minecraft.font, Component.translatable(key.getName()), getLeft() + 5, (p_193925_ + p_193928_ / 2), 16777215);
+            guiGraphics.drawString(minecraft.font, Component.translatable(key.getName()), getX() + 5, (p_193925_ + p_193928_ / 2), 16777215);
             if(ClientConfig.displayConflictContext.get() && getWidth() > 170 ){
                 if(key.getKeyConflictContext() == KeyConflictContext.GUI){
                     guiGraphics.drawString(minecraft.font, Component.literal("In GUI"), getRight()-75, p_193925_ + p_193928_ / 2 , Color.DARK_GRAY.getRGB());
@@ -413,8 +418,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -433,8 +438,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
     }
 
@@ -490,9 +495,9 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
-            this.changeButton.setX(getLeft() + 5);
+            this.changeButton.setX(getX() + 5);
             this.changeButton.setWidth( Math.max(40, Math.min(120, (int) ((float)getWidth() *.4F) )) );
             this.changeButton.setY(p_193925_);
             this.changeButton.setFGColor(isConflicting ? AlternativeKeybindScreen.CONFLICT_COLOR:Color.white.getRGB());
@@ -544,8 +549,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -564,8 +569,8 @@ public class KeyDetailsList extends ContainerObjectSelectionList<KeyDetailsList.
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
 
     }

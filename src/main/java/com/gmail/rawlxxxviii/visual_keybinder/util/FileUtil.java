@@ -4,8 +4,8 @@ import com.gmail.rawlxxxviii.visual_keybinder.KeybindingPreset;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
-import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -127,7 +127,7 @@ public class FileUtil {
         FileWriter writer = new FileWriter(FMLPaths.GAMEDIR.get().resolve(FOLDER_LOCATION + File.separator + name + PRESET_EXTENSION).toString());
         for (var keymapping : options.keyMappings){
             String mappingName = keymapping.getName();
-            String key = keymapping.saveString() + (keymapping.getKeyModifier() != net.minecraftforge.client.settings.KeyModifier.NONE ? ":" + keymapping.getKeyModifier() : "");
+            String key = keymapping.saveString() + (keymapping.getKeyModifier() != net.neoforged.neoforge.client.settings.KeyModifier.NONE ? ":" + keymapping.getKeyModifier() : "");
             writer.append(mappingName).append(":").append(key);
             writer.append("\n");
         }
@@ -137,7 +137,7 @@ public class FileUtil {
     }
 
     public static String sanitizeString(String input){
-        return input.replaceAll("[^a-zA-Z0-9._]+", "_");
+        return input.replaceAll("[^a-zA-Z0-9._\\s]+", "_");
     }
 
     public static void loadPreset(Options options, String name) throws IOException {
@@ -160,9 +160,9 @@ public class FileUtil {
 
                         if (value.indexOf(':') != -1) {
                             String[] pts = value.split(":");
-                            keymapping.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.valueFromString(pts[1]), InputConstants.getKey(pts[0]));
+                            keymapping.setKeyModifierAndCode(net.neoforged.neoforge.client.settings.KeyModifier.valueFromString(pts[1]), InputConstants.getKey(pts[0]));
                         } else {
-                            keymapping.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.NONE, InputConstants.getKey(value));
+                            keymapping.setKeyModifierAndCode(net.neoforged.neoforge.client.settings.KeyModifier.NONE, InputConstants.getKey(value));
                         }
                     },
                     () -> {

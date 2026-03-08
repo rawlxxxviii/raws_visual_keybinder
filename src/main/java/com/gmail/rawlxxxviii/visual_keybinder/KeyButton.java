@@ -2,31 +2,34 @@ package com.gmail.rawlxxxviii.visual_keybinder;
 
 import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
 import com.gmail.rawlxxxviii.visual_keybinder.util.KeyUtil;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.WidgetSprites;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
 
+
 public class KeyButton extends ImageButton {
 
+    private static final WidgetSprites KEY_BUTTON_WIDGET_SPRITES = new WidgetSprites(ResourceLocation.fromNamespaceAndPath(VisualKeybinderMod.MODID, "key_button"), ResourceLocation.fromNamespaceAndPath(VisualKeybinderMod.MODID, "key_button_highlighted"));
+    private static final WidgetSprites KEY_BUTTON_WIDGET_SPRITES_WIDE = new WidgetSprites(ResourceLocation.fromNamespaceAndPath(VisualKeybinderMod.MODID, "key_button_wide"), ResourceLocation.fromNamespaceAndPath(VisualKeybinderMod.MODID, "key_button_wide_highlighted"));
     private final KeyboardLayoutKey keyboardLayoutKey;
     private final AlternativeKeybindScreen parentScreen;
     private final KeyBoardLayout keyBoardLayout;
 
-    public KeyButton(AlternativeKeybindScreen parentScreen, KeyBoardLayout keyBoardLayout , KeyboardLayoutKey keyboardLayoutKey, int x, int y, OnPress onPress) {
+    public KeyButton(AlternativeKeybindScreen parentScreen, KeyBoardLayout keyBoardLayout , KeyboardLayoutKey keyboardLayoutKey, int x, int y, net.minecraft.client.gui.components.Button.OnPress onPress) {
 
-        super (
-            x, y,
-            keyboardLayoutKey.isWide() ? AlternativeKeybindScreen.WIDE_KEY_BUTTON_WIDTH : AlternativeKeybindScreen.KEY_BUTTON_WIDTH, AlternativeKeybindScreen.KEY_BUTTON_HEIGHT,
-            keyboardLayoutKey.isWide() ? 120 : 0, 0,
-            AlternativeKeybindScreen.KEY_BUTTON_HEIGHT,
-            new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
-            512, 512,
-            onPress,
-            keyboardLayoutKey.getKey().getDisplayName()
+        super(
+                x, y,
+                keyboardLayoutKey.isWide() ? 60 : 16,
+                16,
+                keyboardLayoutKey.isWide() ? KEY_BUTTON_WIDGET_SPRITES_WIDE : KEY_BUTTON_WIDGET_SPRITES,
+                onPress,
+                keyboardLayoutKey.getKey().getDisplayName()
         );
 
 
@@ -37,26 +40,19 @@ public class KeyButton extends ImageButton {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_93660_) {
-        if (!this.visible) {return;}
-
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_93660_) {
         float scale = getScale();
 
-
-        this.isHovered = checkIsMouseOver(mouseX,mouseY);
+        this.isHovered = checkIsMouseOver(mouseX, mouseY); // Fixes hover hitboxes!
 
         guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(
-                getDiffX(),
-                getDiffY(),
-                1);
-        guiGraphics.pose().scale(scale,scale,1);
+        guiGraphics.pose().translate(getDiffX(), getDiffY(), 0.0F); // Fixes tooltip overlap!
+        guiGraphics.pose().scale(scale, scale, 0.0F);
 
-        renderWidget(guiGraphics,mouseX,mouseY,p_93660_);
+        super.renderWidget(guiGraphics, mouseX, mouseY, p_93660_);
         renderOverlay(guiGraphics,mouseX,mouseY,p_93660_);
 
         guiGraphics.pose().popPose();
-
     }
 
     private float getScale(){
@@ -142,7 +138,7 @@ public class KeyButton extends ImageButton {
 
 //        //usage
         guiGraphics.blit(
-                new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
+                ResourceLocation.fromNamespaceAndPath(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
                 getX(), getY(),
 
                 isEmpty ? canvasX + 3*width : hasConflict ? canvasX + width : canvasX + 2*width,
@@ -155,7 +151,7 @@ public class KeyButton extends ImageButton {
         // selected
         if(this.parentScreen.getDetailsList()!=null && this.parentScreen.getDetailsList().getSelectedKey().getKey().getValue() == keyboardLayoutKey.getKey().getValue()){
             guiGraphics.blit(
-                    new ResourceLocation(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
+                    ResourceLocation.fromNamespaceAndPath(VisualKeybinderMod.MODID,"textures/gui/gui.png"),
                     getX(), getY(),
                     canvasX + 4*width,0,
                     this.width, this.height,

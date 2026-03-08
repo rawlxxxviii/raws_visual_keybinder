@@ -2,32 +2,28 @@ package com.gmail.rawlxxxviii.visual_keybinder;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.lwjgl.glfw.GLFW;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(modid = VisualKeybinderMod.MODID, value = Dist.CLIENT)
 public class KeyBinding {
 
 
     public static KeyMapping OPEN_SCREEN;
 
 
-    static {
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(KeyBinding::registerKeyBindings);
-    }
-
-
-    private static KeyMapping createKeyMapping (RegisterKeyMappingsEvent event, KeyMapping keyMapping){
+       private static KeyMapping createKeyMapping (RegisterKeyMappingsEvent event, KeyMapping keyMapping){
         event.register(keyMapping);
         return keyMapping;
     }
+
+    @SubscribeEvent
 
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
         OPEN_SCREEN = createKeyMapping(event,

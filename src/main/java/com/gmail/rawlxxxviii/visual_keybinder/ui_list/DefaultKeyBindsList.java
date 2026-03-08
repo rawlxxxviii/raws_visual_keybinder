@@ -13,8 +13,8 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,16 +29,14 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
 
     private String categoryFilter = "";
     private String keyMappingFilter = "";
+    private final int left;
 
     public DefaultKeyBindsList(AlternativeKeybindScreen parentScreen, Minecraft minecraft, Options options, int left, int top, int width, int height) {
-        super(minecraft, width, height, top, height + top, 20);
+        super(minecraft, width, height, top, 20);
 
         this.parentScreen = parentScreen;
         this.options = options;
-
-        this.setRenderTopAndBottom(false);
-        this.x0 = left;
-        this.x1 = width + this.x0;
+        this.left = left;
 
         buildEntries();
 
@@ -139,6 +137,11 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
     }
 
     @Override
+    public int getX() {
+        return this.left;
+    }
+
+    @Override
     public int getRowWidth() {
         return width;
     }
@@ -149,7 +152,7 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
 
     @Override
     protected int getScrollbarPosition() {
-        return this.width + this.x0 - 6;
+        return this.width + this.getX() - 6;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -169,8 +172,8 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
 
         @Override
         public void render(GuiGraphics guiGraphics, int p_193889_, int y, int p_193891_, int p_193892_, int height, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
-            guiGraphics.drawString(minecraft.font, this.name, getLeft() + 5 , y + height - 4, color);
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
+            guiGraphics.drawString(minecraft.font, this.name, getX() + 5 , y + height - 4, color);
             guiGraphics.disableScissor();
         }
 
@@ -205,8 +208,8 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -225,8 +228,8 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
 
         @Override
@@ -245,8 +248,8 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
 
         @Override
         public void render(@NotNull GuiGraphics guiGraphics, int p_193889_, int p_193890_, int p_193891_, int p_193892_, int p_193893_, int p_193894_, int p_193895_, boolean p_193896_, float p_193897_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
-            guiGraphics.drawString(minecraft.font, this.name, getLeft() + 5 , p_193890_ + p_193893_ - 10, AlternativeKeybindScreen.CATEGORY_COLOR);
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
+            guiGraphics.drawString(minecraft.font, this.name, getX() + 5 , p_193890_ + p_193893_ - 10, AlternativeKeybindScreen.CATEGORY_COLOR);
             guiGraphics.disableScissor();
         }
 
@@ -281,8 +284,8 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -301,8 +304,8 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
 
         @Override
@@ -384,10 +387,10 @@ public class DefaultKeyBindsList extends ContainerObjectSelectionList<DefaultKey
 
         @Override
         public void render(@NotNull GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
 
-            guiGraphics.drawString(minecraft.font, this.name, getLeft() + 5, p_193925_ + p_193928_ - 10, 16777215);
+            guiGraphics.drawString(minecraft.font, this.name, getX() + 5, p_193925_ + p_193928_ - 10, 16777215);
 
             this.changeButton.setX( p_193926_ + (int)((float)getWidth() * .43F));
             this.changeButton.setY( p_193925_);

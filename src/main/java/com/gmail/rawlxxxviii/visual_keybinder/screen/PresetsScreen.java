@@ -11,11 +11,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.settings.KeyModifier;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -30,6 +30,10 @@ public class PresetsScreen extends OptionsSubScreen {
 
     public PresetsScreen(Screen screen, Options options) {
         super(screen, options, Component.literal("Keybinding presets"));
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick) {
     }
 
     @Override
@@ -85,6 +89,11 @@ public class PresetsScreen extends OptionsSubScreen {
                 uiWidth,
                 uiHeight - 30
         ));
+
+    }
+
+    @Override
+    protected void addOptions() {
 
     }
 
@@ -148,11 +157,6 @@ public class PresetsScreen extends OptionsSubScreen {
     }
 
     @Override
-    public void tick(){
-        newPresetNameEditBox.tick();
-    }
-
-    @Override
     public void setFocused(@Nullable GuiEventListener p_94677_) {
         var currentFocused = getFocused();
         if(currentFocused instanceof EditBox editBox && !currentFocused.equals(p_94677_)){
@@ -163,7 +167,7 @@ public class PresetsScreen extends OptionsSubScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_193994_) {
-        this.renderDirtBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, p_193994_);
 
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 16, 16777215);
 

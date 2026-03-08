@@ -15,11 +15,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.settings.KeyModifier;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
@@ -89,6 +89,11 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
         super(screen, options, Component.literal("Visual keybinder"));
 
         getKeyboardLayouts();
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick) {
+        // Leave this completely empty to stop the 1.21.1 background blur!
     }
 
     @Override
@@ -193,9 +198,8 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     }
 
     @Override
-    public void tick(){
-        keyMappingCategoryFilterEditBox.tick();
-        keyMappingNameFilterEditBox.tick();
+    protected void addOptions() {
+
     }
 
 
@@ -252,7 +256,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     @Override
     public boolean keyPressed(int p_193987_, int p_193988_, int p_193989_) {
         if (this.keyMappingToChange != null &&
-                !net.minecraftforge.client.settings.KeyModifier.isKeyCodeModifier(
+                !net.neoforged.neoforge.client.settings.KeyModifier.isKeyCodeModifier(
                         InputConstants.getKey(p_193987_,p_193988_)
                 )
         ) {
@@ -283,7 +287,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
     public boolean keyReleased(int p_193987_, int p_193988_, int p_193989_) {
         var pressedKey = InputConstants.getKey(p_193987_,p_193988_);
         if (this.keyMappingToChange != null &&
-                net.minecraftforge.client.settings.KeyModifier.isKeyCodeModifier(pressedKey)
+                net.neoforged.neoforge.client.settings.KeyModifier.isKeyCodeModifier(pressedKey)
         ) {
             this.keyMappingToChange.setKeyModifierAndCode(KeyModifier.NONE, InputConstants.getKey(p_193987_, p_193988_));
             options.setKey(this.keyMappingToChange, pressedKey);
@@ -408,7 +412,7 @@ public class AlternativeKeybindScreen extends OptionsSubScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_193994_) {
-        this.renderDirtBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, p_193994_);
 
         guiGraphics.fillGradient(
                 0, height - 30,

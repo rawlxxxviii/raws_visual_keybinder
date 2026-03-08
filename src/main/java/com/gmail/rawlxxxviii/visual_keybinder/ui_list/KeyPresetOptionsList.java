@@ -15,8 +15,8 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -27,18 +27,18 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
 
 
     private final PresetsScreen parentScreen;
+    private final int left;
     protected final Options options;
 
     public KeyPresetOptionsList(PresetsScreen parentScreen, Minecraft minecraft, Options options, int left, int top, int width, int height) {
 
-        super(minecraft, width, height, top, height + top, 26);
+        super(minecraft, width, height, top, 26);
         this.options = options;
 
-        this.setRenderTopAndBottom(false);
         this.height = height;
 
-        this.x0 = left;
-        this.x1 = width + this.x0;
+        this.left = left;
+        this.setX(left);
 
         this.parentScreen = parentScreen;
 
@@ -69,6 +69,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         setScrollAmount(getScrollAmount());
     }
 
+    @Override public int getX() { return this.left; }
+
     @Override
     public int getRowWidth() {
         return width;
@@ -76,7 +78,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
 
     @Override
     protected int getScrollbarPosition() {
-        return this.width + this.x0 - 6;
+        return this.width + this.getX() - 6;
     }
 
     @Override
@@ -105,8 +107,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
     }
 
     @Override
-    public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-        return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
@@ -125,8 +127,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
     }
 
     @Override
-    public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-        super.magicalSpecialHackyFocus(p_94726_);
+    public void setFocused(@Nullable GuiEventListener p_94726_) {
+        super.setFocused(true);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -186,7 +188,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
             guiGraphics.drawString(
                     parentScreen.getMinecraft().font,
@@ -241,8 +243,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -261,8 +263,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
     }
 
@@ -290,7 +292,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
             guiGraphics.drawString(
                     parentScreen.getMinecraft().font,
@@ -338,8 +340,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -358,8 +360,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
     }
 
@@ -410,8 +412,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -430,8 +432,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
     }
 
@@ -461,7 +463,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getLeft(),getTop(),getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
             guiGraphics.drawString(
                     parentScreen.getMinecraft().font,
@@ -509,8 +511,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         @Override
-        public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_) {
-            return super.mouseScrolled(p_94686_, p_94687_, p_94688_);
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
 
         @Override
@@ -529,8 +531,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         @Override
-        public void magicalSpecialHackyFocus(@Nullable GuiEventListener p_94726_) {
-            super.magicalSpecialHackyFocus(p_94726_);
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
         }
     }
 
