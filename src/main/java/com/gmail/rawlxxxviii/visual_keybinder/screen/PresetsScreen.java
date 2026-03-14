@@ -37,6 +37,11 @@ public class PresetsScreen extends OptionsSubScreen {
     }
 
     @Override
+    protected void repositionElements() {
+        this.rebuildWidgets();
+    }
+
+    @Override
     protected void init() {
 
         int uiWidth = 400;
@@ -197,41 +202,31 @@ public class PresetsScreen extends OptionsSubScreen {
 
         for(var keymapping : options.keyMappings){
 
-            KeyModifier keyModifier = null;
-            InputConstants.Key key = null;
+            KeyModifier presetKeyModifier = KeyModifier.NONE;
 
             String mappingName = keymapping.getName();
 
-            var list = keybindingPreset.getLines().stream().filter(x -> x.startsWith(mappingName + ":")).toList();
-            if(list.isEmpty()){
+            var presetItem = keybindingPreset.getLines().stream().filter(x -> x.startsWith(mappingName + ":")).toList().stream().findFirst().orElse(null);
+            if(presetItem == null){
+                return false;
+            }
+            var split = presetItem.split(":");
+            if(split.length < 2){
                 return false;
             }
 
-            var presetValue = list.get(0).substring(mappingName.length() + 1 );
+            InputConstants.Key presetKey = InputConstants.getKey(split[1]);
 
-            if (presetValue.indexOf(':') != -1) {
-                String[] pts = presetValue.split(":");
-
-                keyModifier = KeyModifier.valueFromString(pts[1]);
-                key = InputConstants.getKey(pts[0]);
-
-
-            } else {
-
-                keyModifier = KeyModifier.NONE;
-                key = InputConstants.getKey(presetValue);
+            if(split.length == 3){
+                presetKeyModifier = KeyModifier.valueFromString(split[2]);
             }
 
             if(
-                !key.equals(keymapping.getKey())
+                    !presetKey.equals(keymapping.getKey())
+                            ||
+                            presetKeyModifier != keymapping.getKeyModifier()
             ){
-                if(
-                    !key.equals(InputConstants.UNKNOWN)
-                        &&
-                    keyModifier != keymapping.getKeyModifier()
-                ){
-                    return false;
-                }
+                return false;
             }
 
 
