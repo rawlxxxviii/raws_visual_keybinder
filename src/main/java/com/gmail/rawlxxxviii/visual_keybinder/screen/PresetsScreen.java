@@ -1,9 +1,10 @@
 package com.gmail.rawlxxxviii.visual_keybinder.screen;
 
-import com.gmail.rawlxxxviii.visual_keybinder.KeybindingPreset;
 import com.gmail.rawlxxxviii.visual_keybinder.ui_list.KeyPresetOptionsList;
+import com.gmail.rawlxxxviii.visual_keybinder.KeybindingPreset;
 import com.gmail.rawlxxxviii.visual_keybinder.util.FileUtil;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,7 +15,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.settings.KeyModifier;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -29,6 +30,15 @@ public class PresetsScreen extends OptionsSubScreen {
 
     public PresetsScreen(Screen screen, Options options) {
         super(screen, options, Component.literal("Keybinding presets"));
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick) {
+    }
+
+    @Override
+    protected void repositionElements() {
+        this.rebuildWidgets();
     }
 
     @Override
@@ -85,19 +95,6 @@ public class PresetsScreen extends OptionsSubScreen {
                 uiHeight - 30
         ));
 
-    }
-
-    @Override
-    protected void repositionElements() {
-        this.rebuildWidgets();
-    }
-
-    @Override
-    protected void rebuildWidgets() {
-        this.clearWidgets();
-        this.clearFocus();
-        this.init();
-        this.setInitialFocus();
     }
 
     @Override
@@ -163,11 +160,6 @@ public class PresetsScreen extends OptionsSubScreen {
         KeyMapping.resetMapping();
         rebuildWidgets();
     }
-//
-//    @Override
-//    public void tick(){
-//        newPresetNameEditBox.tick();
-//    }
 
     @Override
     public void setFocused(@Nullable GuiEventListener p_94677_) {
@@ -180,8 +172,7 @@ public class PresetsScreen extends OptionsSubScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float p_193994_) {
-
-        super.render(guiGraphics, mouseX, mouseY, p_193994_);
+        this.renderBackground(guiGraphics, mouseX, mouseY, p_193994_);
 
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 16, 16777215);
 
@@ -199,6 +190,8 @@ public class PresetsScreen extends OptionsSubScreen {
         }
 
         KeyPresetOptionsList.render(guiGraphics, mouseX, mouseY, p_193994_);
+
+        super.render(guiGraphics, mouseX, mouseY, p_193994_);
     }
 
     public boolean isPresetActive(KeybindingPreset keybindingPreset){
@@ -229,9 +222,9 @@ public class PresetsScreen extends OptionsSubScreen {
             }
 
             if(
-                !presetKey.equals(keymapping.getKey())
-                ||
-                presetKeyModifier != keymapping.getKeyModifier()
+                    !presetKey.equals(keymapping.getKey())
+                            ||
+                            presetKeyModifier != keymapping.getKeyModifier()
             ){
                 return false;
             }

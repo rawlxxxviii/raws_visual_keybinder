@@ -13,11 +13,11 @@ public class KeyboardLayoutKey {
     private final int y;
     private final boolean wide;
 
-    public KeyboardLayoutKey(String keyName, int x, int y){
-        this(keyName,x,y, false);
+    public KeyboardLayoutKey(String keyName, int x, int y) {
+        this(keyName, x, y, false);
     }
 
-    public KeyboardLayoutKey(String keyName, int x, int y, boolean wide){
+    public KeyboardLayoutKey(String keyName, int x, int y, boolean wide) {
         key = InputConstants.getKey(keyName);
         this.x = x;
         this.y = y;
@@ -40,10 +40,11 @@ public class KeyboardLayoutKey {
         return wide;
     }
 
+
     @Nullable
-    public static KeyboardLayoutKey fromString(String content){
+    public static KeyboardLayoutKey fromString(String content) {
         var splitted = content.split(";");
-        if(splitted.length < 3){
+        if (splitted.length < 3) {
             return null;
         }
 
@@ -54,7 +55,7 @@ public class KeyboardLayoutKey {
             key = InputConstants.getKey(splitted[0]);
             x = Integer.parseInt(splitted[1]);
             y = Integer.parseInt(splitted[2]);
-        }catch (Exception exception){
+        } catch (Exception exception) {
             return null;
         }
         return new KeyboardLayoutKey(
@@ -67,11 +68,10 @@ public class KeyboardLayoutKey {
 
     @Override
     public String toString() {
-        return
-                key.toString() + ";" +
-                        x + ";" +
-                        y + ";" +
-                        (wide ? "wide" : "")
+        return key.getName() + ";" +  // <--- Change key.toString() to key.getName()
+                x + ";" +
+                y + ";" +
+                (wide ? "wide" : "")
                 ;
     }
 }

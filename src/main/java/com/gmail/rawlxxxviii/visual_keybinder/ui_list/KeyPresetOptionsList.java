@@ -6,6 +6,7 @@ import com.gmail.rawlxxxviii.visual_keybinder.screen.AlternativeKeybindScreen;
 import com.gmail.rawlxxxviii.visual_keybinder.screen.PresetsScreen;
 import com.gmail.rawlxxxviii.visual_keybinder.util.FileUtil;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,8 +15,8 @@ import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -26,9 +27,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
 
 
     private final PresetsScreen parentScreen;
-    protected final Options options;
-
     private final int left;
+    protected final Options options;
 
     public KeyPresetOptionsList(PresetsScreen parentScreen, Minecraft minecraft, Options options, int left, int top, int width, int height) {
 
@@ -38,8 +38,7 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         this.height = height;
 
         this.left = left;
-//        this.x0 = left;
-//        this.x1 = width + this.x0;
+        this.setX(left);
 
         this.parentScreen = parentScreen;
 
@@ -47,10 +46,6 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
 
     }
 
-    @Override
-    public int getX() {
-        return left;
-    }
 
     private void buildEntries(){
         clearEntries();
@@ -74,6 +69,8 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         setScrollAmount(getScrollAmount());
     }
 
+    @Override public int getX() { return this.left; }
+
     @Override
     public int getRowWidth() {
         return width;
@@ -81,16 +78,65 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
 
     @Override
     protected int getScrollbarPosition() {
-        return this.width + this.getRowLeft() - 8;
+        return this.width + this.getX() - 6;
     }
 
+    @Override
+    public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {
+        return super.getChildAt(p_94730_, p_94731_);
+    }
 
-    @OnlyIn(Dist.CLIENT)
-    public abstract static class Entry extends ContainerObjectSelectionList.Entry<Entry> {
+    @Override
+    public void mouseMoved(double p_94758_, double p_94759_) {
+        super.mouseMoved(p_94758_, p_94759_);
+    }
+
+    @Override
+    public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
+        return super.mouseClicked(p_94695_, p_94696_, p_94697_);
+    }
+
+    @Override
+    public boolean mouseReleased(double p_94722_, double p_94723_, int p_94724_) {
+        return super.mouseReleased(p_94722_, p_94723_, p_94724_);
+    }
+
+    @Override
+    public boolean mouseDragged(double p_94699_, double p_94700_, int p_94701_, double p_94702_, double p_94703_) {
+        return super.mouseDragged(p_94699_, p_94700_, p_94701_, p_94702_, p_94703_);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean keyPressed(int p_94710_, int p_94711_, int p_94712_) {
+        return super.keyPressed(p_94710_, p_94711_, p_94712_);
+    }
+
+    @Override
+    public boolean keyReleased(int p_94715_, int p_94716_, int p_94717_) {
+        return super.keyReleased(p_94715_, p_94716_, p_94717_);
+    }
+
+    @Override
+    public boolean charTyped(char p_94683_, int p_94684_) {
+        return super.charTyped(p_94683_, p_94684_);
+    }
+
+    @Override
+    public void setFocused(@Nullable GuiEventListener p_94726_) {
+        super.setFocused(true);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class PresetEntry extends Entry {
+    public abstract static class Entry extends ContainerObjectSelectionList.Entry<KeyPresetOptionsList.Entry> {
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public class PresetEntry extends KeyPresetOptionsList.Entry {
         private final KeybindingPreset keybindingPreset;
         private final Button saveButton;
         private final Button loadButton;
@@ -142,25 +188,24 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
-            guiGraphics.enableScissor(getRowLeft(), getRowTop(0),getRight(), getBottom());
+            guiGraphics.drawString(
+                    parentScreen.getMinecraft().font,
+                    Component.literal(this.keybindingPreset.getName()),
+                    getRowLeft() + 5,
+                    getRowTop(p_193924_) + 6,
+                    isPresetActive ? AlternativeKeybindScreen.ACTIVE_COLOR : Color.white.getRGB());
 
-                guiGraphics.drawString(
-                        Minecraft.getInstance().font,
-                        Component.literal(this.keybindingPreset.getName()),
-                        getRowLeft() + 5,
-                        getRowTop(p_193924_) + 6,
-                        isPresetActive ? AlternativeKeybindScreen.ACTIVE_COLOR : Color.white.getRGB());
+            this.saveButton.setY(p_193925_);
+            this.saveButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
 
-                this.saveButton.setY(p_193925_);
-                this.saveButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.loadButton.setY(p_193925_ );
+            this.loadButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
 
-                this.loadButton.setY(p_193925_ );
-                this.loadButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
-
-                this.deleteButton.setY(p_193925_ );
-                this.deleteButton.setFGColor( this.deleteButton.active ? AlternativeKeybindScreen.DANGER_COLOR : Color.GRAY.getRGB());
-                this.deleteButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
+            this.deleteButton.setY(p_193925_ );
+            this.deleteButton.setFGColor( this.deleteButton.active ? AlternativeKeybindScreen.DANGER_COLOR : Color.GRAY.getRGB());
+            this.deleteButton.render(guiGraphics, p_193929_, p_193930_, p_193932_);
 
             guiGraphics.disableScissor();
         }
@@ -171,11 +216,61 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
             return List.of();
         }
 
+
+        @Override
+        public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {
+            return super.getChildAt(p_94730_, p_94731_);
+        }
+
+        @Override
+        public void mouseMoved(double p_94758_, double p_94759_) {
+            super.mouseMoved(p_94758_, p_94759_);
+        }
+
+        @Override
+        public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
+            return super.mouseClicked(p_94695_, p_94696_, p_94697_);
+        }
+
+        @Override
+        public boolean mouseReleased(double p_94722_, double p_94723_, int p_94724_) {
+            return super.mouseReleased(p_94722_, p_94723_, p_94724_);
+        }
+
+        @Override
+        public boolean mouseDragged(double p_94699_, double p_94700_, int p_94701_, double p_94702_, double p_94703_) {
+            return super.mouseDragged(p_94699_, p_94700_, p_94701_, p_94702_, p_94703_);
+        }
+
+        @Override
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        }
+
+        @Override
+        public boolean keyPressed(int p_94710_, int p_94711_, int p_94712_) {
+            return super.keyPressed(p_94710_, p_94711_, p_94712_);
+        }
+
+        @Override
+        public boolean keyReleased(int p_94715_, int p_94716_, int p_94717_) {
+            return super.keyReleased(p_94715_, p_94716_, p_94717_);
+        }
+
+        @Override
+        public boolean charTyped(char p_94683_, int p_94684_) {
+            return super.charTyped(p_94683_, p_94684_);
+        }
+
+        @Override
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
+        }
     }
 
 
     @OnlyIn(Dist.CLIENT)
-    public class UnbindAllEntry extends Entry {
+    public class UnbindAllEntry extends KeyPresetOptionsList.Entry {
         private final Button button;
 
         UnbindAllEntry() {
@@ -197,10 +292,10 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getRowLeft(), getRowTop(0), getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
             guiGraphics.drawString(
-                    Minecraft.getInstance().font,
+                    parentScreen.getMinecraft().font,
                     Component.literal("Unbind all keybindings"),
                     getRowLeft() + 5,
                     getRowTop(p_193924_) + 6,
@@ -219,10 +314,59 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
             return List.of();
         }
 
+        @Override
+        public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {
+            return super.getChildAt(p_94730_, p_94731_);
+        }
+
+        @Override
+        public void mouseMoved(double p_94758_, double p_94759_) {
+            super.mouseMoved(p_94758_, p_94759_);
+        }
+
+        @Override
+        public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
+            return super.mouseClicked(p_94695_, p_94696_, p_94697_);
+        }
+
+        @Override
+        public boolean mouseReleased(double p_94722_, double p_94723_, int p_94724_) {
+            return super.mouseReleased(p_94722_, p_94723_, p_94724_);
+        }
+
+        @Override
+        public boolean mouseDragged(double p_94699_, double p_94700_, int p_94701_, double p_94702_, double p_94703_) {
+            return super.mouseDragged(p_94699_, p_94700_, p_94701_, p_94702_, p_94703_);
+        }
+
+        @Override
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        }
+
+        @Override
+        public boolean keyPressed(int p_94710_, int p_94711_, int p_94712_) {
+            return super.keyPressed(p_94710_, p_94711_, p_94712_);
+        }
+
+        @Override
+        public boolean keyReleased(int p_94715_, int p_94716_, int p_94717_) {
+            return super.keyReleased(p_94715_, p_94716_, p_94717_);
+        }
+
+        @Override
+        public boolean charTyped(char p_94683_, int p_94684_) {
+            return super.charTyped(p_94683_, p_94684_);
+        }
+
+        @Override
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public class EmptyEntry extends Entry {
+    public class EmptyEntry extends KeyPresetOptionsList.Entry {
 
         EmptyEntry() {
 
@@ -242,11 +386,60 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
             return List.of();
         }
 
+        @Override
+        public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {
+            return super.getChildAt(p_94730_, p_94731_);
+        }
+
+        @Override
+        public void mouseMoved(double p_94758_, double p_94759_) {
+            super.mouseMoved(p_94758_, p_94759_);
+        }
+
+        @Override
+        public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
+            return super.mouseClicked(p_94695_, p_94696_, p_94697_);
+        }
+
+        @Override
+        public boolean mouseReleased(double p_94722_, double p_94723_, int p_94724_) {
+            return super.mouseReleased(p_94722_, p_94723_, p_94724_);
+        }
+
+        @Override
+        public boolean mouseDragged(double p_94699_, double p_94700_, int p_94701_, double p_94702_, double p_94703_) {
+            return super.mouseDragged(p_94699_, p_94700_, p_94701_, p_94702_, p_94703_);
+        }
+
+        @Override
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        }
+
+        @Override
+        public boolean keyPressed(int p_94710_, int p_94711_, int p_94712_) {
+            return super.keyPressed(p_94710_, p_94711_, p_94712_);
+        }
+
+        @Override
+        public boolean keyReleased(int p_94715_, int p_94716_, int p_94717_) {
+            return super.keyReleased(p_94715_, p_94716_, p_94717_);
+        }
+
+        @Override
+        public boolean charTyped(char p_94683_, int p_94684_) {
+            return super.charTyped(p_94683_, p_94684_);
+        }
+
+        @Override
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
+        }
     }
 
 
     @OnlyIn(Dist.CLIENT)
-    public class ResetAllEntry extends Entry {
+    public class ResetAllEntry extends KeyPresetOptionsList.Entry {
         private final Button button;
 
         ResetAllEntry() {
@@ -270,10 +463,10 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
         }
 
         public void render(GuiGraphics guiGraphics, int p_193924_, int p_193925_, int p_193926_, int p_193927_, int p_193928_, int p_193929_, int p_193930_, boolean p_193931_, float p_193932_) {
-            guiGraphics.enableScissor(getRowLeft(), getRowTop(0), getRight(), getBottom());
+            guiGraphics.enableScissor(getX(),getY(),getRight(), getBottom());
 
             guiGraphics.drawString(
-                    Minecraft.getInstance().font,
+                    parentScreen.getMinecraft().font,
                     Component.literal("Reset to defaults"),
                     getRowLeft() + 5,
                     getRowTop(p_193924_) + 6,
@@ -292,6 +485,55 @@ public class KeyPresetOptionsList extends ContainerObjectSelectionList<KeyPreset
             return List.of();
         }
 
+        @Override
+        public Optional<GuiEventListener> getChildAt(double p_94730_, double p_94731_) {
+            return super.getChildAt(p_94730_, p_94731_);
+        }
+
+        @Override
+        public void mouseMoved(double p_94758_, double p_94759_) {
+            super.mouseMoved(p_94758_, p_94759_);
+        }
+
+        @Override
+        public boolean mouseClicked(double p_94695_, double p_94696_, int p_94697_) {
+            return super.mouseClicked(p_94695_, p_94696_, p_94697_);
+        }
+
+        @Override
+        public boolean mouseReleased(double p_94722_, double p_94723_, int p_94724_) {
+            return super.mouseReleased(p_94722_, p_94723_, p_94724_);
+        }
+
+        @Override
+        public boolean mouseDragged(double p_94699_, double p_94700_, int p_94701_, double p_94702_, double p_94703_) {
+            return super.mouseDragged(p_94699_, p_94700_, p_94701_, p_94702_, p_94703_);
+        }
+
+        @Override
+        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+            return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        }
+
+        @Override
+        public boolean keyPressed(int p_94710_, int p_94711_, int p_94712_) {
+            return super.keyPressed(p_94710_, p_94711_, p_94712_);
+        }
+
+        @Override
+        public boolean keyReleased(int p_94715_, int p_94716_, int p_94717_) {
+            return super.keyReleased(p_94715_, p_94716_, p_94717_);
+        }
+
+        @Override
+        public boolean charTyped(char p_94683_, int p_94684_) {
+            return super.charTyped(p_94683_, p_94684_);
+        }
+
+        @Override
+        public void setFocused(@Nullable GuiEventListener p_94726_) {
+            super.setFocused(true);
+        }
     }
 
 

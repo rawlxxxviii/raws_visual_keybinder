@@ -1,6 +1,7 @@
 package com.gmail.rawlxxxviii.visual_keybinder;
 
 import java.util.List;
+import java.util.Map;
 
 public class KeybindingPreset {
 

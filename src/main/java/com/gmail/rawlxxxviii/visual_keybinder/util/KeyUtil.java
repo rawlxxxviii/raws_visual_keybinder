@@ -2,14 +2,14 @@ package com.gmail.rawlxxxviii.visual_keybinder.util;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.settings.IKeyConflictContext;
-import net.minecraftforge.client.settings.KeyModifier;
+import net.neoforged.neoforge.client.settings.IKeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 
 import java.util.EnumSet;
 
 public class KeyUtil {
 
-    public static KeyModifier getActiveKeyModifier(){
+    public static net.neoforged.neoforge.client.settings.KeyModifier getActiveKeyModifier(){
 
         for(var a : EnumSet.allOf(KeyModifier.class)){
 
@@ -62,7 +62,7 @@ public class KeyUtil {
         }
 
         if (keyMappingA.getKeyConflictContext().conflicts(keyConflictContextB) || keyConflictContextB.conflicts(keyMappingA.getKeyConflictContext())) {
-            KeyModifier keyModifier = keyMappingA.getKeyModifier();
+            net.neoforged.neoforge.client.settings.KeyModifier keyModifier = keyMappingA.getKeyModifier();
             if (keyModifier.matches(keyB) || keyModifierB.matches(keyMappingA.getKey())) {
                 return true;
             } else if (keyMappingA.getKey().equals(keyB)) {
@@ -70,8 +70,8 @@ public class KeyUtil {
                 // For example: If you hold shift to crouch, you can still press E to open your inventory. This means that a Shift+E hotkey is in conflict with E.
                 // GUI and other key contexts do not have this limitation.
                 return keyModifier == keyModifierB ||
-                        (keyMappingA.getKeyConflictContext().conflicts(net.minecraftforge.client.settings.KeyConflictContext.IN_GAME) &&
-                                (keyModifier == KeyModifier.NONE || keyModifierB == KeyModifier.NONE));
+                        (keyMappingA.getKeyConflictContext().conflicts(net.neoforged.neoforge.client.settings.KeyConflictContext.IN_GAME) &&
+                                (keyModifier == net.neoforged.neoforge.client.settings.KeyModifier.NONE || keyModifierB == net.neoforged.neoforge.client.settings.KeyModifier.NONE));
             }
         }
         return keyMappingA.getKey().equals(keyB);

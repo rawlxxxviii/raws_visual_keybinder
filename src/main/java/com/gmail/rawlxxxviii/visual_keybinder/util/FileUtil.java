@@ -7,8 +7,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Options;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class FileUtil {
-
 
     private static final String BASE_FOLDER = "visual_keybinder";
     private static final String PRESET_FOLDER = "presets";
@@ -395,6 +394,7 @@ public class FileUtil {
 
 
 
+
     }
 
     @Nullable
@@ -457,7 +457,7 @@ public class FileUtil {
         FileWriter writer = new FileWriter(FMLPaths.GAMEDIR.get().resolve(BASE_FOLDER + File.separator + PRESET_FOLDER + File.separator + name + PRESET_EXTENSION).toString());
         for (var keymapping : options.keyMappings){
             String mappingName = keymapping.getName();
-            String key = keymapping.saveString() + (keymapping.getKeyModifier() != net.minecraftforge.client.settings.KeyModifier.NONE ? ":" + keymapping.getKeyModifier() : "");
+            String key = keymapping.saveString() + (keymapping.getKeyModifier() != net.neoforged.neoforge.client.settings.KeyModifier.NONE ? ":" + keymapping.getKeyModifier() : "");
             writer.append(mappingName).append(":").append(key);
             writer.append("\n");
         }
@@ -472,9 +472,16 @@ public class FileUtil {
     }
 
     public static List<KeyBoardLayout> getKeyboardLayoutsFromFile() {
-        var result = new ArrayList<KeyBoardLayout>();
 
+        // 1. ADD THIS SAFETY CHECK:
+        if (getLayoutFileList().isEmpty()) {
+            createDefaultLayouts();
+        }
+
+        var result = new ArrayList<KeyBoardLayout>();
         var layoutFileList = new ArrayList<>(getLayoutFileList());
+
+        // ... the rest of the code stays the same
 
         layoutFileList.sort(
                 Comparator.comparingInt(a ->
@@ -527,15 +534,15 @@ public class FileUtil {
 
                         if (value.indexOf(':') != -1) {
                             String[] pts = value.split(":");
-                            keymapping.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.valueFromString(pts[1]), InputConstants.getKey(pts[0]));
+                            keymapping.setKeyModifierAndCode(net.neoforged.neoforge.client.settings.KeyModifier.valueFromString(pts[1]), InputConstants.getKey(pts[0]));
                         } else {
-                            keymapping.setKeyModifierAndCode(net.minecraftforge.client.settings.KeyModifier.NONE, InputConstants.getKey(value));
+                            keymapping.setKeyModifierAndCode(net.neoforged.neoforge.client.settings.KeyModifier.NONE, InputConstants.getKey(value));
                         }
                     },
                     () -> {
                         keymapping.setKeyModifierAndCode(KeyModifier.NONE,InputConstants.UNKNOWN);
                     }
-            );
+                );
 
         }
 
