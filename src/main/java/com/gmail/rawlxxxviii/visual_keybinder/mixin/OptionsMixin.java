@@ -15,8 +15,15 @@ public abstract class OptionsMixin {
     @Inject(method = "load()V", at = @At("RETURN"))
     protected void initInject(CallbackInfo ci){
 
-
+        if(FileUtil.getLayoutFileList().isEmpty()){
+            FileUtil.createDefaultLayouts();
+        }
         FileUtil.loadInitialPreset( (Options) (Object) this );
+
+        if(!FileUtil.isInitializedFileCreated()){
+            FileUtil.createInitializedFile();
+
+        }
     }
 
     
